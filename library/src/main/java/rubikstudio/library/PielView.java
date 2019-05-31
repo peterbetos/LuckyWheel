@@ -70,7 +70,10 @@ public class PielView extends View {
 
     private PieRotateListener mPieRotateListener;
 
+    private final float constantVelocity = 2f;
+
     public interface PieRotateListener {
+        void onRotationStart();
         void rotateDone(int index);
     }
 
@@ -361,9 +364,6 @@ public class PielView extends View {
      */
     @TargetApi(Build.VERSION_CODES.LOLLIPOP_MR1)
     public void rotateTo(final int index, @SpinRotation final int rotation, boolean startSlow) {
-        if (isRunning) {
-            return;
-        }
 
         int rotationAssess = rotation <= 0 ? 1 : -1;
 
@@ -376,18 +376,23 @@ public class PielView extends View {
             float multiplier = getRotation() > 200f ? 2 : 1;
             animate()
                     .setInterpolator(animationStart)
-                    .setDuration(500L)
                     .setListener(new Animator.AnimatorListener() {
                         @Override
                         public void onAnimationStart(Animator animation) {
-                            isRunning = true;
+                            if(!isRunning) {
+                                isRunning = true;
+                                mPieRotateListener.onRotationStart();
+                            }
                         }
 
                         @Override
                         public void onAnimationEnd(Animator animation) {
-                            isRunning = false;
-                            setRotation(0);
-                            rotateTo(index, rotation, false);
+                            if(isRunning) {
+                                rotateTo(index, rotation, false);
+                            } else {
+                                setRotation(0);
+                                rotateTo(index, rotation, false);
+                            }
                         }
 
                         @Override
@@ -398,7 +403,7 @@ public class PielView extends View {
                         public void onAnimationRepeat(Animator animation) {
                         }
                     })
-                    .rotation(360f * multiplier * rotationAssess)
+                    .rotation(360f * constantVelocity * rotationAssess)
                     .start();
             return;
         }
@@ -419,7 +424,6 @@ public class PielView extends View {
 
                     @Override
                     public void onAnimationEnd(Animator animation) {
-                        isRunning = false;
                         setRotation(getRotation() % 360f);
                         if (mPieRotateListener != null) {
                             mPieRotateListener.rotateDone(index);
@@ -436,6 +440,10 @@ public class PielView extends View {
                 })
                 .rotation(targetAngle)
                 .start();
+    }
+
+    public void stopRotation() {
+        isRunning = false;
     }
 
     public boolean touchEnabled = true;
