@@ -14,6 +14,7 @@
         <attr name="lkwTopTextPadding" format="dimension" />
         <attr name="lkwTopTextSize" format="dimension" />
         <attr name="lkwSecondaryTextSize" format="dimension" />
+        <attr name="lkwSecondaryTextPadding" format="dimension" />
     </declare-styleable>
 
 </resources>

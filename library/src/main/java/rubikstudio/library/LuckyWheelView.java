@@ -28,6 +28,7 @@ public class LuckyWheelView extends RelativeLayout implements PielView.PieRotate
     private int mSecondaryTextSize;
     private int mBorderColor;
     private int mTopTextPadding;
+    private int mSecondaryTextPadding;
     private int mEdgeWidth;
     private Drawable mCenterImage;
     private Drawable mCursorImage;
@@ -36,6 +37,11 @@ public class LuckyWheelView extends RelativeLayout implements PielView.PieRotate
     private ImageView ivCursorView;
 
     private LuckyRoundItemSelectedListener mLuckyRoundItemSelectedListener;
+
+    @Override
+    public void onRotationStart() {
+
+    }
 
     @Override
     public void rotateDone(int index) {
@@ -74,6 +80,7 @@ public class LuckyWheelView extends RelativeLayout implements PielView.PieRotate
             mSecondaryTextSize = typedArray.getDimensionPixelSize(R.styleable.LuckyWheelView_lkwSecondaryTextSize, (int) LuckyWheelUtils.convertDpToPixel(20f, getContext()));
             mTextColor = typedArray.getColor(R.styleable.LuckyWheelView_lkwTopTextColor, 0);
             mTopTextPadding = typedArray.getDimensionPixelSize(R.styleable.LuckyWheelView_lkwTopTextPadding, (int) LuckyWheelUtils.convertDpToPixel(10f, getContext())) + (int) LuckyWheelUtils.convertDpToPixel(10f, getContext());
+            mSecondaryTextPadding = typedArray.getDimensionPixelSize(R.styleable.LuckyWheelView_lkwSecondaryTextPadding, 0);
             mCursorImage = typedArray.getDrawable(R.styleable.LuckyWheelView_lkwCursor);
             mCenterImage = typedArray.getDrawable(R.styleable.LuckyWheelView_lkwCenterImage);
             mEdgeWidth = typedArray.getInt(R.styleable.LuckyWheelView_lkwEdgeWidth, 10);
@@ -92,6 +99,7 @@ public class LuckyWheelView extends RelativeLayout implements PielView.PieRotate
         pielView.setTopTextPadding(mTopTextPadding);
         pielView.setTopTextSize(mTopTextSize);
         pielView.setSecondaryTextSizeSize(mSecondaryTextSize);
+        pielView.setSecondaryTextPadding(mSecondaryTextPadding);
         pielView.setPieCenterImage(mCenterImage);
         pielView.setBorderColor(mBorderColor);
         pielView.setBorderWidth(mEdgeWidth);
