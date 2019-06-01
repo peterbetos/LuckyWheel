@@ -7,6 +7,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Rect;
@@ -17,6 +18,7 @@ import android.os.Build;
 import android.text.TextPaint;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.View;
@@ -24,11 +26,12 @@ import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.LinearInterpolator;
 
+import androidx.annotation.IntDef;
+import androidx.core.graphics.ColorUtils;
+
 import java.util.List;
 import java.util.Random;
 
-import androidx.annotation.IntDef;
-import androidx.core.graphics.ColorUtils;
 import rubikstudio.library.model.LuckyItem;
 
 /**
@@ -47,6 +50,7 @@ public class PielView extends View {
     private int mCenter;
     private int mPadding;
     private int mTopTextPadding;
+    private int mSecondaryTextPadding;
     private int mTopTextSize;
     private int mSecondaryTextSize;
     private int mRoundOfNumber = 4;
@@ -74,6 +78,7 @@ public class PielView extends View {
 
     public interface PieRotateListener {
         void onRotationStart();
+
         void rotateDone(int index);
     }
 
@@ -108,7 +113,7 @@ public class PielView extends View {
     public int getLuckyItemListSize() {
         return mLuckyItemList.size();
     }
-    
+
     public void setData(List<LuckyItem> luckyItemList) {
         this.mLuckyItemList = luckyItemList;
         invalidate();
@@ -142,6 +147,12 @@ public class PielView extends View {
 
     public void setSecondaryTextSizeSize(int size) {
         mSecondaryTextSize = size;
+        invalidate();
+    }
+
+    public void setSecondaryTextPadding(int padding) {
+        mSecondaryTextPadding = padding;
+        if (mSecondaryTextPadding <= 0) mSecondaryTextPadding = 1;
         invalidate();
     }
 
@@ -303,6 +314,7 @@ public class PielView extends View {
      * @param backgroundColor
      */
     private void drawSecondaryText(Canvas canvas, float tmpAngle, String mStr, int backgroundColor) {
+        Paint paint = new Paint();
         canvas.save();
         int arraySize = mLuckyItemList.size();
 
@@ -319,17 +331,24 @@ public class PielView extends View {
         float initFloat = (tmpAngle + 360f / arraySize / 2);
         float angle = (float) (initFloat * Math.PI / 180);
 
+        // TODO: compute this better when the circle gets larger or smaller,
+        // the goal is to position the secondary text at its leftmost on the edge of the cicle,
+        // then have mSecondaryTextPadding variable do the top padding.
+        float secondaryTextLeftOffset = getMeasuredWidth() / 25f;
+
         int x = (int) (mCenter + mRadius / 2 / 2 * Math.cos(angle));
         int y = (int) (mCenter + mRadius / 2 / 2 * Math.sin(angle));
 
-        RectF rect = new RectF(x + textWidth, y,
-                x - textWidth, y);
+        RectF rect = new RectF(x + textWidth, y, x - textWidth, y);
 
         Path path = new Path();
-        path.addRect(rect, Path.Direction.CW);
+        Matrix translateMatrix = new Matrix();
+        translateMatrix.setTranslate(secondaryTextLeftOffset, 0);
+        path.addRect(rect, Path.Direction.CCW);
+        path.transform(translateMatrix);
         path.close();
         canvas.rotate(initFloat + (arraySize / 18f), x, y);
-        canvas.drawTextOnPath(mStr, path, mTopTextPadding / 7f, mTextPaint.getTextSize() / 2.75f, mTextPaint);
+        canvas.drawTextOnPath(mStr, path, mSecondaryTextPadding, mTextPaint.getTextSize() / 2.75f, mTextPaint);
         canvas.restore();
     }
 
@@ -379,7 +398,7 @@ public class PielView extends View {
                     .setListener(new Animator.AnimatorListener() {
                         @Override
                         public void onAnimationStart(Animator animation) {
-                            if(!isRunning) {
+                            if (!isRunning) {
                                 isRunning = true;
                                 mPieRotateListener.onRotationStart();
                             }
@@ -387,7 +406,7 @@ public class PielView extends View {
 
                         @Override
                         public void onAnimationEnd(Animator animation) {
-                            if(isRunning) {
+                            if (isRunning) {
                                 rotateTo(index, rotation, false);
                             } else {
                                 setRotation(0);
