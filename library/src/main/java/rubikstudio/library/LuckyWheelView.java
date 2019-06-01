@@ -38,6 +38,13 @@ public class LuckyWheelView extends RelativeLayout implements PielView.PieRotate
     private LuckyRoundItemSelectedListener mLuckyRoundItemSelectedListener;
 
     @Override
+    public void onRotationStart() {
+        if (mLuckyRoundItemSelectedListener != null) {
+            mLuckyRoundItemSelectedListener.onLuckyWheelRotationStart();
+        }
+    }
+
+    @Override
     public void rotateDone(int index) {
         if (mLuckyRoundItemSelectedListener != null) {
             mLuckyRoundItemSelectedListener.LuckyRoundItemSelected(index);
@@ -46,6 +53,7 @@ public class LuckyWheelView extends RelativeLayout implements PielView.PieRotate
 
     public interface LuckyRoundItemSelectedListener {
         void LuckyRoundItemSelected(int index);
+        void onLuckyWheelRotationStart();
     }
 
     public void setLuckyRoundItemSelectedListener(LuckyRoundItemSelectedListener listener) {
