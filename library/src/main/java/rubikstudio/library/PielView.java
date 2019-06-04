@@ -444,8 +444,8 @@ public class PielView extends View {
                     @Override
                     public void onAnimationEnd(Animator animation) {
                         setRotation(getRotation() % 360f);
-                        if (mPieRotateListener != null) {
-                            mPieRotateListener.rotateDone(index);
+                        if (mPieRotateListener != null && predeterminedNumber > -1) {
+                            mPieRotateListener.rotateDone(predeterminedNumber);
                         }
                     }
 
