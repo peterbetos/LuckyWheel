@@ -431,7 +431,13 @@ public class PielView extends View {
         // if you still need to reach the same outcome of a positive degrees rotation with the number of rounds reversed.
         if (rotationAssess < 0) mRoundOfNumber++;
 
-        float targetAngle = ((360f * mRoundOfNumber * rotationAssess) + 270f - getAngleOfIndexTarget(index) - (360f / mLuckyItemList.size()) / 2);
+        int indexResult = 0;
+
+        if(predeterminedNumber > -1){
+            indexResult = predeterminedNumber;
+        }
+
+        float targetAngle = ((360f * mRoundOfNumber * rotationAssess) + 270f - getAngleOfIndexTarget(indexResult) - (360f / mLuckyItemList.size()) / 2);
         animate()
                 .setInterpolator(new DecelerateInterpolator())
                 .setDuration(mRoundOfNumber * 1000 + 900L)
