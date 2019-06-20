@@ -1,4 +1,4 @@
-package rubikstudio.library;
+package library;
 
 import android.animation.Animator;
 import android.animation.TimeInterpolator;
@@ -18,7 +18,6 @@ import android.os.Build;
 import android.text.TextPaint;
 import android.text.TextUtils;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.View;
@@ -32,7 +31,11 @@ import androidx.core.graphics.ColorUtils;
 import java.util.List;
 import java.util.Random;
 
-import rubikstudio.library.model.LuckyItem;
+//import rubikstudio.library.LuckyWheelUtils;
+//import rubikstudio.library.model.LuckyItem;
+
+import library.LuckyWheelUtils;
+import library.model.LuckyItem;
 
 /**
  * Created by kiennguyen on 11/5/16.
@@ -46,7 +49,7 @@ public class PielView extends View {
     private Paint mBackgroundPaint;
     private TextPaint mTextPaint;
 
-    private float mStartAngle = 45;
+    private float mStartAngle = 0;
     private int mCenter;
     private int mPadding;
     private int mTopTextPadding;

@@ -9,9 +9,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import rubikstudio.library.LuckyWheelView;
-import rubikstudio.library.model.LuckyItem;
-import rubikstudio.library.PielView;
+import library.LuckyWheelView;
+import library.model.LuckyItem;
+
+//import rubikstudio.library.LuckyWheelView;
+//import rubikstudio.library.model.LuckyItem;
+//import rubikstudio.library.PielView;
+
+
 
 public class MainActivity extends Activity {
     List<LuckyItem> data = new ArrayList<>();
@@ -124,6 +129,11 @@ public class MainActivity extends Activity {
             @Override
             public void LuckyRoundItemSelected(int index) {
                 Toast.makeText(getApplicationContext(), data.get(index).topText, Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onLuckyWheelRotationStart() {
+
             }
         });
     }
