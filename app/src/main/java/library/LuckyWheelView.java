@@ -117,6 +117,7 @@ public class LuckyWheelView extends RelativeLayout implements PielView.PieRotate
         pielView.setBorderWidth(mEdgeWidth);
 
 
+
         if (mTextColor != 0)
             pielView.setPieTextColor(mTextColor);
 
@@ -125,6 +126,9 @@ public class LuckyWheelView extends RelativeLayout implements PielView.PieRotate
         addView(frameLayout);
     }
 
+    public void setInitialAngle(float initialAngle) {
+        pielView.setRotation(initialAngle);
+    }
 
     public boolean isTouchEnabled() {
         return pielView.isTouchEnabled();
