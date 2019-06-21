@@ -46,7 +46,7 @@ public class PielView extends View {
     private Paint mBackgroundPaint;
     private TextPaint mTextPaint;
 
-    private float mStartAngle = 45;
+    private float mStartAngle = 0;
     private int mCenter;
     private int mPadding;
     private int mTopTextPadding;
