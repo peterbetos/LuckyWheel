@@ -7,7 +7,6 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Rect;
@@ -18,7 +17,6 @@ import android.os.Build;
 import android.text.TextPaint;
 import android.text.TextUtils;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.View;
@@ -331,21 +329,15 @@ public class PielView extends View {
         float initFloat = (tmpAngle + 360f / arraySize / 2);
         float angle = (float) (initFloat * Math.PI / 180);
 
-        // TODO: compute this better when the circle gets larger or smaller,
-        // the goal is to position the secondary text at its leftmost on the edge of the cicle,
-        // then have mSecondaryTextPadding variable do the top padding.
-        float secondaryTextLeftOffset = getMeasuredWidth() / 25f;
-
         int x = (int) (mCenter + mRadius / 2 / 2 * Math.cos(angle));
         int y = (int) (mCenter + mRadius / 2 / 2 * Math.sin(angle));
 
-        RectF rect = new RectF(x + textWidth, y, x - textWidth, y);
+        float xStart = (mRadius / 2f) / 3f;
+
+        RectF rect = new RectF(x + xStart, y, x - textWidth, y);
 
         Path path = new Path();
-        Matrix translateMatrix = new Matrix();
-        translateMatrix.setTranslate(secondaryTextLeftOffset, 0);
-        path.addRect(rect, Path.Direction.CCW);
-        path.transform(translateMatrix);
+        path.addRect(rect, Path.Direction.CW);
         path.close();
         canvas.rotate(initFloat + (arraySize / 18f), x, y);
         canvas.drawTextOnPath(mStr, path, mSecondaryTextPadding, mTextPaint.getTextSize() / 2.75f, mTextPaint);
@@ -433,7 +425,7 @@ public class PielView extends View {
 
         int indexResult = 0;
 
-        if(predeterminedNumber > -1){
+        if (predeterminedNumber > -1) {
             indexResult = predeterminedNumber;
         }
 
