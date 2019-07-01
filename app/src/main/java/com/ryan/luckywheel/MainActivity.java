@@ -21,7 +21,7 @@ public class MainActivity extends Activity {
 
         setContentView(R.layout.activity_main);
 
-        final LuckyWheelView luckyWheelView = (LuckyWheelView) findViewById(R.id.luckyWheel);
+        final LuckyWheelView luckyWheelView = findViewById(R.id.luckyWheel);
 
         LuckyItem luckyItem1 = new LuckyItem();
         luckyItem1.topText = "100";
