@@ -38,6 +38,7 @@ import rubikstudio.library.model.LuckyItem;
 
 public class PielView extends View {
     private RectF mRange = new RectF();
+    private RectF mEdgeRange = new RectF();
     private int mRadius;
 
     private Paint mArcPaint;
@@ -106,6 +107,9 @@ public class PielView extends View {
                 getResources().getDisplayMetrics()));
 
         mRange = new RectF(mPadding, mPadding, mPadding + mRadius, mPadding + mRadius);
+        float mPaddingWithoutEdge = mPadding + (mEdgeWidth / 2f);
+        float mRadiusWithoutEdge = mRadius - mEdgeWidth;
+        mEdgeRange = new RectF(mPaddingWithoutEdge, mPaddingWithoutEdge, mPaddingWithoutEdge + mRadiusWithoutEdge, mPaddingWithoutEdge + mRadiusWithoutEdge);
     }
 
     public int getLuckyItemListSize() {
@@ -201,7 +205,7 @@ public class PielView extends View {
                 mArcPaint.setStyle(Paint.Style.STROKE);
                 mArcPaint.setColor(borderColor);
                 mArcPaint.setStrokeWidth(mEdgeWidth);
-                canvas.drawArc(mRange, tmpAngle, sweepAngle, true, mArcPaint);
+                canvas.drawArc(mEdgeRange, tmpAngle, sweepAngle, true, mArcPaint);
             }
 
             int sliceColor = mLuckyItemList.get(i).color != 0 ? mLuckyItemList.get(i).color : defaultBackgroundColor;
