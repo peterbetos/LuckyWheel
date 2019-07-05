@@ -15,3 +15,10 @@
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}
+
+-keepclassmembers class rubikstudio.library.PielView {
+   *;
+}
+-keepclassmembers class rubikstudio.library.LuckyWheelView {
+   *;
+}
