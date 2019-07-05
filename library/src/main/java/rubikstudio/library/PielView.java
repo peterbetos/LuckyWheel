@@ -107,8 +107,9 @@ public class PielView extends View {
                 getResources().getDisplayMetrics()));
 
         mRange = new RectF(mPadding, mPadding, mPadding + mRadius, mPadding + mRadius);
-        float mPaddingWithoutEdge = mPadding + (mEdgeWidth / 2f);
-        float mRadiusWithoutEdge = mRadius - mEdgeWidth;
+        float widgetwidthOffset = getMeasuredWidth() / 160f;
+        float mPaddingWithoutEdge = mPadding + ((mEdgeWidth - widgetwidthOffset) / 2f);
+        float mRadiusWithoutEdge = mRadius - (mEdgeWidth - widgetwidthOffset);
         mEdgeRange = new RectF(mPaddingWithoutEdge, mPaddingWithoutEdge, mPaddingWithoutEdge + mRadiusWithoutEdge, mPaddingWithoutEdge + mRadiusWithoutEdge);
     }
 
