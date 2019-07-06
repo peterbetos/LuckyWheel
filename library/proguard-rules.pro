@@ -16,9 +16,5 @@
 #   public *;
 #}
 
--keepclassmembers class rubikstudio.library.PielView {
-   *;
-}
--keepclassmembers class rubikstudio.library.LuckyWheelView {
-   *;
-}
+-keepclassmembers class rubikstudio.library.PielView { *; }
+-keepclassmembers class rubikstudio.library.LuckyWheelView { *; }

@@ -27,6 +27,8 @@ import android.view.animation.LinearInterpolator;
 import androidx.annotation.IntDef;
 import androidx.core.graphics.ColorUtils;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.util.List;
 import java.util.Random;
 
@@ -609,7 +611,8 @@ public class PielView extends View {
             SpinRotation.CLOCKWISE,
             SpinRotation.COUNTERCLOCKWISE
     })
-    @interface SpinRotation {
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface SpinRotation {
         int CLOCKWISE = 0;
         int COUNTERCLOCKWISE = 1;
     }
