@@ -77,6 +77,9 @@ public class PielView extends View {
 
     private final float constantVelocity = 2f;
 
+    private long spinDuration = 0L;
+    private long decelarationDuration = 0L;
+
     public interface PieRotateListener {
         void onRotationStart();
 
@@ -393,6 +396,7 @@ public class PielView extends View {
             //The multiplier is to do a big rotation again if the position is already near 360.
             float multiplier = getRotation() > 200f ? 2 : 1;
             animate()
+                    .setDuration(this.spinDuration)
                     .setInterpolator(animationStart)
                     .setListener(new Animator.AnimatorListener() {
                         @Override
@@ -405,12 +409,14 @@ public class PielView extends View {
 
                         @Override
                         public void onAnimationEnd(Animator animation) {
-                            if (isRunning) {
-                                rotateTo(index, rotation, false);
-                            } else {
-                                setRotation(0);
-                                rotateTo(index, rotation, false);
-                            }
+//                            if (isRunning) {
+//                                rotateTo(index, rotation, false);
+//                            } else {
+//                                setRotation(0);
+//                                rotateTo(index, rotation, false);
+//                            }
+                            setRotation(0);
+                            rotateTo(index, rotation, false);
                         }
 
                         @Override
@@ -439,7 +445,8 @@ public class PielView extends View {
         float targetAngle = ((360f * mRoundOfNumber * rotationAssess) + 270f - getAngleOfIndexTarget(indexResult) - (360f / mLuckyItemList.size()) / 2);
         animate()
                 .setInterpolator(new DecelerateInterpolator())
-                .setDuration(mRoundOfNumber * 1000 + 900L)
+//                .setDuration(mRoundOfNumber * 1000 + 900L)
+                .setDuration(this.decelarationDuration)
                 .setListener(new Animator.AnimatorListener() {
                     @Override
                     public void onAnimationStart(Animator animation) {
@@ -464,6 +471,14 @@ public class PielView extends View {
                 })
                 .rotation(targetAngle)
                 .start();
+    }
+
+    public void setSpinDuration(long spinDuration) {
+        this.spinDuration = spinDuration;
+    }
+
+    public void setDecelarationDuration(long decelarationDuration) {
+        this.decelarationDuration = decelarationDuration;
     }
 
     public void stopRotation() {

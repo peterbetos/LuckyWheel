@@ -204,4 +204,13 @@ public class LuckyWheelView extends RelativeLayout implements PielView.PieRotate
     public void stopRotation(){
         pielView.stopRotation();
     }
+
+    public void setRouletteSpinDuration(long spinDurationParam) {
+        pielView.setSpinDuration(spinDurationParam);
+    }
+
+    public void setRouletteDecelarationDuration(long decelarationDurationParam){
+        pielView.setDecelarationDuration(decelarationDurationParam);
+    }
+
 }
