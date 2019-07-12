@@ -54,6 +54,7 @@ public class LuckyWheelView extends RelativeLayout implements PielView.PieRotate
 
     public interface LuckyRoundItemSelectedListener {
         void LuckyRoundItemSelected(int index);
+
         void onLuckyWheelRotationStart();
     }
 
@@ -86,7 +87,7 @@ public class LuckyWheelView extends RelativeLayout implements PielView.PieRotate
             mSecondaryTextPadding = typedArray.getDimensionPixelSize(R.styleable.LuckyWheelView_lkwSecondaryTextPadding, 0);
             mCursorImage = typedArray.getDrawable(R.styleable.LuckyWheelView_lkwCursor);
             mCenterImage = typedArray.getDrawable(R.styleable.LuckyWheelView_lkwCenterImage);
-            mEdgeWidth = typedArray.getInt(R.styleable.LuckyWheelView_lkwEdgeWidth, 10);
+            mEdgeWidth = typedArray.getDimensionPixelSize(R.styleable.LuckyWheelView_lkwEdgeWidth, (int) LuckyWheelUtils.convertDpToPixel(10f, getContext()));
             mBorderColor = typedArray.getColor(R.styleable.LuckyWheelView_lkwEdgeColor, 0);
             typedArray.recycle();
         }
@@ -201,7 +202,7 @@ public class LuckyWheelView extends RelativeLayout implements PielView.PieRotate
         pielView.rotateTo(r.nextInt(pielView.getLuckyItemListSize() - 1));
     }
 
-    public void stopRotation(){
+    public void stopRotation() {
         pielView.stopRotation();
     }
 
