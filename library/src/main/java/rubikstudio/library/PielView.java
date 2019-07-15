@@ -456,7 +456,7 @@ public class PielView extends View {
 //                        Log.d("Target Angle", "Predetermined Number " + predeterminedNumber);
 //                        Log.d("Target Angle", "Target Index " + targetIndex);
 //                        Log.d("Target Angle", "Target Angle " + targetAngle);
-                        decelerateSpin(targetAngle);
+                        decelerateSpin(targetAngle, targetIndex);
                     }
 
                     @Override
@@ -473,7 +473,7 @@ public class PielView extends View {
     }
 
 
-    private void decelerateSpin(final float endAngle) {
+    private void decelerateSpin(final float endAngle, final int targetIndex) {
         animate()
                 .setInterpolator(new DecelerateInterpolator())
                 .setDuration(this.decelarationDuration)
@@ -486,8 +486,8 @@ public class PielView extends View {
                     @Override
                     public void onAnimationEnd(Animator animation) {
                         setRotation(getRotation() % 360f);
-                        if (mPieRotateListener != null && predeterminedNumber > -1) {
-                            mPieRotateListener.rotateDone(predeterminedNumber);
+                        if (mPieRotateListener != null) {
+                            mPieRotateListener.rotateDone(targetIndex);
                         }
                         isRunning = false;
                     }
