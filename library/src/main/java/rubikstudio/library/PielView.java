@@ -17,6 +17,7 @@ import android.os.Build;
 import android.text.TextPaint;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.View;
@@ -411,7 +412,7 @@ public class PielView extends View {
                         public void onAnimationEnd(Animator animation) {
                             isRunning = false;
                             setRotation(0);
-                            constantSpin(rotation);
+                            constantSpin(rotation, index);
                         }
 
                         @Override
@@ -425,12 +426,12 @@ public class PielView extends View {
                     .rotation(360f * multiplier * rotationAssess)
                     .start();
         } else {
-            constantSpin(rotation);
+            constantSpin(rotation, index);
         }
     }
 
 
-    private void constantSpin(@SpinRotation final int rotation) {
+    private void constantSpin(@SpinRotation final int rotation, final int targetIndex) {
         int rotationAssess = rotation <= 0 ? 1 : -1;
         float multiplier = (this.spinDuration / 1000f) * 3.5f;
         animate()
@@ -439,35 +440,28 @@ public class PielView extends View {
                 .setListener(new Animator.AnimatorListener() {
                     @Override
                     public void onAnimationStart(Animator animation) {
-                        if (!isRunning) {
-                            isRunning = true;
-                        }
+                        isRunning = true;
                     }
 
                     @Override
                     public void onAnimationEnd(Animator animation) {
-                        isRunning = false;
+
                         setRotation(0);
 
                         // This addition of another round count for counterclockwise is to simulate the perception of the same number of spin
                         // if you still need to reach the same outcome of a positive degrees rotation with the number of rounds reversed.
                         if (rotationAssess < 0) mRoundOfNumber++;
 
-                        int indexResult = 0;
-
-                        if (predeterminedNumber > -1) {
-                            indexResult = predeterminedNumber;
-                        }
-
-                        float targetAngle = ((360f * mRoundOfNumber * rotationAssess) + 270f - getAngleOfIndexTarget(indexResult) - (360f / mLuckyItemList.size()) / 2);
+                        float targetAngle = ((360f * mRoundOfNumber * rotationAssess) + 270f - getAngleOfIndexTarget(targetIndex) - (360f / mLuckyItemList.size()) / 2);
+//                        Log.d("Target Angle", "Predetermined Number " + predeterminedNumber);
+//                        Log.d("Target Angle", "Target Index " + targetIndex);
+//                        Log.d("Target Angle", "Target Angle " + targetAngle);
                         decelerateSpin(targetAngle);
                     }
 
                     @Override
                     public void onAnimationCancel(Animator animation) {
-                        if (isRunning) {
-                            isRunning = false;
-                        }
+                        isRunning = false;
                     }
 
                     @Override
@@ -479,7 +473,7 @@ public class PielView extends View {
     }
 
 
-    private void decelerateSpin(float endAngle) {
+    private void decelerateSpin(final float endAngle) {
         animate()
                 .setInterpolator(new DecelerateInterpolator())
                 .setDuration(this.decelarationDuration)
@@ -495,16 +489,12 @@ public class PielView extends View {
                         if (mPieRotateListener != null && predeterminedNumber > -1) {
                             mPieRotateListener.rotateDone(predeterminedNumber);
                         }
-                        if (isRunning) {
-                            isRunning = false;
-                        }
+                        isRunning = false;
                     }
 
                     @Override
                     public void onAnimationCancel(Animator animation) {
-                        if (isRunning) {
-                            isRunning = false;
-                        }
+                        isRunning = false;
                     }
 
                     @Override
