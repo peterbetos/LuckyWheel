@@ -465,7 +465,7 @@ public class PielView extends View {
 
     private void decelerateSpin(final float endAngle, final int targetIndex) {
         animate()
-                .setInterpolator(new DecelerateInterpolator())
+                .setInterpolator(new DecelerateInterpolator(1.1f))
                 .setDuration(this.decelarationDuration)
                 .setListener(new Animator.AnimatorListener() {
                     @Override
