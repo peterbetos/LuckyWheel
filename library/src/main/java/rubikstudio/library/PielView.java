@@ -432,7 +432,7 @@ public class PielView extends View {
 
     private void constantSpin(@SpinRotation final int rotation, final int targetIndex) {
         int rotationAssess = rotation <= 0 ? 1 : -1;
-        float multiplier = (this.spinDuration / 1000f) * 3.5f;
+        float multiplier = (this.spinDuration / 1000f) * 3f;
         animate()
                 .setDuration(this.spinDuration)
                 .setInterpolator(new LinearInterpolator())
