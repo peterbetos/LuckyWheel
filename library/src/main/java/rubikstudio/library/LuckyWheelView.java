@@ -185,13 +185,6 @@ public class LuckyWheelView extends RelativeLayout implements PielView.PieRotate
     }
 
     /**
-     * @param numberOfRound
-     */
-    public void setRound(int numberOfRound) {
-        pielView.setRound(numberOfRound);
-    }
-
-    /**
      * @param fixedNumber
      */
     public void setPredeterminedNumber(int fixedNumber) {
