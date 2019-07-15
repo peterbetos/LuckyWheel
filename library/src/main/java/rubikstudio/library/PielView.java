@@ -54,7 +54,7 @@ public class PielView extends View {
     private int mSecondaryTextPadding;
     private int mTopTextSize;
     private int mSecondaryTextSize;
-    private int mRoundOfNumber = 4;
+    private final int mRoundOfNumber = 4;
     private int mEdgeWidth = -1;
     private boolean isRunning = false;
 
@@ -361,14 +361,6 @@ public class PielView extends View {
         return (360f / mLuckyItemList.size()) * index;
     }
 
-    /**
-     * @param numberOfRound
-     */
-    public void setRound(int numberOfRound) {
-        mRoundOfNumber = numberOfRound;
-    }
-
-
     public void setPredeterminedNumber(int predeterminedNumber) {
         this.predeterminedNumber = predeterminedNumber;
     }
@@ -444,17 +436,16 @@ public class PielView extends View {
 
                     @Override
                     public void onAnimationEnd(Animator animation) {
-
                         setRotation(0);
+
+                        int numberOfRotations = mRoundOfNumber;
 
                         // This addition of another round count for counterclockwise is to simulate the perception of the same number of spin
                         // if you still need to reach the same outcome of a positive degrees rotation with the number of rounds reversed.
-                        if (rotationAssess < 0) mRoundOfNumber++;
+                        if (rotationAssess < 0) numberOfRotations++;
 
-                        float targetAngle = ((360f * mRoundOfNumber * rotationAssess) + 270f - getAngleOfIndexTarget(targetIndex) - (360f / mLuckyItemList.size()) / 2);
-//                        Log.d("Target Angle", "Predetermined Number " + predeterminedNumber);
-//                        Log.d("Target Angle", "Target Index " + targetIndex);
-//                        Log.d("Target Angle", "Target Angle " + targetAngle);
+                        float targetAngle = ((360f * numberOfRotations * rotationAssess) + 270f - getAngleOfIndexTarget(targetIndex) - (360f / mLuckyItemList.size()) / 2);
+
                         decelerateSpin(targetAngle, targetIndex);
                     }
 
@@ -484,7 +475,7 @@ public class PielView extends View {
 
                     @Override
                     public void onAnimationEnd(Animator animation) {
-                        setRotation(getRotation() % 360f);
+                        setRotation(endAngle % 360f);
                         if (mPieRotateListener != null) {
                             mPieRotateListener.rotateDone(targetIndex);
                         }

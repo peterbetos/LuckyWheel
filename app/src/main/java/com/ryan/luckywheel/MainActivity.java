@@ -103,7 +103,6 @@ public class MainActivity extends Activity {
         /////////////////////
 
         luckyWheelView.setData(data);
-        luckyWheelView.setRound(5);
 
         /*luckyWheelView.setLuckyWheelBackgrouldColor(0xff0000ff);
         luckyWheelView.setLuckyWheelTextColor(0xffcc0000);
