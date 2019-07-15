@@ -15,6 +15,8 @@
         <attr name="lkwTopTextSize" format="dimension" />
         <attr name="lkwSecondaryTextSize" format="dimension" />
         <attr name="lkwSecondaryTextPadding" format="dimension" />
+        <attr name="lkwSpinDuration" format="integer"/>
+        <attr name="lkwDecelarationDuration" format="integer"/>
     </declare-styleable>
 
 </resources>

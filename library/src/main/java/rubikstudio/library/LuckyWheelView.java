@@ -32,6 +32,8 @@ public class LuckyWheelView extends RelativeLayout implements PielView.PieRotate
     private int mEdgeWidth;
     private Drawable mCenterImage;
     private Drawable mCursorImage;
+    private int spinDuration;
+    private int decelerationDuration;
 
     private PielView pielView;
     private ImageView ivCursorView;
@@ -89,6 +91,8 @@ public class LuckyWheelView extends RelativeLayout implements PielView.PieRotate
             mCenterImage = typedArray.getDrawable(R.styleable.LuckyWheelView_lkwCenterImage);
             mEdgeWidth = typedArray.getDimensionPixelSize(R.styleable.LuckyWheelView_lkwEdgeWidth, (int) LuckyWheelUtils.convertDpToPixel(10f, getContext()));
             mBorderColor = typedArray.getColor(R.styleable.LuckyWheelView_lkwEdgeColor, 0);
+            spinDuration = typedArray.getInteger(R.styleable.LuckyWheelView_lkwSpinDuration, 2);
+            decelerationDuration = typedArray.getInteger(R.styleable.LuckyWheelView_lkwDecelarationDuration, 2);
             typedArray.recycle();
         }
 
@@ -107,7 +111,8 @@ public class LuckyWheelView extends RelativeLayout implements PielView.PieRotate
         pielView.setPieCenterImage(mCenterImage);
         pielView.setBorderColor(mBorderColor);
         pielView.setBorderWidth(mEdgeWidth);
-
+        pielView.setSpinDuration(spinDuration);
+        pielView.setDecelarationDuration(decelerationDuration);
 
         if (mTextColor != 0)
             pielView.setPieTextColor(mTextColor);
