@@ -415,6 +415,7 @@ public class PielView extends View {
 //                                setRotation(0);
 //                                rotateTo(index, rotation, false);
 //                            }
+                            isRunning = false;
                             setRotation(0);
                             rotateTo(index, rotation, false);
                         }
@@ -427,7 +428,7 @@ public class PielView extends View {
                         public void onAnimationRepeat(Animator animation) {
                         }
                     })
-                    .rotation(360f * constantVelocity * rotationAssess)
+                    .rotation(360f * multiplier * rotationAssess)
                     .start();
             return;
         }
