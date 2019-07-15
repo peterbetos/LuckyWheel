@@ -396,7 +396,7 @@ public class PielView extends View {
             //The multiplier is to do a big rotation again if the position is already near 360.
             float multiplier = getRotation() > 200f ? 2 : 1;
             animate()
-                    .setDuration(this.spinDuration)
+                    .setDuration(300)
                     .setInterpolator(animationStart)
                     .setListener(new Animator.AnimatorListener() {
                         @Override
@@ -409,15 +409,9 @@ public class PielView extends View {
 
                         @Override
                         public void onAnimationEnd(Animator animation) {
-//                            if (isRunning) {
-//                                rotateTo(index, rotation, false);
-//                            } else {
-//                                setRotation(0);
-//                                rotateTo(index, rotation, false);
-//                            }
                             isRunning = false;
                             setRotation(0);
-                            rotateTo(index, rotation, false);
+                            constantSpin(rotation);
                         }
 
                         @Override
@@ -430,23 +424,64 @@ public class PielView extends View {
                     })
                     .rotation(360f * multiplier * rotationAssess)
                     .start();
-            return;
+        } else {
+            constantSpin(rotation);
         }
+    }
 
-        // This addition of another round count for counterclockwise is to simulate the perception of the same number of spin
-        // if you still need to reach the same outcome of a positive degrees rotation with the number of rounds reversed.
-        if (rotationAssess < 0) mRoundOfNumber++;
 
-        int indexResult = 0;
+    private void constantSpin(@SpinRotation final int rotation) {
+        int rotationAssess = rotation <= 0 ? 1 : -1;
+        float multiplier = (this.spinDuration / 1000f) * 3.5f;
+        animate()
+                .setDuration(this.spinDuration)
+                .setInterpolator(new LinearInterpolator())
+                .setListener(new Animator.AnimatorListener() {
+                    @Override
+                    public void onAnimationStart(Animator animation) {
+                        if (!isRunning) {
+                            isRunning = true;
+                        }
+                    }
 
-        if (predeterminedNumber > -1) {
-            indexResult = predeterminedNumber;
-        }
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        isRunning = false;
+                        setRotation(0);
 
-        float targetAngle = ((360f * mRoundOfNumber * rotationAssess) + 270f - getAngleOfIndexTarget(indexResult) - (360f / mLuckyItemList.size()) / 2);
+                        // This addition of another round count for counterclockwise is to simulate the perception of the same number of spin
+                        // if you still need to reach the same outcome of a positive degrees rotation with the number of rounds reversed.
+                        if (rotationAssess < 0) mRoundOfNumber++;
+
+                        int indexResult = 0;
+
+                        if (predeterminedNumber > -1) {
+                            indexResult = predeterminedNumber;
+                        }
+
+                        float targetAngle = ((360f * mRoundOfNumber * rotationAssess) + 270f - getAngleOfIndexTarget(indexResult) - (360f / mLuckyItemList.size()) / 2);
+                        decelerateSpin(targetAngle);
+                    }
+
+                    @Override
+                    public void onAnimationCancel(Animator animation) {
+                        if (isRunning) {
+                            isRunning = false;
+                        }
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animator animation) {
+                    }
+                })
+                .rotation(360f * multiplier * rotationAssess)
+                .start();
+    }
+
+
+    private void decelerateSpin(float endAngle) {
         animate()
                 .setInterpolator(new DecelerateInterpolator())
-//                .setDuration(mRoundOfNumber * 1000 + 900L)
                 .setDuration(this.decelarationDuration)
                 .setListener(new Animator.AnimatorListener() {
                     @Override
@@ -460,26 +495,36 @@ public class PielView extends View {
                         if (mPieRotateListener != null && predeterminedNumber > -1) {
                             mPieRotateListener.rotateDone(predeterminedNumber);
                         }
+                        if (isRunning) {
+                            isRunning = false;
+                        }
                     }
 
                     @Override
                     public void onAnimationCancel(Animator animation) {
+                        if (isRunning) {
+                            isRunning = false;
+                        }
                     }
 
                     @Override
                     public void onAnimationRepeat(Animator animation) {
                     }
                 })
-                .rotation(targetAngle)
+                .rotation(endAngle)
                 .start();
     }
 
     public void setSpinDuration(long spinDuration) {
-        this.spinDuration = spinDuration;
+        if (spinDuration > 0) {
+            this.spinDuration = spinDuration;
+        }
     }
 
     public void setDecelarationDuration(long decelarationDuration) {
-        this.decelarationDuration = decelarationDuration;
+        if (decelarationDuration > 0) {
+            this.decelarationDuration = decelarationDuration;
+        }
     }
 
     public void stopRotation() {

@@ -111,8 +111,8 @@ public class LuckyWheelView extends RelativeLayout implements PielView.PieRotate
         pielView.setPieCenterImage(mCenterImage);
         pielView.setBorderColor(mBorderColor);
         pielView.setBorderWidth(mEdgeWidth);
-        pielView.setSpinDuration(spinDuration);
-        pielView.setDecelarationDuration(decelerationDuration);
+        pielView.setSpinDuration((long) spinDuration);
+        pielView.setDecelarationDuration((long) decelerationDuration);
 
         if (mTextColor != 0)
             pielView.setPieTextColor(mTextColor);
