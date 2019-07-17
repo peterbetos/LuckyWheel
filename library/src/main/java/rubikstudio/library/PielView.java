@@ -17,6 +17,7 @@ import android.os.Build;
 import android.text.TextPaint;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.View;
@@ -54,7 +55,7 @@ public class PielView extends View {
     private int mSecondaryTextPadding;
     private int mTopTextSize;
     private int mSecondaryTextSize;
-    private final int mRoundOfNumber = 4;
+    private final int mRoundOfNumber = 3;
     private int mEdgeWidth = -1;
     private boolean isRunning = false;
 
@@ -382,13 +383,18 @@ public class PielView extends View {
 
         //If the staring position is already off 0 degrees, make an illusion that the rotation has smoothly been triggered.
         // But this inital animation will just reset the position of the circle to 0 degreees.
-        if (getRotation() != 0.0f) {
-            setRotation(getRotation() % 360f);
+        if (getRotation() % 360f != 0.0f) {
+            setRotation((getRotation() + 36000f) % 360f);
+
             TimeInterpolator animationStart = startSlow ? new AccelerateInterpolator() : new LinearInterpolator();
             //The multiplier is to do a big rotation again if the position is already near 360.
             float multiplier = getRotation() > 200f ? 2 : 1;
+
+            //This value wil be used for the duration, this uses modulo of 360 so that angle value can be controlled to be until 360 degreees.
+            final long duration = (Math.abs((long) (getRotation() % 360f)) * 1000L) / 360L;
+
             animate()
-                    .setDuration(300)
+                    .setDuration(duration)
                     .setInterpolator(animationStart)
                     .setListener(new Animator.AnimatorListener() {
                         @Override
@@ -402,7 +408,6 @@ public class PielView extends View {
                         @Override
                         public void onAnimationEnd(Animator animation) {
                             isRunning = false;
-                            setRotation(0);
                             constantSpin(rotation, index);
                         }
 
@@ -424,7 +429,10 @@ public class PielView extends View {
 
     private void constantSpin(@SpinRotation final int rotation, final int targetIndex) {
         int rotationAssess = rotation <= 0 ? 1 : -1;
-        float multiplier = (this.spinDuration / 1000f) * 3f;
+
+        setRotation(0);
+
+        float multiplier = (this.spinDuration / 1000f) * ((float) mRoundOfNumber - 1f);
         animate()
                 .setDuration(this.spinDuration)
                 .setInterpolator(new LinearInterpolator())
@@ -444,7 +452,7 @@ public class PielView extends View {
                         // if you still need to reach the same outcome of a positive degrees rotation with the number of rounds reversed.
                         if (rotationAssess < 0) numberOfRotations++;
 
-                        float targetAngle = ((360f * numberOfRotations * rotationAssess) + 270f - getAngleOfIndexTarget(targetIndex) - (360f / mLuckyItemList.size()) / 2);
+                        float targetAngle = ((360f * numberOfRotations * rotationAssess) + (270f - getAngleOfIndexTarget(targetIndex)) - (360f / mLuckyItemList.size()) / 2);
 
                         decelerateSpin(targetAngle, targetIndex);
                     }
@@ -464,6 +472,8 @@ public class PielView extends View {
 
 
     private void decelerateSpin(final float endAngle, final int targetIndex) {
+        setRotation(0);
+
         animate()
                 .setInterpolator(new DecelerateInterpolator(1.1f))
                 .setDuration(this.decelarationDuration)
@@ -475,7 +485,8 @@ public class PielView extends View {
 
                     @Override
                     public void onAnimationEnd(Animator animation) {
-                        setRotation(endAngle % 360f);
+                        float finalizedAngle = (endAngle + 36000f) % 360f;
+                        setRotation(finalizedAngle);
                         if (mPieRotateListener != null) {
                             mPieRotateListener.rotateDone(targetIndex);
                         }
