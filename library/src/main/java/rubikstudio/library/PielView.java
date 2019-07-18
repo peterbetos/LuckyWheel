@@ -17,6 +17,7 @@ import android.os.Build;
 import android.text.TextPaint;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.View;
@@ -54,7 +55,7 @@ public class PielView extends View {
     private int mSecondaryTextPadding;
     private int mTopTextSize;
     private int mSecondaryTextSize;
-    private final int mRoundOfNumber = 2;
+    private final int mRoundOfNumber = 1;
     private int mEdgeWidth = -1;
     private boolean isRunning = false;
 
@@ -379,7 +380,7 @@ public class PielView extends View {
     public void rotateTo(final int index, @SpinRotation final int rotation, boolean startSlow) {
         isRunning = true;
 
-        int rotationAssess = rotation <= 0 ? 1 : -1;
+        final int rotationAssess = rotation <= 0 ? 1 : 0;
 
         //If the staring position is already off 0 degrees, make an illusion that the rotation has smoothly been triggered.
         // But this inital animation will just reset the position of the circle to 0 degreees.
@@ -388,10 +389,17 @@ public class PielView extends View {
 
             TimeInterpolator animationStart = startSlow ? new AccelerateInterpolator() : new LinearInterpolator();
             //The multiplier is to do a big rotation again if the position is already near 360.
-            float multiplier = getRotation() > 200f ? 2 : 1;
+            float multiplier = 1;
 
-            //This value wil be used for the duration, this uses modulo of 360 so that angle value can be controlled to be until 360 degreees.
-            final long duration = (Math.abs((long) (getRotation() % 360f)) * 1000L) / 360L;
+            //This value wil be used for the duration,
+            // this uses modulo of 360
+            // or a difference from 360 degree
+            // depending on the rotation value
+            // so that angle value can be controlled to be until 360 degreees.
+            final long duration = (rotationAssess > 0) ?
+                    ((360L - (Math.abs((long) (getRotation() % 360f)))) * 1000L) / 360L
+                    :
+                    (Math.abs((long) (getRotation() % 360f)) * 1000L) / 360L;
 
             animate()
                     .setDuration(duration)
@@ -399,6 +407,7 @@ public class PielView extends View {
                     .setListener(new Animator.AnimatorListener() {
                         @Override
                         public void onAnimationStart(Animator animation) {
+
                             isRunning = true;
                             if (mPieRotateListener != null)
                                 mPieRotateListener.onRotationStart();
@@ -429,9 +438,8 @@ public class PielView extends View {
     private void constantSpin(@SpinRotation final int rotation, final int targetIndex) {
         int rotationAssess = rotation <= 0 ? 1 : -1;
 
-        setRotation(0);
-
         float multiplier = (this.spinDuration / 1000f) * ((float) mRoundOfNumber);
+        float rotationValue = (360f * multiplier * rotationAssess) + (rotationAssess < 0 ? 0 : 360f);
         animate()
                 .setDuration(this.spinDuration)
                 .setInterpolator(new LinearInterpolator())
@@ -439,11 +447,11 @@ public class PielView extends View {
                     @Override
                     public void onAnimationStart(Animator animation) {
                         isRunning = true;
+                        Log.d("Anim", "Rotation  value " + rotationValue);
                     }
 
                     @Override
                     public void onAnimationEnd(Animator animation) {
-                        setRotation(0);
 
                         int numberOfRotations = mRoundOfNumber;
 
@@ -465,7 +473,7 @@ public class PielView extends View {
                     public void onAnimationRepeat(Animator animation) {
                     }
                 })
-                .rotation(360f * multiplier * rotationAssess)
+                .rotation(rotationValue)
                 .start();
     }
 
