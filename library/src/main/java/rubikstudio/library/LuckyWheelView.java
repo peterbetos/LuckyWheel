@@ -126,14 +126,6 @@ public class LuckyWheelView extends RelativeLayout implements PielView.PieRotate
         pielView.setRotation(initialAngle);
     }
 
-    public boolean isTouchEnabled() {
-        return pielView.isTouchEnabled();
-    }
-
-    public void setTouchEnabled(boolean touchEnabled) {
-        pielView.setTouchEnabled(touchEnabled);
-    }
-
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {

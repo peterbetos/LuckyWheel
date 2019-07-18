@@ -17,7 +17,6 @@ import android.os.Build;
 import android.text.TextPaint;
 import android.text.TextUtils;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.View;
@@ -399,10 +398,9 @@ public class PielView extends View {
                     .setListener(new Animator.AnimatorListener() {
                         @Override
                         public void onAnimationStart(Animator animation) {
-                            if (!isRunning) {
-                                isRunning = true;
+                            isRunning = true;
+                            if (mPieRotateListener != null)
                                 mPieRotateListener.onRotationStart();
-                            }
                         }
 
                         @Override
@@ -487,9 +485,9 @@ public class PielView extends View {
                     public void onAnimationEnd(Animator animation) {
                         float finalizedAngle = (endAngle + 36000f) % 360f;
                         setRotation(finalizedAngle);
-                        if (mPieRotateListener != null) {
+                        if (mPieRotateListener != null)
                             mPieRotateListener.rotateDone(targetIndex);
-                        }
+
                         isRunning = false;
                     }
 
@@ -509,7 +507,6 @@ public class PielView extends View {
     public void setSpinDuration(long spinDuration) {
         if (spinDuration > 0L)
             this.spinDuration = spinDuration;
-
     }
 
     public void setDecelarationDuration(long decelarationDuration) {
@@ -522,19 +519,9 @@ public class PielView extends View {
         isRunning = false;
     }
 
-    public boolean touchEnabled = true;
-
-    public boolean isTouchEnabled() {
-        return touchEnabled;
-    }
-
-    public void setTouchEnabled(boolean touchEnabled) {
-        this.touchEnabled = touchEnabled;
-    }
-
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        if (isRunning || !touchEnabled) {
+        if (isRunning || !isEnabled()) {
             return false;
         }
 
