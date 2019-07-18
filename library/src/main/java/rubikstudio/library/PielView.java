@@ -54,7 +54,7 @@ public class PielView extends View {
     private int mSecondaryTextPadding;
     private int mTopTextSize;
     private int mSecondaryTextSize;
-    private final int mRoundOfNumber = 3;
+    private final int mRoundOfNumber = 2;
     private int mEdgeWidth = -1;
     private boolean isRunning = false;
 
@@ -430,7 +430,7 @@ public class PielView extends View {
 
         setRotation(0);
 
-        float multiplier = (this.spinDuration / 1000f) * ((float) mRoundOfNumber - 1f);
+        float multiplier = (this.spinDuration / 1000f) * ((float) mRoundOfNumber);
         animate()
                 .setDuration(this.spinDuration)
                 .setInterpolator(new LinearInterpolator())
@@ -473,7 +473,7 @@ public class PielView extends View {
         setRotation(0);
 
         animate()
-                .setInterpolator(new DecelerateInterpolator(1.1f))
+                .setInterpolator(new DecelerateInterpolator((float) decelarationDuration / spinDuration))
                 .setDuration(this.decelarationDuration)
                 .setListener(new Animator.AnimatorListener() {
                     @Override
