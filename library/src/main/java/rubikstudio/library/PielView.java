@@ -377,6 +377,7 @@ public class PielView extends View {
      */
     @TargetApi(Build.VERSION_CODES.LOLLIPOP_MR1)
     public void rotateTo(final int index, @SpinRotation final int rotation, boolean startSlow) {
+        isRunning = true;
 
         int rotationAssess = rotation <= 0 ? 1 : -1;
 

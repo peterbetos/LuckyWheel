@@ -74,6 +74,12 @@ public class LuckyWheelView extends RelativeLayout implements PielView.PieRotate
         init(context, attrs);
     }
 
+    @Override
+    public void setEnabled(boolean enabled) {
+        super.setEnabled(enabled);
+        this.pielView.setEnabled(enabled);
+    }
+
     /**
      * @param ctx
      * @param attrs
@@ -200,7 +206,7 @@ public class LuckyWheelView extends RelativeLayout implements PielView.PieRotate
         pielView.setSpinDuration(spinDurationParam);
     }
 
-    public void setRouletteDecelarationDuration(long decelarationDurationParam){
+    public void setRouletteDecelarationDuration(long decelarationDurationParam) {
         pielView.setDecelarationDuration(decelarationDurationParam);
     }
 
