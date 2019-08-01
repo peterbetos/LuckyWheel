@@ -542,12 +542,12 @@ public class PielView extends View {
     }
 
     public void setSpinDuration(long spinDuration) {
-        if (spinDuration > 0L)
+        if (spinDuration >= 0L)
             this.spinDuration = spinDuration;
     }
 
     public void setDecelarationDuration(long decelarationDuration) {
-        if (decelarationDuration > 0L)
+        if (decelarationDuration >= 0L)
             this.decelarationDuration = decelarationDuration;
 
     }
