@@ -377,7 +377,7 @@ public class PielView extends View {
      * @param startSlow, either animates a slow start or an immediate turn based on the trigger
      */
     @TargetApi(Build.VERSION_CODES.LOLLIPOP_MR1)
-    public void rotateTo(final int index, @SpinRotation final int rotation, boolean startSlow) {
+    public void rotateTo(final int targetIndex, @SpinRotation final int rotation, boolean startSlow) {
         isRunning = true;
 
         final int rotationAssess = rotation <= 0 ? 1 : 0;
@@ -415,8 +415,14 @@ public class PielView extends View {
 
                         @Override
                         public void onAnimationEnd(Animator animation) {
-                            isRunning = false;
-                            constantSpin(rotation, index);
+                            isRunning = true;
+
+                            if (spinDuration > 0L) {
+                                constantSpin(rotation, targetIndex);
+                            } else {
+                                int decelerateRotationAssess = rotation <= 0 ? 1 : -1;
+                                prepareDecelerate(decelerateRotationAssess, targetIndex);
+                            }
                         }
 
                         @Override
@@ -430,8 +436,37 @@ public class PielView extends View {
                     .rotation(360f * multiplier * rotationAssess)
                     .start();
         } else {
-            constantSpin(rotation, index);
+            if (spinDuration > 0L) {
+                constantSpin(rotation, targetIndex);
+            } else {
+                int decelerateRotationAssess = rotation <= 0 ? 1 : -1;
+                prepareDecelerate(decelerateRotationAssess, targetIndex);
+            }
         }
+    }
+
+    private void prepareDecelerate(final int assessRotate, final int targetIndex) {
+        int numberOfRotations = mRoundOfNumber;
+
+        // This addition of another round count for counterclockwise is to simulate the perception of the same number of spin
+        // if you still need to reach the same outcome of a positive degrees rotation with the number of rounds reversed.
+        if (assessRotate < 0) numberOfRotations++;
+
+        float targetAngle = ((360f * numberOfRotations * assessRotate) + (270f - getAngleOfIndexTarget(targetIndex)) - (360f / mLuckyItemList.size()) / 2);
+
+        if (this.spinDuration <= 0L) {
+            int multiplierTurn = (int) (((this.decelarationDuration / 1000f) * 0.25f) < 1f ? 1f : ((this.decelarationDuration / 1000f) * 0.25f));
+
+            if (targetAngle > 0f && targetAngle <= 600f) {
+                targetAngle += (360f * multiplierTurn);
+            }
+            if (targetAngle < 0f && targetAngle >= -600f) {
+                targetAngle -= (360f * multiplierTurn);
+            }
+
+        }
+
+        decelerateSpin(targetAngle, targetIndex);
     }
 
 
@@ -452,16 +487,7 @@ public class PielView extends View {
 
                     @Override
                     public void onAnimationEnd(Animator animation) {
-
-                        int numberOfRotations = mRoundOfNumber;
-
-                        // This addition of another round count for counterclockwise is to simulate the perception of the same number of spin
-                        // if you still need to reach the same outcome of a positive degrees rotation with the number of rounds reversed.
-                        if (rotationAssess < 0) numberOfRotations++;
-
-                        float targetAngle = ((360f * numberOfRotations * rotationAssess) + (270f - getAngleOfIndexTarget(targetIndex)) - (360f / mLuckyItemList.size()) / 2);
-
-                        decelerateSpin(targetAngle, targetIndex);
+                        prepareDecelerate(rotationAssess, targetIndex);
                     }
 
                     @Override
@@ -481,8 +507,10 @@ public class PielView extends View {
     private void decelerateSpin(final float endAngle, final int targetIndex) {
         setRotation(0);
 
+        TimeInterpolator interpolates = (decelarationDuration > 0L && spinDuration > 0L) ? new DecelerateInterpolator((float) decelarationDuration / spinDuration) : new DecelerateInterpolator();
+
         animate()
-                .setInterpolator(new DecelerateInterpolator((float) decelarationDuration / spinDuration))
+                .setInterpolator(interpolates)
                 .setDuration(this.decelarationDuration)
                 .setListener(new Animator.AnimatorListener() {
                     @Override
