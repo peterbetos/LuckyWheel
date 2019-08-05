@@ -2,6 +2,7 @@ package rubikstudio.library;
 
 import android.animation.Animator;
 import android.animation.TimeInterpolator;
+import android.animation.ValueAnimator;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -14,6 +15,7 @@ import android.graphics.RectF;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
+import android.provider.Settings;
 import android.text.TextPaint;
 import android.text.TextUtils;
 import android.util.AttributeSet;
@@ -26,10 +28,12 @@ import android.view.animation.DecelerateInterpolator;
 import android.view.animation.LinearInterpolator;
 
 import androidx.annotation.IntDef;
+import androidx.annotation.RequiresApi;
 import androidx.core.graphics.ColorUtils;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Random;
 
@@ -542,14 +546,40 @@ public class PielView extends View {
     }
 
     public void setSpinDuration(long spinDuration) {
-        if (spinDuration >= 0L)
+        if (spinDuration >= 0L) {
             this.spinDuration = spinDuration;
+            makeAnimationDurationConsistent(this.getContext());
+        }
     }
 
-    public void setDecelarationDuration(long decelarationDuration) {
-        if (decelarationDuration >= 0L)
-            this.decelarationDuration = decelarationDuration;
 
+    public void setDecelarationDuration(long decelarationDuration) {
+        if (decelarationDuration >= 0L) {
+            this.decelarationDuration = decelarationDuration;
+            makeAnimationDurationConsistent(this.getContext());
+        }
+    }
+
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
+    private void makeAnimationDurationConsistent(Context context) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            // Get duration scale from the global settings.
+            float durationScale = Settings.Global.getFloat(context.getContentResolver(),
+                    Settings.Global.ANIMATOR_DURATION_SCALE, 0);
+            // If global duration scale is not 1 (default), try to override it
+            // for the current application.
+            if (durationScale != 1) {
+                try {
+                    ValueAnimator.class.getMethod("setDurationScale", float.class).invoke(null, 1f);
+                    durationScale = 1f;
+                    Log.i("Animation", "Forcefully setting animation successful");
+                } catch (Throwable t) {
+                    // It means something bad happened, and animations are still
+                    // altered by the global settings.
+                    Log.w("Animation", "Changing animation duration not possible");
+                }
+            }
+        }
     }
 
     public void stopRotation() {
