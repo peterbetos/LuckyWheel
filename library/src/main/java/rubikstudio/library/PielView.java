@@ -25,11 +25,13 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
+import android.view.animation.Interpolator;
 import android.view.animation.LinearInterpolator;
 
 import androidx.annotation.IntDef;
 import androidx.annotation.RequiresApi;
 import androidx.core.graphics.ColorUtils;
+import androidx.core.view.animation.PathInterpolatorCompat;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -376,7 +378,7 @@ public class PielView extends View {
     }
 
     /**
-     * @param index
+     * @param targetIndex
      * @param rotation,  spin orientation of the wheel if clockwise or counterclockwise
      * @param startSlow, either animates a slow start or an immediate turn based on the trigger
      */
@@ -513,8 +515,15 @@ public class PielView extends View {
 
         TimeInterpolator interpolates = (decelarationDuration > 0L && spinDuration > 0L) ? new DecelerateInterpolator((float) decelarationDuration / spinDuration) : new DecelerateInterpolator();
 
+        Interpolator customInterpolator;
+        if(spinDuration == 0L && decelarationDuration != 0L){
+            customInterpolator = PathInterpolatorCompat.create(0.000f, 0.000f, 0.580f, 1.000f);
+        } else {
+            customInterpolator = new DecelerateInterpolator();
+        }
+
         animate()
-                .setInterpolator(interpolates)
+                .setInterpolator(customInterpolator)
                 .setDuration(this.decelarationDuration)
                 .setListener(new Animator.AnimatorListener() {
                     @Override
