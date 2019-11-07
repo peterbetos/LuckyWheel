@@ -41,7 +41,7 @@ import kotlin.math.absoluteValue
  * Created by kiennguyen on 11/5/16.
  */
 
-class PielView : View {
+open class PielView : View {
 
     companion object {
         private const val SWIPE_THRESHOLD = 200

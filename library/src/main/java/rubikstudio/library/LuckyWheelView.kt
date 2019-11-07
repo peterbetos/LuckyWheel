@@ -18,7 +18,7 @@ import rubikstudio.library.model.LuckyItem
  * Created by kiennguyen on 11/5/16.
  */
 
-class LuckyWheelView : ConstraintLayout, PielView.PieRotateListener, PielView.WheelSpinListener {
+open class LuckyWheelView : ConstraintLayout, PielView.PieRotateListener, PielView.WheelSpinListener {
     private var mBackgroundColor: Int = 0
     private var mTextColor: Int = 0
     private var mTopTextSize: Int = 0
