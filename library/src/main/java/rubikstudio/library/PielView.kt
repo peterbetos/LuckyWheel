@@ -5,14 +5,7 @@ import android.animation.AnimatorListenerAdapter
 import android.animation.ValueAnimator
 import android.annotation.TargetApi
 import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.graphics.Canvas
-import android.graphics.Paint
-import android.graphics.Path
-import android.graphics.Rect
-import android.graphics.RectF
-import android.graphics.Typeface
+import android.graphics.*
 import android.graphics.drawable.Drawable
 import android.os.Build
 import android.provider.Settings
@@ -21,20 +14,19 @@ import android.text.TextUtils
 import android.util.AttributeSet
 import android.util.Log
 import android.util.TypedValue
-import android.view.*
+import android.view.GestureDetector
+import android.view.MotionEvent
+import android.view.View
 import android.view.animation.AccelerateInterpolator
 import android.view.animation.DecelerateInterpolator
 import android.view.animation.Interpolator
 import android.view.animation.LinearInterpolator
-
 import androidx.core.graphics.ColorUtils
 import androidx.core.view.animation.PathInterpolatorCompat
-
+import rubikstudio.library.model.LuckyItem
 import java.lang.annotation.Retention
 import java.lang.annotation.RetentionPolicy
-import java.util.Random
-
-import rubikstudio.library.model.LuckyItem
+import java.util.*
 import kotlin.math.absoluteValue
 
 /**
@@ -48,6 +40,8 @@ open class PielView : View {
         private const val VELOCITY_THRESHOLD = 500
         private const val FULL_ROTATION = 360f
     }
+
+    private var wheelBlur: Boolean = false
 
     private var spinCount = 3
 
@@ -590,6 +584,10 @@ open class PielView : View {
         luckyWheelWheelRotation = wheelRotation
     }
 
+    fun enableWheelBlur(wheelBlurValue: Boolean) {
+        this.wheelBlur = wheelBlurValue
+    }
+
     fun setDecelarationDuration(decelarationDuration: Long) {
         if (decelarationDuration >= 0L) {
             this.decelarationDuration = decelarationDuration
@@ -836,6 +834,10 @@ open class PielView : View {
         // Do nothing if wheel is currently animating
         if (isRunning) {
             return
+        }
+
+        if (wheelBlur) {
+            //TODO: Add the blur effects if turned on
         }
 
         // Get the direction of the spin based on sign

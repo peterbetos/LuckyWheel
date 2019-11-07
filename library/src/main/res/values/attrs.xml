@@ -18,6 +18,7 @@
         <attr name="lkwSpinDuration" format="integer"/>
         <attr name="lkwDecelarationDuration" format="integer"/>
         <attr name="lkwWheelRotation" format="integer"/>
+        <attr name="lkwEnableWheelBlur" format="boolean"/>
     </declare-styleable>
 
 </resources>

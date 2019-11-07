@@ -32,6 +32,7 @@ open class LuckyWheelView : ConstraintLayout, PielView.PieRotateListener, PielVi
     private var spinDuration: Int = 0
     private var decelerationDuration: Int = 0
     private var luckyWheelWheelRotation: Int = 0
+    private var enableWheelBlur: Boolean = false
 
     private var pielView: PielView? = null
     private var ivCursorView: ImageView? = null
@@ -124,6 +125,7 @@ open class LuckyWheelView : ConstraintLayout, PielView.PieRotateListener, PielVi
             spinDuration = typedArray.getInteger(R.styleable.LuckyWheelView_lkwSpinDuration, 2000)
             decelerationDuration = typedArray.getInteger(R.styleable.LuckyWheelView_lkwDecelarationDuration, 3000)
             luckyWheelWheelRotation = typedArray.getInteger(R.styleable.LuckyWheelView_lkwWheelRotation, -90)
+            enableWheelBlur = typedArray.getBoolean(R.styleable.LuckyWheelView_lkwEnableWheelBlur, false)
             typedArray.recycle()
         }
 
@@ -145,6 +147,7 @@ open class LuckyWheelView : ConstraintLayout, PielView.PieRotateListener, PielVi
         pielView!!.setBorderColor(mBorderColor)
         pielView!!.setBorderWidth(mEdgeWidth)
         pielView!!.setWheelRotation(luckyWheelWheelRotation)
+        pielView!!.enableWheelBlur(enableWheelBlur)
 
         if (mTextColor != 0)
             pielView!!.setPieTextColor(mTextColor)
