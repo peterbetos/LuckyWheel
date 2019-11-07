@@ -17,6 +17,7 @@
         <attr name="lkwSecondaryTextPadding" format="dimension" />
         <attr name="lkwSpinDuration" format="integer"/>
         <attr name="lkwDecelarationDuration" format="integer"/>
+        <attr name="lkwWheelRotation" format="integer"/>
     </declare-styleable>
 
 </resources>

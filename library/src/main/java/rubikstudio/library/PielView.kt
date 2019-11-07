@@ -1,7 +1,7 @@
 package rubikstudio.library
 
 import android.animation.Animator
-import android.animation.TimeInterpolator
+import android.animation.AnimatorListenerAdapter
 import android.animation.ValueAnimator
 import android.annotation.TargetApi
 import android.content.Context
@@ -21,30 +21,49 @@ import android.text.TextUtils
 import android.util.AttributeSet
 import android.util.Log
 import android.util.TypedValue
-import android.view.MotionEvent
-import android.view.View
+import android.view.*
 import android.view.animation.AccelerateInterpolator
 import android.view.animation.DecelerateInterpolator
 import android.view.animation.Interpolator
 import android.view.animation.LinearInterpolator
 
-import androidx.annotation.IntDef
-import androidx.annotation.RequiresApi
 import androidx.core.graphics.ColorUtils
 import androidx.core.view.animation.PathInterpolatorCompat
 
 import java.lang.annotation.Retention
 import java.lang.annotation.RetentionPolicy
-import java.lang.reflect.Method
 import java.util.Random
 
 import rubikstudio.library.model.LuckyItem
+import kotlin.math.absoluteValue
 
 /**
  * Created by kiennguyen on 11/5/16.
  */
 
 class PielView : View {
+
+    companion object {
+        private const val SWIPE_THRESHOLD = 200
+        private const val VELOCITY_THRESHOLD = 500
+        private const val FULL_ROTATION = 360f
+    }
+
+    private var spinCount = 3
+
+    // Declare interaction state.
+    private var flingGestureDetector: GestureDetector
+    private var wheelSpinListener = mutableListOf<WheelSpinListener>()
+
+    private var trueCenter = 0
+
+    private var hemisphere = Hemisphere.LEFT // may not be needed if wheel is always half way off the screen
+    private var previousRotation = 0f
+    private var currentRotation = 0f
+    private var offsetRotation = 0f
+    private var deltaX = 0f
+    private var deltaY = 0f
+
     private var mRange = RectF()
     private var mEdgeRange = RectF()
     private var mRadius: Int = 0
@@ -87,6 +106,8 @@ class PielView : View {
     private var spinDuration = 0L
     private var decelarationDuration = 0L
 
+    private var luckyWheelWheelRotation: Int = 0
+
     val luckyItemListSize: Int
         get() = mLuckyItemList!!.size
 
@@ -110,7 +131,11 @@ class PielView : View {
         this.mPieRotateListener = listener
     }
 
-    private fun init() {
+    init {
+        flingGestureDetector = GestureDetector(context, WheelGestureListener())
+    }
+
+    private fun setupMeasurements() {
         mArcPaint = Paint()
         mArcPaint!!.isAntiAlias = true
         mArcPaint!!.isDither = true
@@ -189,6 +214,24 @@ class PielView : View {
                 measuredHeight - mPadding / 2), null)
     }
 
+    fun addListener(listener: WheelSpinListener) {
+        wheelSpinListener.add(listener)
+    }
+
+    fun removeListener(listener: WheelSpinListener) {
+        wheelSpinListener.remove(listener)
+    }
+
+    fun clearListeners() {
+        wheelSpinListener.clear()
+    }
+
+    override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
+        super.onLayout(changed, left, top, right, bottom)
+
+        trueCenter = left + measuredWidth / 2
+    }
+
     /**
      * @param canvas
      */
@@ -201,7 +244,7 @@ class PielView : View {
 
         drawBackgroundColor(canvas, defaultBackgroundColor)
 
-        init()
+        setupMeasurements()
 
         var tmpAngle = mStartAngle
         val sweepAngle = 360f / mLuckyItemList!!.size
@@ -543,6 +586,9 @@ class PielView : View {
         }
     }
 
+    fun setWheelRotation(wheelRotation: Int) {
+        luckyWheelWheelRotation = wheelRotation
+    }
 
     fun setDecelarationDuration(decelarationDuration: Long) {
         if (decelarationDuration >= 0L) {
@@ -578,92 +624,92 @@ class PielView : View {
         isRunning = false
     }
 
-    override fun onTouchEvent(event: MotionEvent): Boolean {
-        if (isRunning || !isEnabled) {
-            return false
-        }
-
-        val x = event.x
-        val y = event.y
-
-        val xc = width / 2.0f
-        val yc = height / 2.0f
-
-        val newFingerRotation: Double
-
-
-        when (event.action) {
-            MotionEvent.ACTION_DOWN -> {
-                viewRotation = (rotation + 360f) % 360f
-                fingerRotation = Math.toDegrees(Math.atan2((x - xc).toDouble(), (yc - y).toDouble()))
-                downPressTime = event.eventTime
-                return true
-            }
-            MotionEvent.ACTION_MOVE -> {
-                newFingerRotation = Math.toDegrees(Math.atan2((x - xc).toDouble(), (yc - y).toDouble()))
-
-                if (isRotationConsistent(newFingerRotation)) {
-                    rotation = newRotationValue(viewRotation, fingerRotation, newFingerRotation)
-                }
-                return true
-            }
-            MotionEvent.ACTION_UP -> {
-                newFingerRotation = Math.toDegrees(Math.atan2((x - xc).toDouble(), (yc - y).toDouble()))
-                var computedRotation = newRotationValue(viewRotation, fingerRotation, newFingerRotation)
-
-                fingerRotation = newFingerRotation
-
-                // This computes if you're holding the tap for too long
-                upPressTime = event.eventTime
-                if (upPressTime - downPressTime > 700L) {
-                    // Disregarding the touch since the tap is too slow
-                    return true
-                }
-
-                // These operators are added so that fling difference can be evaluated
-                // with usually numbers that are only around more or less 100 / -100.
-                if (computedRotation <= -250f) {
-                    computedRotation += 360f
-                } else if (computedRotation >= 250f) {
-                    computedRotation -= 360f
-                }
-
-                var flingDiff = (computedRotation - viewRotation).toDouble()
-                if (flingDiff >= 200 || flingDiff <= -200) {
-                    if (viewRotation <= -50f) {
-                        viewRotation += 360f
-                    } else if (viewRotation >= 50f) {
-                        viewRotation -= 360f
-                    }
-                }
-
-                flingDiff = (computedRotation - viewRotation).toDouble()
-
-                if (flingDiff <= -60 ||
-                        //If you have a very fast flick / swipe, you an disregard the touch difference
-                        flingDiff < 0 && flingDiff >= -59 && upPressTime - downPressTime <= 200L) {
-                    if (predeterminedNumber > -1) {
-                        rotateTo(predeterminedNumber, SpinRotation.COUNTERCLOCKWISE, false)
-                    } else {
-                        rotateTo(fallBackRandomIndex, SpinRotation.COUNTERCLOCKWISE, false)
-                    }
-                }
-
-                if (flingDiff >= 60 ||
-                        //If you have a very fast flick / swipe, you an disregard the touch difference
-                        flingDiff > 0 && flingDiff <= 59 && upPressTime - downPressTime <= 200L) {
-                    if (predeterminedNumber > -1) {
-                        rotateTo(predeterminedNumber, SpinRotation.CLOCKWISE, false)
-                    } else {
-                        rotateTo(fallBackRandomIndex, SpinRotation.CLOCKWISE, false)
-                    }
-                }
-
-                return true
-            }
-        }
-        return super.onTouchEvent(event)
-    }
+//    override fun onTouchEvent(event: MotionEvent): Boolean {
+//        if (isRunning || !isEnabled) {
+//            return false
+//        }
+//
+//        val x = event.x
+//        val y = event.y
+//
+//        val xc = width / 2.0f
+//        val yc = height / 2.0f
+//
+//        val newFingerRotation: Double
+//
+//
+//        when (event.action) {
+//            MotionEvent.ACTION_DOWN -> {
+//                viewRotation = (rotation + 360f) % 360f
+//                fingerRotation = Math.toDegrees(Math.atan2((x - xc).toDouble(), (yc - y).toDouble()))
+//                downPressTime = event.eventTime
+//                return true
+//            }
+//            MotionEvent.ACTION_MOVE -> {
+//                newFingerRotation = Math.toDegrees(Math.atan2((x - xc).toDouble(), (yc - y).toDouble()))
+//
+//                if (isRotationConsistent(newFingerRotation)) {
+//                    rotation = newRotationValue(viewRotation, fingerRotation, newFingerRotation)
+//                }
+//                return true
+//            }
+//            MotionEvent.ACTION_UP -> {
+//                newFingerRotation = Math.toDegrees(Math.atan2((x - xc).toDouble(), (yc - y).toDouble()))
+//                var computedRotation = newRotationValue(viewRotation, fingerRotation, newFingerRotation)
+//
+//                fingerRotation = newFingerRotation
+//
+//                // This computes if you're holding the tap for too long
+//                upPressTime = event.eventTime
+//                if (upPressTime - downPressTime > 700L) {
+//                    // Disregarding the touch since the tap is too slow
+//                    return true
+//                }
+//
+//                // These operators are added so that fling difference can be evaluated
+//                // with usually numbers that are only around more or less 100 / -100.
+//                if (computedRotation <= -250f) {
+//                    computedRotation += 360f
+//                } else if (computedRotation >= 250f) {
+//                    computedRotation -= 360f
+//                }
+//
+//                var flingDiff = (computedRotation - viewRotation).toDouble()
+//                if (flingDiff >= 200 || flingDiff <= -200) {
+//                    if (viewRotation <= -50f) {
+//                        viewRotation += 360f
+//                    } else if (viewRotation >= 50f) {
+//                        viewRotation -= 360f
+//                    }
+//                }
+//
+//                flingDiff = (computedRotation - viewRotation).toDouble()
+//
+//                if (flingDiff <= -60 ||
+//                        //If you have a very fast flick / swipe, you an disregard the touch difference
+//                        flingDiff < 0 && flingDiff >= -59 && upPressTime - downPressTime <= 200L) {
+//                    if (predeterminedNumber > -1) {
+//                        rotateTo(predeterminedNumber, SpinRotation.COUNTERCLOCKWISE, false)
+//                    } else {
+//                        rotateTo(fallBackRandomIndex, SpinRotation.COUNTERCLOCKWISE, false)
+//                    }
+//                }
+//
+//                if (flingDiff >= 60 ||
+//                        //If you have a very fast flick / swipe, you an disregard the touch difference
+//                        flingDiff > 0 && flingDiff <= 59 && upPressTime - downPressTime <= 200L) {
+//                    if (predeterminedNumber > -1) {
+//                        rotateTo(predeterminedNumber, SpinRotation.CLOCKWISE, false)
+//                    } else {
+//                        rotateTo(fallBackRandomIndex, SpinRotation.CLOCKWISE, false)
+//                    }
+//                }
+//
+//                return true
+//            }
+//        }
+//        return super.onTouchEvent(event)
+//    }
 
     private fun newRotationValue(originalWheenRotation: Float, originalFingerRotation: Double, newFingerRotation: Double): Float {
         val computationalRotation = newFingerRotation - originalFingerRotation
@@ -699,12 +745,220 @@ class PielView : View {
     }
 
 
-  //  @IntDef(SpinRotation.CLOCKWISE, SpinRotation.COUNTERCLOCKWISE)
+    //  @IntDef(SpinRotation.CLOCKWISE, SpinRotation.COUNTERCLOCKWISE)
     @Retention(RetentionPolicy.SOURCE)
     annotation class SpinRotation {
         companion object {
             val CLOCKWISE = 0
             val COUNTERCLOCKWISE = 1
         }
+    }
+
+    override fun onTouchEvent(event: MotionEvent): Boolean {
+        var relativeTouchX: Float = 0f
+
+        if (!isRunning) {
+            deltaX = event.x
+            deltaY = event.y
+
+            // Pass the event to the detector to allow onDown event to be registered first
+            flingGestureDetector.onTouchEvent(event)
+
+            // Handle wheel preview
+            when (event.actionMasked) {
+                MotionEvent.ACTION_MOVE -> {
+                    // save current rotation
+                    previousRotation = currentRotation
+
+                    updateCurrentRotation()
+
+                    // rotate view by angle difference
+                    val angle = currentRotation - previousRotation
+                    rotation += angle
+
+                    // Always know which side of the wheel is clicked
+                    relativeTouchX = event.rawX - mCenter
+                    hemisphere = if (relativeTouchX > 0) Hemisphere.RIGHT else Hemisphere.LEFT
+
+                    return true
+                }
+            }
+        }
+
+        return true
+    }
+
+    /**
+     * This method is called in the @OnTouchevent to allow rotation to continue from last touch point
+     */
+
+    fun updateCurrentRotation() {
+        offsetRotation = (rotation % FULL_ROTATION).absoluteValue
+        currentRotation = rotation +
+                Math.toDegrees(
+                        Math.atan2(
+                                deltaX.toDouble() - mCenter,
+                                mCenter - deltaY.toDouble()
+                        )
+                ).toFloat()
+    }
+
+    private fun onSwipeBottom() {
+        when (hemisphere) {
+            Hemisphere.LEFT -> spinTo(if (predeterminedNumber == -1) fallBackRandomIndex else predeterminedNumber, SpinDirection.COUNTERCLOCKWISE)
+            Hemisphere.RIGHT -> spinTo(if (predeterminedNumber == -1) fallBackRandomIndex else predeterminedNumber, SpinDirection.CLOCKWISE)
+        }
+
+    }
+
+    private fun onSwipeTop() {
+        when (hemisphere) {
+            Hemisphere.LEFT -> spinTo(if (predeterminedNumber == -1) fallBackRandomIndex else predeterminedNumber, SpinDirection.CLOCKWISE)
+            Hemisphere.RIGHT -> spinTo(if (predeterminedNumber == -1) fallBackRandomIndex else predeterminedNumber, SpinDirection.COUNTERCLOCKWISE)
+        }
+    }
+
+    private fun onSwipeRight() {
+        //TODO Possibly flinging on right swipe
+    }
+
+    private fun onSwipeLeft() {
+        //TODO Possibly allow fling on left swipe
+    }
+
+    /**
+     * @param index Index of wheel for spin to land on
+     * @param spinDirection Spin orientation of the wheel if clockwise or counterclockwise
+     */
+    @TargetApi(Build.VERSION_CODES.KITKAT)
+    private fun spinTo(index: Int, spinDirection: SpinDirection) {
+
+        // Do nothing if wheel is currently animating
+        if (isRunning) {
+            return
+        }
+
+        // Get the direction of the spin based on sign
+        val spinDirectionModifier = when (spinDirection) {
+            SpinDirection.CLOCKWISE -> 1f
+            SpinDirection.COUNTERCLOCKWISE -> -1f
+        }
+
+        // Determine spin animation properties and final landing slice
+        val targetAngle = (((FULL_ROTATION * (spinCount)) * spinDirectionModifier) + (270f - getAngleOfIndexTarget(index)) - 360f / mLuckyItemList!!.size / 2) + luckyWheelWheelRotation
+
+        //spinCount * 1000 + 900L
+        animate()
+                .setInterpolator(DecelerateInterpolator())
+                .setDuration(spinCount * 1000 + 900L)
+                .setListener(object : AnimatorListenerAdapter() {
+                    override fun onAnimationStart(animation: Animator) {
+                        // Prevent wheel shadow from interfering with glow effects.
+//                        wheel_shadow.animate().apply {
+//                            duration = 100L
+//                            alpha(0f)
+//                        }.start()
+
+                        isRunning = true
+                        wheelSpinListener.forEach { listener ->
+                            listener.onSpinStart(spinDirection)
+                        }
+                    }
+
+                    override fun onAnimationEnd(animation: Animator) {
+
+                        // Fade shadow back in.
+//                        wheel_shadow.animate().apply {
+//                            duration = 300L
+//                            startDelay = 450L
+//                            alpha(1f)
+//
+//                        }.start()
+
+                        rotation %= FULL_ROTATION
+
+                        wheelSpinListener.forEach { listener ->
+                            listener.onSpinComplete(index)
+                        }
+
+//                        // Add 2 to account for shadow and center children.
+//                        val selectedSlice = (wheel_layout.getChildAt(index + 2)) as WheelSliceView
+//
+//                        selectedSlice.animateSlice()
+
+                        isRunning = false
+
+                        if (mPieRotateListener != null)
+                            mPieRotateListener!!.rotateDone(index)
+
+                    }
+                })
+                .rotation(targetAngle)
+                .setUpdateListener {
+                    wheelSpinListener.forEach { listener ->
+                        listener.onRotation(it.animatedValue as Float)
+                    }
+                }
+                .start()
+    }
+
+    // Custom Gesture listener to gain fling velocity properties
+    private inner class WheelGestureListener : GestureDetector.SimpleOnGestureListener() {
+
+        override fun onDown(e: MotionEvent): Boolean {
+            if (!isRunning) {
+                updateCurrentRotation()
+            }
+
+            return true
+        }
+
+        override fun onFling(
+                downEvent: MotionEvent,
+                upEvent: MotionEvent,
+                velocityX: Float,
+                velocityY: Float
+        ): Boolean {
+
+            // Determine which side of the wheel is touched to figure out spin direction
+            // Get deltas to determine swipe direction
+            val deltaX = upEvent.rawX - downEvent.rawX
+            val deltaY = upEvent.rawY - downEvent.rawY
+
+            // Determine which was greater -> movement along Y or X?
+            if (Math.abs(deltaX) > Math.abs(deltaY)) {
+                // Now we know this is a horizontal swipe.
+                // Let's determine the direction of swipe and also make sure it was an official fling.
+                // We may need them to perform spin on fling
+                if (Math.abs(deltaX) > SWIPE_THRESHOLD && Math.abs(velocityX) > VELOCITY_THRESHOLD) {
+                    if (deltaX > 0) onSwipeRight() else onSwipeLeft()
+                    return true
+                }
+
+            } else {
+                // Otherwise, this is a vertical swipe
+                if (Math.abs(deltaY) > SWIPE_THRESHOLD && Math.abs(velocityY) > VELOCITY_THRESHOLD) {
+                    // Determine swipe direction
+                    if (deltaY > 0) onSwipeBottom() else onSwipeTop()
+                }
+            }
+            return true
+        }
+    }
+
+    private enum class Hemisphere {
+        LEFT,
+        RIGHT
+    }
+
+    public enum class SpinDirection {
+        CLOCKWISE,
+        COUNTERCLOCKWISE
+    }
+
+    interface WheelSpinListener {
+        fun onSpinStart(spinDirection: SpinDirection)
+        fun onSpinComplete(index: Int)
+        fun onRotation(value: Float)
     }
 }
