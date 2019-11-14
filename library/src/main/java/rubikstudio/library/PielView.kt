@@ -13,6 +13,7 @@ import android.provider.Settings
 import android.text.TextPaint
 import android.text.TextUtils
 import android.util.AttributeSet
+import android.util.Log
 import android.util.TypedValue
 import android.view.GestureDetector
 import android.view.MotionEvent
@@ -768,6 +769,7 @@ open class PielView : View {
     }
 
     private fun onSwipeBottom() {
+        //Log.d("antonhttp", "=== ON SWIPE BOTTOM IS CALLED")
         when (hemisphere) {
             Hemisphere.LEFT -> spinTo(if (predeterminedNumber == -1) fallBackRandomIndex else predeterminedNumber, SpinDirection.COUNTERCLOCKWISE)
             Hemisphere.RIGHT -> spinTo(if (predeterminedNumber == -1) fallBackRandomIndex else predeterminedNumber, SpinDirection.CLOCKWISE)
@@ -775,17 +777,20 @@ open class PielView : View {
     }
 
     private fun onSwipeTop() {
+        //Log.d("antonhttp", "=== ON SWIPE TOP IS CALLED")
         when (hemisphere) {
-            Hemisphere.LEFT -> spinTo(if (predeterminedNumber == -1) fallBackRandomIndex else predeterminedNumber, SpinDirection.CLOCKWISE)
-            Hemisphere.RIGHT -> spinTo(if (predeterminedNumber == -1) fallBackRandomIndex else predeterminedNumber, SpinDirection.COUNTERCLOCKWISE)
+            Hemisphere.LEFT -> spinTo(if (predeterminedNumber == -1) fallBackRandomIndex else predeterminedNumber, SpinDirection.COUNTERCLOCKWISE)
+            Hemisphere.RIGHT -> spinTo(if (predeterminedNumber == -1) fallBackRandomIndex else predeterminedNumber, SpinDirection.CLOCKWISE)
         }
     }
 
     private fun onSwipeRight() {
+        //Log.d("antonhttp", "=== ON SWIPE RIGHT IS CALLED")
         //not yet implemented
     }
 
     private fun onSwipeLeft() {
+        //Log.d("antonhttp", "=== ON SWIPE LEFT IS CALLED")
         //not yet implemented
     }
 
@@ -934,7 +939,7 @@ open class PielView : View {
 //            Log.d("antonhttp", "DELTA X: " + deltaX)
 //            Log.d("antonhttp", "DELTA Y: " + deltaY)
 
-            // Set the pie rotation directly.
+            // Detect spin direction
             scrollTheta = vectorToScalarScroll(
                     velocityX,
                     velocityY,
@@ -948,9 +953,11 @@ open class PielView : View {
 
             hemisphere = when {
                 (scrollTheta / 4) > 0 -> {
+                    //Log.d("antonhttp", "SWIPE DIRECT CLOCKWISE")
                     Hemisphere.RIGHT
                 }
                 else -> {
+                    //Log.d("antonhttp", "SWIPE DIRECT COUNTERCLOCKWISE")
                     Hemisphere.LEFT
                 }
             }
