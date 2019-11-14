@@ -3,6 +3,7 @@ package rubikstudio.library
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.animation.ValueAnimator
+import android.annotation.SuppressLint
 import android.annotation.TargetApi
 import android.content.Context
 import android.graphics.*
@@ -27,7 +28,7 @@ import rubikstudio.library.model.LuckyItem
 import java.lang.annotation.Retention
 import java.lang.annotation.RetentionPolicy
 import java.util.*
-import kotlin.math.absoluteValue
+import kotlin.math.*
 
 /**
  * Created by kiennguyen on 11/5/16.
@@ -57,6 +58,8 @@ open class PielView : View {
     private var offsetRotation = 0f
     private var deltaX = 0f
     private var deltaY = 0f
+    private var relativeDeltaY = 0f
+    private var relativeDeltaX = 0f
 
     private var mRange = RectF()
     private var mEdgeRange = RectF()
@@ -102,6 +105,9 @@ open class PielView : View {
 
     private var luckyWheelWheelRotation: Int = 0
 
+    private var isAnimate: Boolean = false
+    private var angleToAnimate: Float = 0.0F
+
     val luckyItemListSize: Int
         get() = mLuckyItemList!!.size
 
@@ -117,9 +123,9 @@ open class PielView : View {
         fun rotateDone(index: Int)
     }
 
-    constructor(context: Context) : super(context) {}
+    constructor(context: Context) : super(context)
 
-    constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {}
+    constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
 
     fun setPieRotateListener(listener: PieRotateListener) {
         this.mPieRotateListener = listener
@@ -127,6 +133,11 @@ open class PielView : View {
 
     init {
         flingGestureDetector = GestureDetector(context, WheelGestureListener())
+
+        // Turn off long press--this control doesn't use it, and if long press is enabled,
+        // you can't scroll for a bit, pause, then scroll some more (the pause is interpreted
+        // as a long press, apparently)
+        flingGestureDetector.setIsLongpressEnabled(false)
     }
 
     private fun setupMeasurements() {
@@ -222,13 +233,13 @@ open class PielView : View {
 
     override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
         super.onLayout(changed, left, top, right, bottom)
-
         trueCenter = left + measuredWidth / 2
     }
 
     /**
      * @param canvas
      */
+    @SuppressLint("DrawAllocation")
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
 
@@ -731,15 +742,13 @@ open class PielView : View {
 
         newRotationStore[0] = newRotValue
 
-        return if (java.lang.Double.compare(newRotationStore[2], newRotationStore[0]) == 0
+        return !(java.lang.Double.compare(newRotationStore[2], newRotationStore[0]) == 0
                 || java.lang.Double.compare(newRotationStore[1], newRotationStore[0]) == 0
                 || java.lang.Double.compare(newRotationStore[2], newRotationStore[1]) == 0
 
                 //Is the middle event the odd one out
                 || newRotationStore[0] > newRotationStore[1] && newRotationStore[1] < newRotationStore[2]
-                || newRotationStore[0] < newRotationStore[1] && newRotationStore[1] > newRotationStore[2]) {
-            false
-        } else true
+                || newRotationStore[0] < newRotationStore[1] && newRotationStore[1] > newRotationStore[2])
     }
 
 
@@ -752,40 +761,6 @@ open class PielView : View {
         }
     }
 
-    override fun onTouchEvent(event: MotionEvent): Boolean {
-        var relativeTouchX: Float = 0f
-
-        if (!isRunning) {
-            deltaX = event.x
-            deltaY = event.y
-
-            // Pass the event to the detector to allow onDown event to be registered first
-            flingGestureDetector.onTouchEvent(event)
-
-            // Handle wheel preview
-            when (event.actionMasked) {
-                MotionEvent.ACTION_MOVE -> {
-                    // save current rotation
-                    previousRotation = currentRotation
-
-                    updateCurrentRotation()
-
-                    // rotate view by angle difference
-                    val angle = currentRotation - previousRotation
-                    rotation += angle
-
-                    // Always know which side of the wheel is clicked
-                    relativeTouchX = event.rawX - mCenter
-                    hemisphere = if (relativeTouchX > 0) Hemisphere.RIGHT else Hemisphere.LEFT
-
-                    return true
-                }
-            }
-        }
-
-        return true
-    }
-
     /**
      * This method is called in the @OnTouchevent to allow rotation to continue from last touch point
      */
@@ -794,22 +769,23 @@ open class PielView : View {
         offsetRotation = (rotation % FULL_ROTATION).absoluteValue
         currentRotation = rotation +
                 Math.toDegrees(
-                        Math.atan2(
-                                deltaX.toDouble() - mCenter,
-                                mCenter - deltaY.toDouble()
+                        atan2(
+                                deltaX.toDouble() - trueCenter,
+                                trueCenter - deltaY.toDouble()
                         )
                 ).toFloat()
     }
 
     private fun onSwipeBottom() {
+        Log.d("antonhttp", "=== ON SWIPE BOTTOM IS CALLED")
         when (hemisphere) {
             Hemisphere.LEFT -> spinTo(if (predeterminedNumber == -1) fallBackRandomIndex else predeterminedNumber, SpinDirection.COUNTERCLOCKWISE)
             Hemisphere.RIGHT -> spinTo(if (predeterminedNumber == -1) fallBackRandomIndex else predeterminedNumber, SpinDirection.CLOCKWISE)
         }
-
     }
 
     private fun onSwipeTop() {
+        Log.d("antonhttp", "=== ON SWIPE TOP IS CALLED")
         when (hemisphere) {
             Hemisphere.LEFT -> spinTo(if (predeterminedNumber == -1) fallBackRandomIndex else predeterminedNumber, SpinDirection.CLOCKWISE)
             Hemisphere.RIGHT -> spinTo(if (predeterminedNumber == -1) fallBackRandomIndex else predeterminedNumber, SpinDirection.COUNTERCLOCKWISE)
@@ -818,10 +794,12 @@ open class PielView : View {
 
     private fun onSwipeRight() {
         //TODO Possibly flinging on right swipe
+        Log.d("antonhttp", "=== SWIPING RIGHT ===")
     }
 
     private fun onSwipeLeft() {
         //TODO Possibly allow fling on left swipe
+        Log.d("antonhttp", "=== SWIPING LEFT ===")
     }
 
     /**
@@ -840,11 +818,13 @@ open class PielView : View {
             //TODO: Add the blur effects if turned on
         }
 
-        // Get the direction of the spin based on sign
+        //Get the direction of the spin based on sign
         val spinDirectionModifier = when (spinDirection) {
             SpinDirection.CLOCKWISE -> 1f
             SpinDirection.COUNTERCLOCKWISE -> -1f
         }
+
+        Log.d("antonhttp", "SPIN DIRECTION MODIFIER: " + spinDirectionModifier)
 
         // Determine spin animation properties and final landing slice
         val targetAngle = (((FULL_ROTATION * (spinCount)) * spinDirectionModifier) + (270f - getAngleOfIndexTarget(index)) - 360f / mLuckyItemList!!.size / 2) + luckyWheelWheelRotation
@@ -861,10 +841,15 @@ open class PielView : View {
 //                            alpha(0f)
 //                        }.start()
 
-                        isRunning = true
+
                         wheelSpinListener.forEach { listener ->
                             listener.onSpinStart(spinDirection)
                         }
+
+                        isAnimate = false
+                        isRunning = true
+
+                        invalidate()
                     }
 
                     override fun onAnimationEnd(animation: Animator) {
@@ -888,11 +873,12 @@ open class PielView : View {
 //
 //                        selectedSlice.animateSlice()
 
-                        isRunning = false
-
                         if (mPieRotateListener != null)
                             mPieRotateListener!!.rotateDone(index)
 
+                        isAnimate = true
+                        isRunning = false
+                        invalidate()
                     }
                 })
                 .rotation(targetAngle)
@@ -903,6 +889,55 @@ open class PielView : View {
                 }
                 .start()
     }
+
+    override fun onTouchEvent(event: MotionEvent): Boolean {
+        var relativeTouchX: Float = 0f
+
+        if (!isRunning) {
+            deltaX = event.x
+            deltaY = event.y
+
+            // Pass the event to the detector to allow onDown event to be registered first
+            flingGestureDetector.onTouchEvent(event)
+
+            // Handle wheel preview
+            when (event.actionMasked) {
+                MotionEvent.ACTION_MOVE -> {
+
+                    // save current rotation
+                    previousRotation = currentRotation
+
+                    updateCurrentRotation()
+
+                    // rotate view by angle difference
+                    val angle = currentRotation - previousRotation
+                    rotation += angle
+
+//                    // Always know which side of the wheel is clicked
+//                    relativeTouchX = event.rawX - trueCenter
+//
+//                    Log.d("antonhttp", "TOUCH X: " + relativeTouchX)
+//
+//                    hemisphere = when {
+//                        relativeTouchX > 0 -> {
+//                            Log.d("antonhttp", "SWIPE DIRECT CLOCKWISE")
+//                            Hemisphere.RIGHT
+//                        }
+//                        else -> {
+//                            Log.d("antonhttp", "SWIPE DIRECT COUNTERCLOCKWISE")
+//                            Hemisphere.LEFT
+//                        }
+//                    }
+
+                    return true
+                }
+            }
+        }
+
+        return true
+    }
+
+    private var scrollTheta: Float = 0F
 
     // Custom Gesture listener to gain fling velocity properties
     private inner class WheelGestureListener : GestureDetector.SimpleOnGestureListener() {
@@ -927,25 +962,84 @@ open class PielView : View {
             val deltaX = upEvent.rawX - downEvent.rawX
             val deltaY = upEvent.rawY - downEvent.rawY
 
+            Log.d("antonhttp", "============")
+//            Log.d("antonhttp", "DELTA X: " + deltaX)
+//            Log.d("antonhttp", "DELTA Y: " + deltaY)
+
+            // Set the pie rotation directly.
+            scrollTheta = vectorToScalarScroll(
+                    velocityX,
+                    velocityY,
+                    upEvent.rawX - mRange.centerX(),
+                    upEvent.rawY - mRange.centerY())
+
+//            Log.d("antonhttp", "SCROLL THETA: " + scrollTheta)
+//            Log.d("antonhttp", "ROTATION: " + rotation)
+//            Log.d("antonhttp", "SCROLL THETA VALUE: " + scrollTheta / 4)
+//            Log.d("antonhttp", "ROTATION SCROLL THETA VALUE: " + (rotation - scrollTheta / 4))
+
+            hemisphere = when {
+                (scrollTheta / 4) > 0 -> {
+                    Log.d("antonhttp", ">>> SWIPE DIRECT CLOCKWISE")
+                    Hemisphere.RIGHT
+                }
+                else -> {
+                    Log.d("antonhttp", "<<< SWIPE DIRECT COUNTERCLOCKWISE")
+                    Hemisphere.LEFT
+                }
+            }
+
+            Log.d("antonhttp", "============")
+
             // Determine which was greater -> movement along Y or X?
-            if (Math.abs(deltaX) > Math.abs(deltaY)) {
+            if (abs(deltaX) > abs(deltaY)) {
                 // Now we know this is a horizontal swipe.
                 // Let's determine the direction of swipe and also make sure it was an official fling.
                 // We may need them to perform spin on fling
-                if (Math.abs(deltaX) > SWIPE_THRESHOLD && Math.abs(velocityX) > VELOCITY_THRESHOLD) {
+                if (abs(deltaX) > SWIPE_THRESHOLD && abs(velocityX) > VELOCITY_THRESHOLD) {
                     if (deltaX > 0) onSwipeRight() else onSwipeLeft()
                     return true
                 }
 
             } else {
                 // Otherwise, this is a vertical swipe
-                if (Math.abs(deltaY) > SWIPE_THRESHOLD && Math.abs(velocityY) > VELOCITY_THRESHOLD) {
+                if (abs(deltaY) > SWIPE_THRESHOLD && abs(velocityY) > VELOCITY_THRESHOLD) {
                     // Determine swipe direction
                     if (deltaY > 0) onSwipeBottom() else onSwipeTop()
                 }
             }
+
             return true
         }
+    }
+
+    /**
+     * Helper method for translating (x,y) scroll vectors into scalar rotation of the pie.
+     *
+     * @param dx The x component of the current scroll vector.
+     * @param dy The y component of the current scroll vector.
+     * @param x  The x position of the current touch, relative to the pie center.
+     * @param y  The y position of the current touch, relative to the pie center.
+     * @return The scalar representing the change in angular position for this scroll.
+     */
+    private fun vectorToScalarScroll(dx: Float, dy: Float, x: Float, y: Float): Float {
+        // get the length of the vector
+        val l: Float = sqrt(dx * dx + dy * dy)
+
+        // decide if the scalar should be negative or positive by finding
+        // the dot product of the vector perpendicular to (x,y).
+        val crossX: Float = -y
+        val crossY: Float = x
+
+        val dot: Float = (crossX * dx + crossY * dy)
+        val sign: Float = sign(dot)
+
+//        Log.d("antonhttp", "******")
+//        Log.d("antonhttp", "DOT: " + dot)
+//        Log.d("antonhttp", "SIGN: " + sign)
+//        Log.d("antonhttp", "******")
+
+        return l * sign
     }
 
     private enum class Hemisphere {
@@ -953,7 +1047,7 @@ open class PielView : View {
         RIGHT
     }
 
-    public enum class SpinDirection {
+    enum class SpinDirection {
         CLOCKWISE,
         COUNTERCLOCKWISE
     }
