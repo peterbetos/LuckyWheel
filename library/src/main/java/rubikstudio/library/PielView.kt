@@ -13,7 +13,6 @@ import android.provider.Settings
 import android.text.TextPaint
 import android.text.TextUtils
 import android.util.AttributeSet
-import android.util.Log
 import android.util.TypedValue
 import android.view.GestureDetector
 import android.view.MotionEvent
@@ -58,8 +57,6 @@ open class PielView : View {
     private var offsetRotation = 0f
     private var deltaX = 0f
     private var deltaY = 0f
-    private var relativeDeltaY = 0f
-    private var relativeDeltaX = 0f
 
     private var mRange = RectF()
     private var mEdgeRange = RectF()
@@ -375,7 +372,6 @@ open class PielView : View {
      * @param backgroundColor
      */
     private fun drawSecondaryText(canvas: Canvas, tmpAngle: Float, mStr: String, backgroundColor: Int) {
-        val paint = Paint()
         canvas.save()
         val arraySize = mLuckyItemList!!.size
 
@@ -449,9 +445,9 @@ open class PielView : View {
             // depending on the rotation value
             // so that angle value can be controlled to be until 360 degreees.
             val duration = if (rotationAssess > 0)
-                (360L - Math.abs((getRotation() % 360f).toLong())) * 1000L / 360L
+                (360L - abs((getRotation() % 360f).toLong())) * 1000L / 360L
             else
-                Math.abs((getRotation() % 360f).toLong()) * 1000L / 360L
+                abs((getRotation() % 360f).toLong()) * 1000L / 360L
 
             animate()
                     .setDuration(duration)
@@ -527,7 +523,6 @@ open class PielView : View {
                 .setListener(object : Animator.AnimatorListener {
                     override fun onAnimationStart(animation: Animator) {
                         isRunning = true
-                        Log.d("Anim", "Rotation  value $rotationValue")
                     }
 
                     override fun onAnimationEnd(animation: Animator) {
@@ -547,8 +542,6 @@ open class PielView : View {
 
     private fun decelerateSpin(endAngle: Float, targetIndex: Int) {
         rotation = 0f
-
-        val interpolates = if (decelarationDuration > 0L && spinDuration > 0L) DecelerateInterpolator(decelarationDuration.toFloat() / spinDuration) else DecelerateInterpolator()
 
         val customInterpolator: Interpolator
         if (spinDuration == 0L && decelarationDuration != 0L) {
@@ -618,11 +611,9 @@ open class PielView : View {
                 try {
                     ValueAnimator::class.java.getMethod("setDurationScale", Float::class.javaPrimitiveType).invoke(null, 1f)
                     durationScale = 1f
-                    Log.i("Animation", "Forcefully setting animation successful")
                 } catch (t: Throwable) {
                     // It means something bad happened, and animations are still
                     // altered by the global settings.
-                    Log.w("Animation", "Changing animation duration not possible")
                 }
 
             }
@@ -777,7 +768,6 @@ open class PielView : View {
     }
 
     private fun onSwipeBottom() {
-        Log.d("antonhttp", "=== ON SWIPE BOTTOM IS CALLED")
         when (hemisphere) {
             Hemisphere.LEFT -> spinTo(if (predeterminedNumber == -1) fallBackRandomIndex else predeterminedNumber, SpinDirection.COUNTERCLOCKWISE)
             Hemisphere.RIGHT -> spinTo(if (predeterminedNumber == -1) fallBackRandomIndex else predeterminedNumber, SpinDirection.CLOCKWISE)
@@ -785,7 +775,6 @@ open class PielView : View {
     }
 
     private fun onSwipeTop() {
-        Log.d("antonhttp", "=== ON SWIPE TOP IS CALLED")
         when (hemisphere) {
             Hemisphere.LEFT -> spinTo(if (predeterminedNumber == -1) fallBackRandomIndex else predeterminedNumber, SpinDirection.CLOCKWISE)
             Hemisphere.RIGHT -> spinTo(if (predeterminedNumber == -1) fallBackRandomIndex else predeterminedNumber, SpinDirection.COUNTERCLOCKWISE)
@@ -793,13 +782,11 @@ open class PielView : View {
     }
 
     private fun onSwipeRight() {
-        //TODO Possibly flinging on right swipe
-        Log.d("antonhttp", "=== SWIPING RIGHT ===")
+        //not yet implemented
     }
 
     private fun onSwipeLeft() {
-        //TODO Possibly allow fling on left swipe
-        Log.d("antonhttp", "=== SWIPING LEFT ===")
+        //not yet implemented
     }
 
     /**
@@ -815,7 +802,7 @@ open class PielView : View {
         }
 
         if (wheelBlur) {
-            //TODO: Add the blur effects if turned on
+            //not yet implemented
         }
 
         //Get the direction of the spin based on sign
@@ -823,8 +810,6 @@ open class PielView : View {
             SpinDirection.CLOCKWISE -> 1f
             SpinDirection.COUNTERCLOCKWISE -> -1f
         }
-
-        Log.d("antonhttp", "SPIN DIRECTION MODIFIER: " + spinDirectionModifier)
 
         // Determine spin animation properties and final landing slice
         val targetAngle = (((FULL_ROTATION * (spinCount)) * spinDirectionModifier) + (270f - getAngleOfIndexTarget(index)) - 360f / mLuckyItemList!!.size / 2) + luckyWheelWheelRotation
@@ -890,8 +875,8 @@ open class PielView : View {
                 .start()
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun onTouchEvent(event: MotionEvent): Boolean {
-        var relativeTouchX: Float = 0f
 
         if (!isRunning) {
             deltaX = event.x
@@ -912,22 +897,6 @@ open class PielView : View {
                     // rotate view by angle difference
                     val angle = currentRotation - previousRotation
                     rotation += angle
-
-//                    // Always know which side of the wheel is clicked
-//                    relativeTouchX = event.rawX - trueCenter
-//
-//                    Log.d("antonhttp", "TOUCH X: " + relativeTouchX)
-//
-//                    hemisphere = when {
-//                        relativeTouchX > 0 -> {
-//                            Log.d("antonhttp", "SWIPE DIRECT CLOCKWISE")
-//                            Hemisphere.RIGHT
-//                        }
-//                        else -> {
-//                            Log.d("antonhttp", "SWIPE DIRECT COUNTERCLOCKWISE")
-//                            Hemisphere.LEFT
-//                        }
-//                    }
 
                     return true
                 }
@@ -962,7 +931,6 @@ open class PielView : View {
             val deltaX = upEvent.rawX - downEvent.rawX
             val deltaY = upEvent.rawY - downEvent.rawY
 
-            Log.d("antonhttp", "============")
 //            Log.d("antonhttp", "DELTA X: " + deltaX)
 //            Log.d("antonhttp", "DELTA Y: " + deltaY)
 
@@ -980,16 +948,12 @@ open class PielView : View {
 
             hemisphere = when {
                 (scrollTheta / 4) > 0 -> {
-                    Log.d("antonhttp", ">>> SWIPE DIRECT CLOCKWISE")
                     Hemisphere.RIGHT
                 }
                 else -> {
-                    Log.d("antonhttp", "<<< SWIPE DIRECT COUNTERCLOCKWISE")
                     Hemisphere.LEFT
                 }
             }
-
-            Log.d("antonhttp", "============")
 
             // Determine which was greater -> movement along Y or X?
             if (abs(deltaX) > abs(deltaY)) {
