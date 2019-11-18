@@ -19,6 +19,8 @@
         <attr name="lkwDecelarationDuration" format="integer"/>
         <attr name="lkwWheelRotation" format="integer"/>
         <attr name="lkwEnableWheelBlur" format="boolean"/>
+        <attr name="lkwWheelSliceViewWidth" format="dimension" />
+        <attr name="lkwWheelSliceViewCircleRadius" format="dimension" />
     </declare-styleable>
 
 </resources>

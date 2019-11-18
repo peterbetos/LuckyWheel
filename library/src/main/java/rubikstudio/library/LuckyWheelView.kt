@@ -34,6 +34,8 @@ open class LuckyWheelView : ConstraintLayout, PielView.PieRotateListener, PielVi
     private var decelerationDuration: Int = 0
     private var luckyWheelWheelRotation: Int = 0
     private var enableWheelBlur: Boolean = false
+    private var mWheelSliceViewWidth: Int = 0
+    private var mWheelSliceViewCircleRadius: Int = 0
 
     private var pielView: PielView? = null
     private var ivCursorView: ImageView? = null
@@ -131,6 +133,8 @@ open class LuckyWheelView : ConstraintLayout, PielView.PieRotateListener, PielVi
             decelerationDuration = typedArray.getInteger(R.styleable.LuckyWheelView_lkwDecelarationDuration, 3000)
             luckyWheelWheelRotation = typedArray.getInteger(R.styleable.LuckyWheelView_lkwWheelRotation, -90)
             enableWheelBlur = typedArray.getBoolean(R.styleable.LuckyWheelView_lkwEnableWheelBlur, false)
+            mWheelSliceViewWidth = typedArray.getDimensionPixelSize(R.styleable.LuckyWheelView_lkwWheelSliceViewWidth, 500)
+            mWheelSliceViewCircleRadius = typedArray.getDimensionPixelSize(R.styleable.LuckyWheelView_lkwWheelSliceViewCircleRadius, 300)
             typedArray.recycle()
         }
 
@@ -160,9 +164,8 @@ open class LuckyWheelView : ConstraintLayout, PielView.PieRotateListener, PielVi
         ivCursorView!!.setImageDrawable(mCursorImage)
 
         wheelSliceView = constraintLayout.findViewById(R.id.wheel_node_1)
-        //wheelSliceView!!.minimumWidth = mEdgeWidth
-        //wheelSliceView!!.bindWheelCard()
-        //Log.d("antonhttp", "EDGE WIDTH: " + mEdgeWidth)
+        (wheelSliceView?.layoutParams as LayoutParams).width = mWheelSliceViewWidth
+        (wheelSliceView?.layoutParams as LayoutParams).circleRadius = mWheelSliceViewCircleRadius
 
         addView(constraintLayout)
 

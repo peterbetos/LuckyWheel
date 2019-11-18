@@ -12,6 +12,7 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.graphics.ColorUtils
 import rubikstudio.library.model.LuckyItem
 import kotlin.math.roundToInt
 
@@ -31,7 +32,7 @@ class WheelSliceView @JvmOverloads constructor(
     private var slice_amount: TextView
 
     companion object {
-        private const val SLICE_HEIGHT_RATIO = 5/13f
+        private const val SLICE_HEIGHT_RATIO = 5 / 13f
 
         private const val ANIM_PULSE_SCALE_MAX = 1.03f
         private const val ANIM_PULSE_SCALE_SPEED = 500L
@@ -64,32 +65,21 @@ class WheelSliceView @JvmOverloads constructor(
     /**
      * Bind the data from the ActiveReward to the WheelSliceView
      */
-    fun bindWheelCard(item : LuckyItem) {
+    fun bindWheelCard(item: LuckyItem) {
 
         slice_background.apply {
             setColor(item.color)
         }
-//
-        slice_type.apply {
-            setTextColor(resources.getColor(android.R.color.black))
 
-//            if (card.provider == ActiveReward.RewardProvider.GYFT) {
+        slice_type.apply {
+            setTextColor(if (isColorDark(item.color)) -0x1 else -0x1000000)
             text = item.topText
             translationX = resources.getDimension(R.dimen.wheel_gift_card_label_offset)
-//            } else {
-//                text = resources.getString(R.string.wheel_slice_coins)
-//                translationX = resources.getDimension(R.dimen.wheel_coins_label_offset)
-//            }
-//        }
-//
-            slice_amount.apply {
-                setTextColor(resources.getColor(android.R.color.black))
-                text = item.secondaryText
-//            text = when (card.provider) {
-//                ActiveReward.RewardProvider.GYFT -> "${card.currency}${card.amount}"
-//                else -> card.amount.toString()
-//            }
-            }
+        }
+
+        slice_amount.apply {
+            setTextColor(if (isColorDark(item.color)) -0x1 else -0x1000000)
+            text = item.secondaryText
         }
     }
 
@@ -153,11 +143,17 @@ class WheelSliceView @JvmOverloads constructor(
             start()
         }
 
-        animatorSet.addListener(object : AnimatorListenerAdapter(){
+        animatorSet.addListener(object : AnimatorListenerAdapter() {
             override fun onAnimationEnd(animation: Animator?) {
-                visibility = View.GONE
+                visibility = View.VISIBLE
             }
         })
+    }
 
+    private fun isColorDark(color: Int): Boolean {
+        val colorValue = ColorUtils.calculateLuminance(color)
+        val compareValue = 0.30
+        return colorValue <= compareValue
     }
 }
+
