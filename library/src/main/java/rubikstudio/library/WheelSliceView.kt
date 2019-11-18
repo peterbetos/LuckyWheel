@@ -145,7 +145,7 @@ class WheelSliceView @JvmOverloads constructor(
 
         animatorSet.addListener(object : AnimatorListenerAdapter() {
             override fun onAnimationEnd(animation: Animator?) {
-                visibility = View.VISIBLE
+                visibility = View.GONE
             }
         })
     }
