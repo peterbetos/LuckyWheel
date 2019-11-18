@@ -1,0 +1,19 @@
+<resources>
+
+    <!-- Wheel -->
+    <!-- Making Wheel page text sizes 'dp' instead of 'sp' so that a -->
+    <!--  global text size increase will not make this screen unusable. -->
+    <dimen name="wheel_slice_label_margin">8dp</dimen>
+    <dimen name="wheel_type_label_text_size">9dp</dimen>
+    <dimen name="wheel_amount_label_text_size">28dp</dimen>
+    <dimen name="wheel_slice_width">200dp</dimen>
+    <dimen name="wheel_view_radius">120dp</dimen>
+    <dimen name="wheel_gift_card_label_offset">-7dp</dimen>
+    <dimen name="wheel_shine_width">40dp</dimen>
+    <dimen name="wheel_shine_y_shift">4dp</dimen>
+    <dimen name="wheel_border_diameter">456</dimen>
+
+    <!-- Wheel Border -->
+    <dimen name="wheel_border_thickness">8dp</dimen>
+
+</resources>

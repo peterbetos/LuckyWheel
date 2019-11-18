@@ -3,6 +3,7 @@ package rubikstudio.library
 import android.content.Context
 import android.graphics.drawable.Drawable
 import android.util.AttributeSet
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -41,6 +42,8 @@ open class LuckyWheelView : ConstraintLayout, PielView.PieRotateListener, PielVi
 
     private var mLuckyItemList: List<LuckyItem>? = null
 
+    private var wheelSliceView: WheelSliceView? = null
+
     override fun onRotationStart() {
         if (mLuckyRoundItemSelectedListener != null) {
             mLuckyRoundItemSelectedListener!!.onLuckyWheelRotationStart()
@@ -73,7 +76,9 @@ open class LuckyWheelView : ConstraintLayout, PielView.PieRotateListener, PielVi
     }
 
     override fun onSpinComplete(index: Int) {
-
+        wheelSliceView!!.bindWheelCard(mLuckyItemList!![index])
+        wheelSliceView!!.visibility = View.VISIBLE
+        wheelSliceView!!.animateSlice()
     }
 
     override fun onRotation(value: Float) {
@@ -154,6 +159,11 @@ open class LuckyWheelView : ConstraintLayout, PielView.PieRotateListener, PielVi
 
         ivCursorView!!.setImageDrawable(mCursorImage)
 
+        wheelSliceView = constraintLayout.findViewById(R.id.wheel_node_1)
+        //wheelSliceView!!.minimumWidth = mEdgeWidth
+        //wheelSliceView!!.bindWheelCard()
+        //Log.d("antonhttp", "EDGE WIDTH: " + mEdgeWidth)
+
         addView(constraintLayout)
 
         pielView!!.addListener(this)
@@ -217,6 +227,7 @@ open class LuckyWheelView : ConstraintLayout, PielView.PieRotateListener, PielVi
      */
     fun setPredeterminedNumber(fixNumber: Int) {
         pielView!!.setPredeterminedNumber(fixNumber)
+        wheelSliceView!!.bindWheelCard(mLuckyItemList!![fixNumber])
     }
 
     fun startLuckyWheelWithTargetIndex(index: Int) {

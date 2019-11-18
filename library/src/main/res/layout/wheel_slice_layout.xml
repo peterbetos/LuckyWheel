@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clipChildren="false"
+    android:orientation="vertical">
+
+    <rubikstudio.library.WheelSliceBackground
+        android:id="@+id/slice_background"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <TextView
+        android:id="@+id/slice_type"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/wheel_slice_label_margin"
+        android:layout_marginBottom="@dimen/wheel_slice_label_margin"
+        android:rotation="-90"
+        android:textSize="@dimen/wheel_type_label_text_size"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="COINS" />
+
+    <TextView
+        android:id="@+id/slice_amount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/wheel_slice_label_margin"
+        android:layout_marginBottom="@dimen/wheel_slice_label_margin"
+        android:textAlignment="center"
+        android:textSize="@dimen/wheel_amount_label_text_size"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/slice_background"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.35"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="100" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/shine_fx"
+        android:layout_width="@dimen/wheel_shine_width"
+        android:layout_height="match_parent"
+        android:rotation="-10"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias=".45"
+        app:srcCompat="@drawable/wheel_slice_fx"
+        tools:visibility="visible" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

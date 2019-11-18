@@ -24,4 +24,34 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:ignore="ContentDescription" />
 
+    <rubikstudio.library.WheelSliceView
+        android:id="@+id/wheel_node_1"
+        android:layout_width="260dp"
+        android:visibility="gone"
+        android:layout_height="wrap_content"
+        app:layout_constraintCircle="@id/center_point"
+        app:layout_constraintCircleAngle="270"
+        app:layout_constraintCircleRadius="155dp"
+        tools:ignore="MissingConstraints" />
+
+    <View
+        android:id="@+id/center_point"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:clickable="false"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!--    <View-->
+    <!--        android:id="@+id/crop_slices_border"-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="match_parent"-->
+    <!--        android:background="@drawable/wheel_border"-->
+    <!--        app:layout_constraintBottom_toBottomOf="parent"-->
+    <!--        app:layout_constraintEnd_toEndOf="parent"-->
+    <!--        app:layout_constraintStart_toStartOf="parent"-->
+    <!--        app:layout_constraintTop_toTopOf="parent" />-->
+
 </androidx.constraintlayout.widget.ConstraintLayout>

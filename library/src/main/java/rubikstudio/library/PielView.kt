@@ -250,7 +250,7 @@ open class PielView : View {
         setupMeasurements()
 
         var tmpAngle = mStartAngle
-        val sweepAngle = 360f / mLuckyItemList!!.size
+        var sweepAngle = 360f / mLuckyItemList!!.size
 
         for (i in mLuckyItemList!!.indices) {
 
@@ -277,6 +277,7 @@ open class PielView : View {
             if (mLuckyItemList!![i].icon != 0)
                 drawImage(canvas, tmpAngle, BitmapFactory.decodeResource(resources,
                         mLuckyItemList!![i].icon))
+
             tmpAngle += sweepAngle
         }
 
@@ -304,6 +305,9 @@ open class PielView : View {
         mRadius = width - mPadding * 2
 
         mCenter = width / 2
+
+        Log.d("antonhttp", "WIDTH: " + (width/2))
+        Log.d("antonhttp", "mRadius: " + mRadius)
 
         setMeasuredDimension(width, width)
     }
@@ -819,6 +823,8 @@ open class PielView : View {
         // Determine spin animation properties and final landing slice
         val targetAngle = (((FULL_ROTATION * (spinCount)) * spinDirectionModifier) + (270f - getAngleOfIndexTarget(index)) - 360f / mLuckyItemList!!.size / 2) + luckyWheelWheelRotation
 
+        Log.d("antonhttp", "ANGLE: " + targetAngle)
+
         //spinCount * 1000 + 900L
         animate()
                 .setInterpolator(DecelerateInterpolator())
@@ -838,8 +844,6 @@ open class PielView : View {
 
                         isAnimate = false
                         isRunning = true
-
-                        invalidate()
                     }
 
                     override fun onAnimationEnd(animation: Animator) {
@@ -863,12 +867,11 @@ open class PielView : View {
 //
 //                        selectedSlice.animateSlice()
 
-                        if (mPieRotateListener != null)
-                            mPieRotateListener!!.rotateDone(index)
+//                        if (mPieRotateListener != null)
+//                            mPieRotateListener!!.rotateDone(index)
 
                         isAnimate = true
                         isRunning = false
-                        invalidate()
                     }
                 })
                 .rotation(targetAngle)
