@@ -164,6 +164,7 @@ open class LuckyWheelView : ConstraintLayout, PielView.PieRotateListener, PielVi
         ivCursorView!!.setImageDrawable(mCursorImage)
 
         wheelSliceView = constraintLayout.findViewById(R.id.wheel_node_1)
+        wheelSliceView?.setFontSizes(mTopTextSize, mSecondaryTextSize)
         (wheelSliceView?.layoutParams as LayoutParams).width = mWheelSliceViewWidth
         (wheelSliceView?.layoutParams as LayoutParams).circleRadius = mWheelSliceViewCircleRadius
 

@@ -30,6 +30,8 @@ class WheelSliceView @JvmOverloads constructor(
     private var slice_background: WheelSliceBackground
     private var slice_type: TextView
     private var slice_amount: TextView
+    private var mTopTextSize: Int = 0
+    private var mSecondaryTextSize: Int = 0
 
     companion object {
         private const val SLICE_HEIGHT_RATIO = 5 / 13f
@@ -75,12 +77,19 @@ class WheelSliceView @JvmOverloads constructor(
             setTextColor(if (isColorDark(item.color)) -0x1 else -0x1000000)
             text = item.topText
             translationX = resources.getDimension(R.dimen.wheel_gift_card_label_offset)
+            textSize = mTopTextSize.toFloat()
         }
 
         slice_amount.apply {
             setTextColor(if (isColorDark(item.color)) -0x1 else -0x1000000)
             text = item.secondaryText
+            textSize = mSecondaryTextSize.toFloat()
         }
+    }
+
+    fun setFontSizes(topTextSize : Int, bottomTextSize : Int){
+        mTopTextSize = topTextSize
+        mSecondaryTextSize = bottomTextSize
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
