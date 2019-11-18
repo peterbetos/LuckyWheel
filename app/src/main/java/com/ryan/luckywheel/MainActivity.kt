@@ -128,7 +128,7 @@ class MainActivity : Activity() {
         /////////////////////
 
         luckyWheelView.setData(data)
-        //luckyWheelView.setPredeterminedNumber(11)
+        luckyWheelView.setPredeterminedNumber(11)
 
         /*luckyWheelView.setLuckyWheelBackgrouldColor(0xff0000ff);
         luckyWheelView.setLuckyWheelTextColor(0xffcc0000);

@@ -6,7 +6,6 @@ import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.content.Context
 import android.util.AttributeSet
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.ImageView
@@ -15,10 +14,6 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.graphics.ColorUtils
 import rubikstudio.library.model.LuckyItem
 import kotlin.math.roundToInt
-
-//import com.thevitalitygroup.vitalityone.R
-//import com.thevitalitygroup.vitalityone.api.activerewards.ActiveReward
-//import kotlinx.android.synthetic.main.wheel_slice_layout.view.*
 
 class WheelSliceView @JvmOverloads constructor(
         context: Context,
@@ -87,9 +82,9 @@ class WheelSliceView @JvmOverloads constructor(
         }
     }
 
-    fun setFontSizes(topTextSize : Int, bottomTextSize : Int){
-        mTopTextSize = topTextSize
-        mSecondaryTextSize = bottomTextSize
+    fun setFontSizes(topTextSize: Int, bottomTextSize: Int) {
+        mTopTextSize = topTextSize / 2
+        mSecondaryTextSize = bottomTextSize / 2
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
@@ -106,12 +101,6 @@ class WheelSliceView @JvmOverloads constructor(
                 )
         )
 
-//        Log.d("antonhttp", "WIDTH 2: " + (measuredWidth/3))
-//        Log.d("antonhttp", "RADIUS 2: " + (measuredWidth/3) / 2)
-
-//        super.onMeasure(widthMeasureSpec, heightMeasureSpec)
-//        val width = Math.min(measuredWidth, measuredHeight)
-//        setMeasuredDimension(width, width)
     }
 
     /**
@@ -154,7 +143,7 @@ class WheelSliceView @JvmOverloads constructor(
 
         animatorSet.addListener(object : AnimatorListenerAdapter() {
             override fun onAnimationEnd(animation: Animator?) {
-                visibility = View.VISIBLE
+                visibility = View.GONE
             }
         })
     }

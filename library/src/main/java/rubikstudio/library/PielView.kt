@@ -306,9 +306,6 @@ open class PielView : View {
 
         mCenter = width / 2
 
-        Log.d("antonhttp", "WIDTH: " + (width/2))
-        Log.d("antonhttp", "mRadius: " + mRadius)
-
         setMeasuredDimension(width, width)
     }
 
@@ -823,8 +820,6 @@ open class PielView : View {
         // Determine spin animation properties and final landing slice
         val targetAngle = (((FULL_ROTATION * (spinCount)) * spinDirectionModifier) + (270f - getAngleOfIndexTarget(index)) - 360f / mLuckyItemList!!.size / 2) + luckyWheelWheelRotation
 
-        Log.d("antonhttp", "ANGLE: " + targetAngle)
-
         //spinCount * 1000 + 900L
         animate()
                 .setInterpolator(DecelerateInterpolator())
@@ -890,6 +885,11 @@ open class PielView : View {
             deltaX = event.x
             deltaY = event.y
 
+//            Log.d("antonhttp", "==========")
+//            Log.d("antonhttp", "X: " + deltaX)
+//            Log.d("antonhttp", "Y: " + deltaY)
+//            Log.d("antonhttp", "==========")
+
             // Pass the event to the detector to allow onDown event to be registered first
             flingGestureDetector.onTouchEvent(event)
 
@@ -939,20 +939,12 @@ open class PielView : View {
             val deltaX = upEvent.rawX - downEvent.rawX
             val deltaY = upEvent.rawY - downEvent.rawY
 
-//            Log.d("antonhttp", "DELTA X: " + deltaX)
-//            Log.d("antonhttp", "DELTA Y: " + deltaY)
-
             // Detect spin direction
             scrollTheta = vectorToScalarScroll(
                     velocityX,
                     velocityY,
                     upEvent.rawX - mRange.centerX(),
                     upEvent.rawY - mRange.centerY())
-
-//            Log.d("antonhttp", "SCROLL THETA: " + scrollTheta)
-//            Log.d("antonhttp", "ROTATION: " + rotation)
-//            Log.d("antonhttp", "SCROLL THETA VALUE: " + scrollTheta / 4)
-//            Log.d("antonhttp", "ROTATION SCROLL THETA VALUE: " + (rotation - scrollTheta / 4))
 
             hemisphere = when {
                 (scrollTheta / 4) > 0 -> {
@@ -1007,11 +999,6 @@ open class PielView : View {
 
         val dot: Float = (crossX * dx + crossY * dy)
         val sign: Float = sign(dot)
-
-//        Log.d("antonhttp", "******")
-//        Log.d("antonhttp", "DOT: " + dot)
-//        Log.d("antonhttp", "SIGN: " + sign)
-//        Log.d("antonhttp", "******")
 
         return l * sign
     }
