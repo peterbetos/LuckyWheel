@@ -71,8 +71,10 @@ class WheelSliceView @JvmOverloads constructor(
         slice_type.apply {
             setTextColor(if (isColorDark(item.color)) -0x1 else -0x1000000)
             text = item.topText
-            translationX = resources.getDimension(R.dimen.wheel_gift_card_label_offset)
             textSize = mTopTextSize.toFloat()
+            if (item.topText.contains("gift", true)) {
+                translationX = resources.getDimension(R.dimen.wheel_gift_card_label_offset)
+            }
         }
 
         slice_amount.apply {
@@ -143,7 +145,7 @@ class WheelSliceView @JvmOverloads constructor(
 
         animatorSet.addListener(object : AnimatorListenerAdapter() {
             override fun onAnimationEnd(animation: Animator?) {
-                visibility = View.GONE
+                visibility = View.VISIBLE
             }
         })
     }
