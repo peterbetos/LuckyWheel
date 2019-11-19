@@ -36,6 +36,7 @@ open class LuckyWheelView : ConstraintLayout, PielView.PieRotateListener, PielVi
     private var enableWheelBlur: Boolean = false
     private var mWheelSliceViewWidth: Int = 0
     private var mWheelSliceViewCircleRadius: Int = 0
+    private var showSliceView = false
 
     private var pielView: PielView? = null
     private var ivCursorView: ImageView? = null
@@ -135,6 +136,7 @@ open class LuckyWheelView : ConstraintLayout, PielView.PieRotateListener, PielVi
             enableWheelBlur = typedArray.getBoolean(R.styleable.LuckyWheelView_lkwEnableWheelBlur, false)
             mWheelSliceViewWidth = typedArray.getDimensionPixelSize(R.styleable.LuckyWheelView_lkwWheelSliceViewWidth, 500)
             mWheelSliceViewCircleRadius = typedArray.getDimensionPixelSize(R.styleable.LuckyWheelView_lkwWheelSliceViewCircleRadius, 300)
+            showSliceView = typedArray.getBoolean(R.styleable.LuckyWheelView_lkwShowSliceView, false)
             typedArray.recycle()
         }
 
@@ -164,6 +166,8 @@ open class LuckyWheelView : ConstraintLayout, PielView.PieRotateListener, PielVi
         ivCursorView!!.setImageDrawable(mCursorImage)
 
         wheelSliceView = constraintLayout.findViewById(R.id.wheel_node_1)
+        wheelSliceView?.setSliceViewVisibility(showSliceView)
+        wheelSliceView?.visibility = if (showSliceView) View.VISIBLE else View.GONE
         wheelSliceView?.setFontSizes(mTopTextSize, mSecondaryTextSize)
         (wheelSliceView?.layoutParams as LayoutParams).width = mWheelSliceViewWidth
         (wheelSliceView?.layoutParams as LayoutParams).circleRadius = mWheelSliceViewCircleRadius

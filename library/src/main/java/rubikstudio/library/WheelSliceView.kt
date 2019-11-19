@@ -27,6 +27,7 @@ class WheelSliceView @JvmOverloads constructor(
     private var slice_amount: TextView
     private var mTopTextSize: Int = 0
     private var mSecondaryTextSize: Int = 0
+    private var showSliceView = false
 
     companion object {
         private const val SLICE_HEIGHT_RATIO = 5 / 13f
@@ -57,6 +58,10 @@ class WheelSliceView @JvmOverloads constructor(
         slice_background = rootView.findViewById(R.id.slice_background)
         slice_type = rootView.findViewById(R.id.slice_type)
         slice_amount = rootView.findViewById(R.id.slice_amount)
+    }
+
+    fun setSliceViewVisibility(isShow:Boolean){
+        this.showSliceView = isShow
     }
 
     /**
@@ -145,7 +150,7 @@ class WheelSliceView @JvmOverloads constructor(
 
         animatorSet.addListener(object : AnimatorListenerAdapter() {
             override fun onAnimationEnd(animation: Animator?) {
-                visibility = View.GONE
+                visibility = if (showSliceView) View.VISIBLE else View.GONE
             }
         })
     }
