@@ -13,7 +13,6 @@ import android.provider.Settings
 import android.text.TextPaint
 import android.text.TextUtils
 import android.util.AttributeSet
-import android.util.Log
 import android.util.TypedValue
 import android.view.GestureDetector
 import android.view.MotionEvent
@@ -41,6 +40,9 @@ open class PielView : View {
         private const val VELOCITY_THRESHOLD = 500
         private const val FULL_ROTATION = 360f
     }
+
+    private var lastTouchAngle: Double = 0.0
+    private var touchAngle: Double = 0.0
 
     private var wheelBlur: Boolean = false
 
@@ -881,21 +883,35 @@ open class PielView : View {
     @SuppressLint("ClickableViewAccessibility")
     override fun onTouchEvent(event: MotionEvent): Boolean {
 
+        var xc = width / 2.0f
+        var yc = height / 2.0f
+
         if (!isRunning) {
             deltaX = event.x
             deltaY = event.y
-
-//            Log.d("antonhttp", "==========")
-//            Log.d("antonhttp", "X: " + deltaX)
-//            Log.d("antonhttp", "Y: " + deltaY)
-//            Log.d("antonhttp", "==========")
 
             // Pass the event to the detector to allow onDown event to be registered first
             flingGestureDetector.onTouchEvent(event)
 
             // Handle wheel preview
             when (event.actionMasked) {
+                MotionEvent.ACTION_DOWN -> {
+                    touchAngle = Math.toDegrees(Math.atan2((deltaX - xc).toDouble(), (yc - deltaY).toDouble()))
+                    return true
+                }
                 MotionEvent.ACTION_MOVE -> {
+                    lastTouchAngle = Math.toDegrees(Math.atan2((deltaX - xc).toDouble(), (yc - deltaY).toDouble()))
+
+                    if ((touchAngle - lastTouchAngle) > 45) {
+                        //Going CCW across the boundary
+                        hemisphere = Hemisphere.LEFT
+                    } else if ((touchAngle - lastTouchAngle) < -45) {
+                        //Going CW across the boundary
+                        hemisphere = Hemisphere.RIGHT
+                    } else {
+                        //Normal rotation, rotate the difference
+                        hemisphere = if ((lastTouchAngle - touchAngle) > 0) Hemisphere.RIGHT else Hemisphere.LEFT
+                    }
 
                     // save current rotation
                     previousRotation = currentRotation
@@ -908,13 +924,16 @@ open class PielView : View {
 
                     return true
                 }
+                MotionEvent.ACTION_UP -> {
+                    lastTouchAngle = Math.toDegrees(Math.atan2((deltaX - xc).toDouble(), (yc - deltaY).toDouble()))
+                    touchAngle = lastTouchAngle
+                    return true
+                }
             }
         }
 
         return true
     }
-
-    private var scrollTheta: Float = 0F
 
     // Custom Gesture listener to gain fling velocity properties
     private inner class WheelGestureListener : GestureDetector.SimpleOnGestureListener() {
@@ -939,24 +958,6 @@ open class PielView : View {
             val deltaX = upEvent.rawX - downEvent.rawX
             val deltaY = upEvent.rawY - downEvent.rawY
 
-            // Detect spin direction
-            scrollTheta = vectorToScalarScroll(
-                    velocityX,
-                    velocityY,
-                    upEvent.rawX - mRange.centerX(),
-                    upEvent.rawY - mRange.centerY())
-
-            hemisphere = when {
-                (scrollTheta / 4) > 0 -> {
-                    //Log.d("antonhttp", "SWIPE DIRECT CLOCKWISE")
-                    Hemisphere.RIGHT
-                }
-                else -> {
-                    //Log.d("antonhttp", "SWIPE DIRECT COUNTERCLOCKWISE")
-                    Hemisphere.LEFT
-                }
-            }
-
             // Determine which was greater -> movement along Y or X?
             if (abs(deltaX) > abs(deltaY)) {
                 // Now we know this is a horizontal swipe.
@@ -977,30 +978,6 @@ open class PielView : View {
 
             return true
         }
-    }
-
-    /**
-     * Helper method for translating (x,y) scroll vectors into scalar rotation of the pie.
-     *
-     * @param dx The x component of the current scroll vector.
-     * @param dy The y component of the current scroll vector.
-     * @param x  The x position of the current touch, relative to the pie center.
-     * @param y  The y position of the current touch, relative to the pie center.
-     * @return The scalar representing the change in angular position for this scroll.
-     */
-    private fun vectorToScalarScroll(dx: Float, dy: Float, x: Float, y: Float): Float {
-        // get the length of the vector
-        val l: Float = sqrt(dx * dx + dy * dy)
-
-        // decide if the scalar should be negative or positive by finding
-        // the dot product of the vector perpendicular to (x,y).
-        val crossX: Float = -y
-        val crossY: Float = x
-
-        val dot: Float = (crossX * dx + crossY * dy)
-        val sign: Float = sign(dot)
-
-        return l * sign
     }
 
     private enum class Hemisphere {
