@@ -123,6 +123,10 @@ class WheelSliceView @JvmOverloads constructor(
             visibility = View.VISIBLE
         }
 
+        val pulseFadeIn = ObjectAnimator.ofFloat(this, "alpha", 0.3f, 06f, 1f, 1f).apply {
+            duration = ANIM_SHINE_FADEOUT_SPEED
+        }
+
         val pulseX = ObjectAnimator.ofFloat(this, "scaleX", 1f, ANIM_PULSE_SCALE_MAX, ANIM_PULSE_SCALE_MAX, 1f).apply {
             duration = ANIM_PULSE_SCALE_SPEED
         }
@@ -144,7 +148,7 @@ class WheelSliceView @JvmOverloads constructor(
 
         val animatorSet = AnimatorSet()
         animatorSet.apply {
-            playTogether(pulseX, pulseY, shineMoveX, shineScaleY, shineFadeout)
+            playTogether(pulseFadeIn, pulseX, pulseY, shineMoveX, shineScaleY, shineFadeout)
             start()
         }
 
