@@ -6,7 +6,7 @@
     <dimen name="wheel_slice_label_margin">8dp</dimen>
     <dimen name="wheel_type_label_text_size">9dp</dimen>
     <dimen name="wheel_amount_label_text_size">28dp</dimen>
-    <dimen name="wheel_slice_width">200dp</dimen>
+    <dimen name="wheel_slice_width">300dp</dimen>
     <dimen name="wheel_view_radius">120dp</dimen>
     <dimen name="wheel_gift_card_label_offset">-12dp</dimen>
     <dimen name="wheel_shine_width">40dp</dimen>

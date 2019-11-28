@@ -1,9 +1,9 @@
 package rubikstudio.library
 
 import android.content.Context
+import android.graphics.RectF
 import android.graphics.drawable.Drawable
 import android.util.AttributeSet
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -20,6 +20,7 @@ import rubikstudio.library.model.LuckyItem
  */
 
 open class LuckyWheelView : ConstraintLayout, PielView.PieRotateListener, PielView.WheelSpinListener {
+
     private var mBackgroundColor: Int = 0
     private var mTextColor: Int = 0
     private var mTopTextSize: Int = 0
@@ -34,8 +35,7 @@ open class LuckyWheelView : ConstraintLayout, PielView.PieRotateListener, PielVi
     private var decelerationDuration: Int = 0
     private var luckyWheelWheelRotation: Int = 0
     private var enableWheelBlur: Boolean = false
-    private var mWheelSliceViewWidth: Int = 0
-    private var mWheelSliceViewCircleRadius: Int = 0
+    private var mWheelCircleDiameter: Int = 0
     private var showSliceView = false
 
     private var pielView: PielView? = null
@@ -134,8 +134,7 @@ open class LuckyWheelView : ConstraintLayout, PielView.PieRotateListener, PielVi
             decelerationDuration = typedArray.getInteger(R.styleable.LuckyWheelView_lkwDecelarationDuration, 3000)
             luckyWheelWheelRotation = typedArray.getInteger(R.styleable.LuckyWheelView_lkwWheelRotation, -90)
             enableWheelBlur = typedArray.getBoolean(R.styleable.LuckyWheelView_lkwEnableWheelBlur, false)
-            mWheelSliceViewWidth = typedArray.getDimensionPixelSize(R.styleable.LuckyWheelView_lkwWheelSliceViewWidth, 500)
-            mWheelSliceViewCircleRadius = typedArray.getDimensionPixelSize(R.styleable.LuckyWheelView_lkwWheelSliceViewCircleRadius, 300)
+            mWheelCircleDiameter = typedArray.getDimensionPixelSize(R.styleable.LuckyWheelView_lkwWheelCircleDiameter, 500)
             showSliceView = typedArray.getBoolean(R.styleable.LuckyWheelView_lkwShowSliceView, false)
             typedArray.recycle()
         }
@@ -169,8 +168,9 @@ open class LuckyWheelView : ConstraintLayout, PielView.PieRotateListener, PielVi
         wheelSliceView?.setSliceViewVisibility(showSliceView)
         wheelSliceView?.visibility = if (showSliceView) View.VISIBLE else View.GONE
         wheelSliceView?.setFontSizes(mTopTextSize, mSecondaryTextSize)
-        (wheelSliceView?.layoutParams as LayoutParams).width = mWheelSliceViewWidth
-        (wheelSliceView?.layoutParams as LayoutParams).circleRadius = mWheelSliceViewCircleRadius
+        (wheelSliceView?.layoutParams as LayoutParams).height = mWheelCircleDiameter
+        (wheelSliceView?.layoutParams as LayoutParams).width = mWheelCircleDiameter / 2
+        (wheelSliceView?.layoutParams as LayoutParams).circleRadius = (mWheelCircleDiameter / 2) / 2
 
         addView(constraintLayout)
 
@@ -259,4 +259,7 @@ open class LuckyWheelView : ConstraintLayout, PielView.PieRotateListener, PielVi
         pielView!!.setDecelarationDuration(decelarationDurationParam)
     }
 
+    override fun setRectF(rect: RectF) {
+        wheelSliceView!!.setRectF(rect)
+    }
 }

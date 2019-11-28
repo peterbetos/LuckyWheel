@@ -5,6 +5,7 @@ import android.animation.AnimatorListenerAdapter
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.content.Context
+import android.graphics.RectF
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
@@ -35,9 +36,9 @@ class WheelSliceView @JvmOverloads constructor(
         private const val ANIM_PULSE_SCALE_MAX = 1.03f
         private const val ANIM_PULSE_SCALE_SPEED = 500L
 
-        private const val ANIM_SHINE_SCALE_MIN = 0.1f
-        private const val ANIM_SHINE_MOVE_SPEED = 900L
-        private const val ANIM_SHINE_FADEOUT_SPEED = 1000L
+        private const val ANIM_SHINE_SCALE_MIN = 0f
+        private const val ANIM_SHINE_MOVE_SPEED = 1200L
+        private const val ANIM_SHINE_FADEOUT_SPEED = 1500L
     }
 
     private val shineStartX by lazy {
@@ -60,7 +61,7 @@ class WheelSliceView @JvmOverloads constructor(
         slice_amount = rootView.findViewById(R.id.slice_amount)
     }
 
-    fun setSliceViewVisibility(isShow:Boolean){
+    fun setSliceViewVisibility(isShow: Boolean) {
         this.showSliceView = isShow
     }
 
@@ -95,19 +96,14 @@ class WheelSliceView @JvmOverloads constructor(
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-        val sliceHeight = (MeasureSpec.getSize(widthMeasureSpec) * SLICE_HEIGHT_RATIO).roundToInt()
+        val sliceHeight = (MeasureSpec.getSize(heightMeasureSpec) * SLICE_HEIGHT_RATIO).roundToInt()
 
-        shine_fx.layoutParams.height = sliceHeight
+        shine_fx.layoutParams.height = sliceHeight / 2 + 40
 
-        // Force aspect ratio 13:5
         super.onMeasure(
                 widthMeasureSpec,
-                MeasureSpec.makeMeasureSpec(
-                        sliceHeight,
-                        MeasureSpec.EXACTLY
-                )
+                heightMeasureSpec
         )
-
     }
 
     /**
@@ -146,7 +142,7 @@ class WheelSliceView @JvmOverloads constructor(
             duration = ANIM_SHINE_FADEOUT_SPEED
         }
 
-        val pulseFadeOut = ObjectAnimator.ofFloat(this, "alpha", 1f, 1f, 0.6f, 0.3f, 0.1f).apply {
+        val pulseFadeOut = ObjectAnimator.ofFloat(this, "alpha", 1f, 1f, 0.6f, 0f).apply {
             duration = ANIM_SHINE_FADEOUT_SPEED
         }
 
@@ -168,5 +164,10 @@ class WheelSliceView @JvmOverloads constructor(
         val compareValue = 0.30
         return colorValue <= compareValue
     }
+
+    fun setRectF(rect: RectF) {
+        slice_background.setRectF(rect)
+    }
+
 }
 

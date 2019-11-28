@@ -1,10 +1,12 @@
 package rubikstudio.library
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.*
 import android.util.AttributeSet
 import android.view.View
 import androidx.annotation.ColorInt
+import android.graphics.RectF
 
 class WheelSliceBackground @JvmOverloads constructor(
         context: Context,
@@ -15,37 +17,22 @@ class WheelSliceBackground @JvmOverloads constructor(
     private val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         style = Paint.Style.FILL_AND_STROKE
     }
-    private val emptyVertices = FloatArray(0)
-    private val slicePath = Path()
+
+    private var mRange = RectF()
 
     fun setColor(@ColorInt colorInt: Int) {
         paint.color = colorInt
         postInvalidate()
     }
 
+    @SuppressLint("DrawAllocation")
     override fun onDraw(canvas: Canvas?) {
-        // Define a triangle with these vertices. [X1, Y1, X2 ...]
-        val vertices = emptyVertices
-                .plus(0f)
-                .plus(0f)
-                .plus(width * 1.03f)
-                .plus(height / 2f)
-                .plus(0f)
-                .plus(height.toFloat())
+        //paint.setColor(resources.getColor(android.R.color.transparent))
+        canvas?.drawArc(mRange, 165f, 30f, true, paint)
+    }
 
-        canvas?.drawPath(
-                slicePath.apply {
-                    moveTo(vertices[0], vertices[1])
-                    lineTo(vertices[2], vertices[3])
-                    lineTo(vertices[4], vertices[5])
-                    lineTo(vertices[0], vertices[1])
-                    close()
-                },
-                paint
-        )
-//
-//        val oval = RectF(10.0f, 10.0f, 1520.0f, 1520.0f)
-//        canvas?.drawArc(oval, 170f, 30f, true, paint)
+    fun setRectF(rect: RectF) {
+        mRange = rect
     }
 
 }

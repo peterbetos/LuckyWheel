@@ -38,21 +38,21 @@ class MainActivity : Activity() {
         val luckyItem1 = LuckyItem()
         luckyItem1.topText = "COINS"
         luckyItem1.secondaryText = "100"
-        luckyItem1.icon = R.drawable.test1
+        //luckyItem1.icon = R.drawable.test1
         luckyItem1.color = -0xc20
         data.add(luckyItem1)
 
         val luckyItem2 = LuckyItem()
         luckyItem2.topText = "COINS"
         luckyItem2.secondaryText = "200"
-        luckyItem2.icon = R.drawable.test2
+        //luckyItem2.icon = R.drawable.test2
         luckyItem2.color = -0x1f4e
         data.add(luckyItem2)
 
         val luckyItem3 = LuckyItem()
         luckyItem3.topText = "COINS"
         luckyItem3.secondaryText = "300"
-        luckyItem3.icon = R.drawable.test3
+        //luckyItem3.icon = R.drawable.test3
         luckyItem3.color = -0x3380
         data.add(luckyItem3)
 
@@ -60,21 +60,21 @@ class MainActivity : Activity() {
         val luckyItem4 = LuckyItem()
         luckyItem4.topText = "GIFT CARD"
         luckyItem4.secondaryText = "400"
-        luckyItem4.icon = R.drawable.test4
+        //luckyItem4.icon = R.drawable.test4
         luckyItem4.color = -0xc20
         data.add(luckyItem4)
 
         val luckyItem5 = LuckyItem()
         luckyItem5.topText = "COINS"
         luckyItem5.secondaryText = "500"
-        luckyItem5.icon = R.drawable.test5
+        //luckyItem5.icon = R.drawable.test5
         luckyItem5.color = -0x1f4e
         data.add(luckyItem5)
 
         val luckyItem6 = LuckyItem()
         luckyItem6.topText = "COINS"
         luckyItem6.secondaryText = "600"
-        luckyItem6.icon = R.drawable.test6
+        //luckyItem6.icon = R.drawable.test6
         luckyItem6.color = -0x3380
         data.add(luckyItem6)
         //////////////////
@@ -83,14 +83,14 @@ class MainActivity : Activity() {
         val luckyItem7 = LuckyItem()
         luckyItem7.topText = "COINS"
         luckyItem7.secondaryText = "700"
-        luckyItem7.icon = R.drawable.test7
+        //luckyItem7.icon = R.drawable.test7
         luckyItem7.color = -0xc20
         data.add(luckyItem7)
 
         val luckyItem8 = LuckyItem()
         luckyItem8.topText = "GIFT CARD"
         luckyItem8.secondaryText = "800"
-        luckyItem8.icon = R.drawable.test8
+        //luckyItem8.icon = R.drawable.test8
         luckyItem8.color = -0x1f4e
         data.add(luckyItem8)
 
@@ -98,7 +98,7 @@ class MainActivity : Activity() {
         val luckyItem9 = LuckyItem()
         luckyItem9.topText = "COINS"
         luckyItem9.secondaryText = "900"
-        luckyItem9.icon = R.drawable.test9
+        //luckyItem9.icon = R.drawable.test9
         luckyItem9.color = -0x3380
         data.add(luckyItem9)
         ////////////////////////
@@ -106,28 +106,28 @@ class MainActivity : Activity() {
         val luckyItem10 = LuckyItem()
         luckyItem10.topText = "COINS"
         luckyItem10.secondaryText = "1000"
-        luckyItem10.icon = R.drawable.test10
+        //luckyItem10.icon = R.drawable.test10
         luckyItem10.color = -0x1f4e
         data.add(luckyItem10)
 
         val luckyItem11 = LuckyItem()
         luckyItem11.topText = "COINS"
         luckyItem11.secondaryText = "2000"
-        luckyItem11.icon = R.drawable.test10
+        //luckyItem11.icon = R.drawable.test10
         luckyItem11.color = -0x1f4e
         data.add(luckyItem11)
 
         val luckyItem12 = LuckyItem()
         luckyItem12.topText = "GIFT CARD"
         luckyItem12.secondaryText = "3000"
-        luckyItem12.icon = R.drawable.test10
+        //luckyItem12.icon = R.drawable.test10
         luckyItem12.color = -0x1f4e
         data.add(luckyItem12)
 
         /////////////////////
 
         luckyWheelView.setData(data)
-        luckyWheelView.setPredeterminedNumber(11)
+        luckyWheelView.setPredeterminedNumber(10)
 
         /*luckyWheelView.setLuckyWheelBackgrouldColor(0xff0000ff);
         luckyWheelView.setLuckyWheelTextColor(0xffcc0000);

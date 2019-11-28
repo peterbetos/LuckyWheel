@@ -154,6 +154,10 @@ open class PielView : View {
                 resources.displayMetrics)
 
         mRange = RectF(mPadding.toFloat(), mPadding.toFloat(), (mPadding + mRadius).toFloat(), (mPadding + mRadius).toFloat())
+        wheelSpinListener.forEach { listener ->
+            listener.setRectF(mRange)
+        }
+
         val widgetwidthOffset = measuredWidth / 160f
         val mPaddingWithoutEdge = mPadding + (mEdgeWidth - widgetwidthOffset) / 2f
         val mRadiusWithoutEdge = mRadius - (mEdgeWidth - widgetwidthOffset)
@@ -994,5 +998,6 @@ open class PielView : View {
         fun onSpinStart(spinDirection: SpinDirection)
         fun onSpinComplete(index: Int)
         fun onRotation(value: Float)
+        fun setRectF(rect: RectF)
     }
 }

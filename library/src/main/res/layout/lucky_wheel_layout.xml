@@ -26,8 +26,8 @@
 
     <rubikstudio.library.WheelSliceView
         android:id="@+id/wheel_node_1"
-        android:layout_width="120dp"
-        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_height="900dp"
         android:visibility="gone"
         app:layout_constraintCircle="@id/center_point"
         app:layout_constraintCircleAngle="270"
