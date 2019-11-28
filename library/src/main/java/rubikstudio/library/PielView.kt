@@ -13,6 +13,7 @@ import android.provider.Settings
 import android.text.TextPaint
 import android.text.TextUtils
 import android.util.AttributeSet
+import android.util.Log
 import android.util.TypedValue
 import android.view.GestureDetector
 import android.view.MotionEvent
@@ -157,6 +158,7 @@ open class PielView : View {
         wheelSpinListener.forEach { listener ->
             listener.setRectF(mRange)
         }
+        Log.d("antonhttp", "mRange: " + mRange)
 
         val widgetwidthOffset = measuredWidth / 160f
         val mPaddingWithoutEdge = mPadding + (mEdgeWidth - widgetwidthOffset) / 2f
@@ -165,6 +167,7 @@ open class PielView : View {
         wheelSpinListener.forEach { listener ->
             listener.setEdgeRectF(mEdgeRange)
         }
+        Log.d("antonhttp", "mRange: " + mEdgeRange)
     }
 
     fun setData(luckyItemList: List<LuckyItem>) {
