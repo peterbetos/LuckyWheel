@@ -168,6 +168,7 @@ open class LuckyWheelView : ConstraintLayout, PielView.PieRotateListener, PielVi
         wheelSliceView?.setSliceViewVisibility(showSliceView)
         wheelSliceView?.visibility = if (showSliceView) View.VISIBLE else View.GONE
         wheelSliceView?.setFontSizes(mTopTextSize, mSecondaryTextSize)
+        wheelSliceView?.setSliceAttributes(mEdgeWidth, mBorderColor)
         (wheelSliceView?.layoutParams as LayoutParams).height = mWheelCircleDiameter
         (wheelSliceView?.layoutParams as LayoutParams).width = mWheelCircleDiameter / 2
         (wheelSliceView?.layoutParams as LayoutParams).circleRadius = (mWheelCircleDiameter / 2) / 2
@@ -261,5 +262,9 @@ open class LuckyWheelView : ConstraintLayout, PielView.PieRotateListener, PielVi
 
     override fun setRectF(rect: RectF) {
         wheelSliceView!!.setRectF(rect)
+    }
+
+    override fun setEdgeRectF(rect: RectF) {
+        wheelSliceView!!.setEdgeRectF(rect)
     }
 }

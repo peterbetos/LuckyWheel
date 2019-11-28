@@ -25,10 +25,9 @@
 
     <rubikstudio.library.LuckyWheelView
         android:id="@+id/luckyWheel"
-        android:layout_width="600dp"
-        android:layout_height="600dp"
+        android:layout_width="575dp"
+        android:layout_height="575dp"
         android:layout_centerInParent="true"
-        android:background="#CCC"
         app:layout_constraintBottom_toBottomOf="@+id/play"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -37,13 +36,15 @@
         app:lkwCenterImage="@drawable/wheel2"
         app:lkwCursor="@drawable/ic_cursor"
         app:lkwDecelarationDuration="2000"
+        app:lkwEdgeColor="@color/roulette_edge_color"
+        app:lkwEdgeWidth="@dimen/roulette_edge_width_dp"
         app:lkwSecondaryTextSize="25sp"
-        app:lkwShowSliceView="false"
+        app:lkwShowSliceView="true"
         app:lkwSpinDuration="3000"
         app:lkwTopTextColor="#263238"
         app:lkwTopTextPadding="15dp"
         app:lkwTopTextSize="12sp"
-        app:lkwWheelCircleDiameter="600dp"
+        app:lkwWheelCircleDiameter="575dp"
         app:lkwWheelRotation="-90" />
 
     <!--    app:lkwWheelSliceViewCircleRadius="125dp"-->

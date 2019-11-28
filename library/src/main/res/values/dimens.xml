@@ -15,5 +15,5 @@
 
     <!-- Wheel Border -->
     <dimen name="wheel_border_thickness">8dp</dimen>
-
+    <dimen name="roulette_edge_width_dp">11dp</dimen>
 </resources>

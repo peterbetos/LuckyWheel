@@ -169,5 +169,13 @@ class WheelSliceView @JvmOverloads constructor(
         slice_background.setRectF(rect)
     }
 
+    fun setEdgeRectF(rect:RectF){
+        slice_background.setEdgeRectF(rect)
+    }
+
+    fun setSliceAttributes(mEdgeWidth: Int, mBorderColor: Int){
+        slice_background.setSliceAttributes(mEdgeWidth, mBorderColor)
+    }
+
 }
 

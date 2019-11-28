@@ -162,6 +162,9 @@ open class PielView : View {
         val mPaddingWithoutEdge = mPadding + (mEdgeWidth - widgetwidthOffset) / 2f
         val mRadiusWithoutEdge = mRadius - (mEdgeWidth - widgetwidthOffset)
         mEdgeRange = RectF(mPaddingWithoutEdge, mPaddingWithoutEdge, mPaddingWithoutEdge + mRadiusWithoutEdge, mPaddingWithoutEdge + mRadiusWithoutEdge)
+        wheelSpinListener.forEach { listener ->
+            listener.setEdgeRectF(mEdgeRange)
+        }
     }
 
     fun setData(luckyItemList: List<LuckyItem>) {
@@ -999,5 +1002,6 @@ open class PielView : View {
         fun onSpinComplete(index: Int)
         fun onRotation(value: Float)
         fun setRectF(rect: RectF)
+        fun setEdgeRectF(rect: RectF)
     }
 }

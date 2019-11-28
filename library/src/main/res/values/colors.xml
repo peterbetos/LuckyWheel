@@ -3,4 +3,5 @@
     <color name="shine_end">#03ffffff</color>
     <color name="slice_shine_white">#FFFFFFFF</color>
     <color name="wheel_border">#FFE1E5EC</color>
+    <color name="roulette_edge_color">#FFCACACA</color>
 </resources>
