@@ -7,7 +7,6 @@ import android.util.AttributeSet
 import android.view.View
 import androidx.annotation.ColorInt
 import android.graphics.RectF
-import android.util.Log
 
 class WheelSliceBackground @JvmOverloads constructor(
         context: Context,
@@ -24,7 +23,8 @@ class WheelSliceBackground @JvmOverloads constructor(
     private var colorInt: Int = 0
     private var mEdgeWidth: Int = 0
     private var mBorderColor: Int = 0
-    private var mRadius:Float = 0f
+    private var mRadius: Float = 0f
+    private var startAngle: Float = 0f
 
     fun setColor(@ColorInt colorInt: Int) {
         paint.color = colorInt
@@ -37,13 +37,11 @@ class WheelSliceBackground @JvmOverloads constructor(
         //paint.setColor(resources.getColor(android.R.color.transparent))
         paint.style = Paint.Style.FILL
         paint.color = colorInt
-        canvas?.drawArc(mRange, 170f, mRadius, true, paint)
-        Log.d("antonhttp", "Passed mRange: " + mRange)
+        canvas?.drawArc(mRange, startAngle, mRadius, true, paint)
         paint.style = Paint.Style.STROKE
         paint.color = mBorderColor
         paint.strokeWidth = mEdgeWidth.toFloat()
-        canvas?.drawArc(mEdgeRange, 170f, mRadius, true, paint)
-        Log.d("antonhttp", "Passed mEdgeRange: " + mEdgeRange)
+        canvas?.drawArc(mEdgeRange, startAngle, mRadius, true, paint)
     }
 
     fun setRectF(rect: RectF) {
@@ -59,8 +57,9 @@ class WheelSliceBackground @JvmOverloads constructor(
         this.mBorderColor = borderColor
     }
 
-    fun setRadius(radius:Float){
+    fun setRadius(radius: Float) {
         mRadius = radius
+        startAngle = 180 - (mRadius / 2)
     }
 
 }
