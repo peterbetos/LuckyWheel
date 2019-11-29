@@ -45,9 +45,11 @@ class WheelSliceView @JvmOverloads constructor(
         -1.05f * resources.getDimensionPixelSize(R.dimen.wheel_shine_width)
     }
 
-    private val shineEndX by lazy {
-        resources.getDimensionPixelSize(R.dimen.wheel_slice_width).toFloat()
-    }
+//    private val shineEndX by lazy {
+//        resources.getDimensionPixelSize(R.dimen.wheel_slice_width).toFloat()
+//    }
+
+    private var shineEndX : Float = 0f
 
     private val shineStartY by lazy {
         -1f * resources.getDimensionPixelSize(R.dimen.wheel_shine_y_shift)
@@ -186,6 +188,10 @@ class WheelSliceView @JvmOverloads constructor(
 
     fun setSliceAttributes(mEdgeWidth: Int, mBorderColor: Int) {
         slice_background.setSliceAttributes(mEdgeWidth, mBorderColor)
+    }
+
+    fun setShineWidth(width:Int){
+        shineEndX = width.toFloat()
     }
 
 }

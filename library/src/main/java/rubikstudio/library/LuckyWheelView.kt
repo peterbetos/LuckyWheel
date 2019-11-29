@@ -175,6 +175,7 @@ open class LuckyWheelView : ConstraintLayout, PielView.PieRotateListener, PielVi
         (wheelSliceView?.layoutParams as LayoutParams).height = mWheelCircleDiameter
         (wheelSliceView?.layoutParams as LayoutParams).width = mWheelCircleDiameter / 2
         (wheelSliceView?.layoutParams as LayoutParams).circleRadius = (mWheelCircleDiameter / 2) / 2
+        wheelSliceView?.setShineWidth(mWheelCircleDiameter / 2)
 
         addView(constraintLayout)
 
