@@ -83,7 +83,7 @@ open class PielView : View {
 
     private var borderColor = 0
     private var defaultBackgroundColor = 0
-    private var drawableCenterImage: Drawable? = null
+    //private var drawableCenterImage: Drawable? = null
     private var textColor = 0
 
     private var predeterminedNumber = -1
@@ -191,10 +191,10 @@ open class PielView : View {
     }
 
 
-    fun setPieCenterImage(drawable: Drawable) {
-        drawableCenterImage = drawable
-        invalidate()
-    }
+//    fun setPieCenterImage(drawable: Drawable) {
+//        drawableCenterImage = drawable
+//        invalidate()
+//    }
 
     fun setTopTextSize(size: Int) {
         mTopTextSize = size
@@ -293,7 +293,7 @@ open class PielView : View {
             tmpAngle += sweepAngle
         }
 
-        drawCenterImage(canvas, drawableCenterImage)
+        //drawCenterImage(canvas, drawableCenterImage)
     }
 
     private fun drawBackgroundColor(canvas: Canvas, color: Int) {

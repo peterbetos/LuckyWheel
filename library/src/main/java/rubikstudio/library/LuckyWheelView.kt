@@ -29,13 +29,13 @@ open class LuckyWheelView : ConstraintLayout, PielView.PieRotateListener, PielVi
     private var mTopTextPadding: Int = 0
     private var mSecondaryTextPadding: Int = 0
     private var mEdgeWidth: Int = 0
-    private var mCenterImage: Drawable? = null
     private var mCursorImage: Drawable? = null
     private var spinDuration: Int = 0
     private var decelerationDuration: Int = 0
     private var luckyWheelWheelRotation: Int = 0
     private var enableWheelBlur: Boolean = false
     private var mWheelCircleDiameter: Int = 0
+    private var mWheelCenterCircleSize: Int = 0
     private var showSliceView = false
 
     private var pielView: PielView? = null
@@ -127,7 +127,6 @@ open class LuckyWheelView : ConstraintLayout, PielView.PieRotateListener, PielVi
             mTopTextPadding = typedArray.getDimensionPixelSize(R.styleable.LuckyWheelView_lkwTopTextPadding, LuckyWheelUtils.convertDpToPixel(10f, context).toInt()) + LuckyWheelUtils.convertDpToPixel(10f, context).toInt()
             mSecondaryTextPadding = typedArray.getDimensionPixelSize(R.styleable.LuckyWheelView_lkwSecondaryTextPadding, 0)
             mCursorImage = typedArray.getDrawable(R.styleable.LuckyWheelView_lkwCursor)
-            mCenterImage = typedArray.getDrawable(R.styleable.LuckyWheelView_lkwCenterImage)
             mEdgeWidth = typedArray.getDimensionPixelSize(R.styleable.LuckyWheelView_lkwEdgeWidth, LuckyWheelUtils.convertDpToPixel(10f, context).toInt())
             mBorderColor = typedArray.getColor(R.styleable.LuckyWheelView_lkwEdgeColor, 0)
             spinDuration = typedArray.getInteger(R.styleable.LuckyWheelView_lkwSpinDuration, 2000)
@@ -135,6 +134,7 @@ open class LuckyWheelView : ConstraintLayout, PielView.PieRotateListener, PielVi
             luckyWheelWheelRotation = typedArray.getInteger(R.styleable.LuckyWheelView_lkwWheelRotation, -90)
             enableWheelBlur = typedArray.getBoolean(R.styleable.LuckyWheelView_lkwEnableWheelBlur, false)
             mWheelCircleDiameter = typedArray.getDimensionPixelSize(R.styleable.LuckyWheelView_lkwWheelCircleDiameter, 500)
+            mWheelCenterCircleSize = typedArray.getDimensionPixelSize(R.styleable.LuckyWheelView_lkwWheelCenterCircleSize, 150)
             showSliceView = typedArray.getBoolean(R.styleable.LuckyWheelView_lkwShowSliceView, false)
             typedArray.recycle()
         }
@@ -153,7 +153,6 @@ open class LuckyWheelView : ConstraintLayout, PielView.PieRotateListener, PielVi
         pielView!!.setTopTextSize(mTopTextSize)
         pielView!!.setSecondaryTextSizeSize(mSecondaryTextSize)
         pielView!!.setSecondaryTextPadding(mSecondaryTextPadding)
-        pielView!!.setPieCenterImage(mCenterImage!!)
         pielView!!.setBorderColor(mBorderColor)
         pielView!!.setBorderWidth(mEdgeWidth)
         pielView!!.setWheelRotation(luckyWheelWheelRotation)
@@ -163,6 +162,10 @@ open class LuckyWheelView : ConstraintLayout, PielView.PieRotateListener, PielVi
             pielView!!.setPieTextColor(mTextColor)
 
         ivCursorView!!.setImageDrawable(mCursorImage)
+
+        val centerView = constraintLayout.findViewById<View>(R.id.center_point)
+        (centerView.layoutParams as ViewGroup.LayoutParams).height = mWheelCenterCircleSize
+        (centerView.layoutParams as ViewGroup.LayoutParams).width = mWheelCenterCircleSize
 
         wheelSliceView = constraintLayout.findViewById(R.id.wheel_node_1)
         wheelSliceView?.setSliceViewVisibility(showSliceView)
@@ -209,10 +212,6 @@ open class LuckyWheelView : ConstraintLayout, PielView.PieRotateListener, PielVi
 
     fun setLuckyWheelCursorImage(drawable: Int) {
         ivCursorView!!.setBackgroundResource(drawable)
-    }
-
-    fun setLuckyWheelCenterImage(drawable: Drawable) {
-        pielView!!.setPieCenterImage(drawable)
     }
 
     fun setBorderColor(color: Int) {

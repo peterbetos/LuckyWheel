@@ -20,6 +20,7 @@
         <attr name="lkwWheelRotation" format="integer"/>
         <attr name="lkwEnableWheelBlur" format="boolean"/>
         <attr name="lkwWheelCircleDiameter" format="dimension" />
+        <attr name="lkwWheelCenterCircleSize" format="dimension" />
         <attr name="lkwShowSliceView" format="boolean"/>
     </declare-styleable>
 

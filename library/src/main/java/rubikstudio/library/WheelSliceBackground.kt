@@ -21,7 +21,7 @@ class WheelSliceBackground @JvmOverloads constructor(
 
     private var mRange = RectF()
     private var mEdgeRange = RectF()
-    private var colorInt : Int = 0
+    private var colorInt: Int = 0
     private var mEdgeWidth: Int = 0
     private var mBorderColor: Int = 0
 
@@ -49,11 +49,11 @@ class WheelSliceBackground @JvmOverloads constructor(
         mRange = rect
     }
 
-    fun setEdgeRectF(rect:RectF){
+    fun setEdgeRectF(rect: RectF) {
         mEdgeRange = rect
     }
 
-    fun setSliceAttributes(edgeWith: Int, borderColor: Int){
+    fun setSliceAttributes(edgeWith: Int, borderColor: Int) {
         this.mEdgeWidth = edgeWith
         this.mBorderColor = borderColor
     }
