@@ -24,6 +24,7 @@ class WheelSliceBackground @JvmOverloads constructor(
     private var colorInt: Int = 0
     private var mEdgeWidth: Int = 0
     private var mBorderColor: Int = 0
+    private var mRadius:Float = 0f
 
     fun setColor(@ColorInt colorInt: Int) {
         paint.color = colorInt
@@ -33,15 +34,15 @@ class WheelSliceBackground @JvmOverloads constructor(
 
     @SuppressLint("DrawAllocation")
     override fun onDraw(canvas: Canvas?) {
-        //paint.setColor(resources.getColor(android.R.color.white))
+        //paint.setColor(resources.getColor(android.R.color.transparent))
         paint.style = Paint.Style.FILL
         paint.color = colorInt
-        canvas?.drawArc(mRange, 165f, 30f, true, paint)
+        canvas?.drawArc(mRange, 170f, mRadius, true, paint)
         Log.d("antonhttp", "Passed mRange: " + mRange)
         paint.style = Paint.Style.STROKE
         paint.color = mBorderColor
         paint.strokeWidth = mEdgeWidth.toFloat()
-        canvas?.drawArc(mEdgeRange, 165f, 30f, true, paint)
+        canvas?.drawArc(mEdgeRange, 170f, mRadius, true, paint)
         Log.d("antonhttp", "Passed mEdgeRange: " + mEdgeRange)
     }
 
@@ -56,6 +57,10 @@ class WheelSliceBackground @JvmOverloads constructor(
     fun setSliceAttributes(edgeWith: Int, borderColor: Int) {
         this.mEdgeWidth = edgeWith
         this.mBorderColor = borderColor
+    }
+
+    fun setRadius(radius:Float){
+        mRadius = radius
     }
 
 }

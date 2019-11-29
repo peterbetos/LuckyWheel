@@ -124,6 +124,34 @@ class MainActivity : Activity() {
         luckyItem12.color = -0x1f4e
         data.add(luckyItem12)
 
+        val luckyItem13 = LuckyItem()
+        luckyItem13.topText = "GIFT CARD"
+        luckyItem13.secondaryText = "3000"
+        //luckyItem12.icon = R.drawable.test10
+        luckyItem13.color = -0x1f4e
+        data.add(luckyItem13)
+
+        val luckyItem14 = LuckyItem()
+        luckyItem14.topText = "GIFT CARD"
+        luckyItem14.secondaryText = "3000"
+        //luckyItem12.icon = R.drawable.test10
+        luckyItem14.color = -0x1f4e
+        data.add(luckyItem14)
+
+        val luckyItem15 = LuckyItem()
+        luckyItem15.topText = "GIFT CARD"
+        luckyItem15.secondaryText = "3000"
+        //luckyItem12.icon = R.drawable.test10
+        luckyItem15.color = -0x1f4e
+        data.add(luckyItem15)
+
+        val luckyItem16 = LuckyItem()
+        luckyItem16.topText = "GIFT CARD"
+        luckyItem16.secondaryText = "3000"
+        //luckyItem12.icon = R.drawable.test10
+        luckyItem16.color = -0x1f4e
+        data.add(luckyItem16)
+
         /////////////////////
 
         luckyWheelView.setData(data)

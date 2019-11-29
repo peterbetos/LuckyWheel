@@ -194,5 +194,9 @@ class WheelSliceView @JvmOverloads constructor(
         shineEndX = width.toFloat()
     }
 
+    fun setRadius(radius:Float){
+        slice_background.setRadius(radius)
+    }
+
 }
 

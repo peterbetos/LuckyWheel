@@ -19,8 +19,6 @@
         android:id="@+id/slice_type"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/wheel_slice_label_margin"
-        android:layout_marginBottom="@dimen/wheel_slice_label_margin"
         android:rotation="-90"
         android:textColor="#000"
         android:textSize="@dimen/wheel_type_label_text_size"
@@ -29,14 +27,13 @@
         app:layout_constraintHorizontal_bias="0.04"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.49"
         tools:text="GIFT CARD" />
 
     <TextView
         android:id="@+id/slice_amount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/wheel_slice_label_margin"
-        android:layout_marginBottom="@dimen/wheel_slice_label_margin"
         android:textAlignment="center"
         android:textColor="#000"
         android:textSize="@dimen/wheel_amount_label_text_size"
@@ -46,6 +43,7 @@
         app:layout_constraintHorizontal_bias="0.05"
         app:layout_constraintStart_toEndOf="@+id/slice_type"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.49"
         tools:text="100" />
 
     <androidx.appcompat.widget.AppCompatImageView

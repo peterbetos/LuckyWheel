@@ -229,6 +229,7 @@ open class LuckyWheelView : ConstraintLayout, PielView.PieRotateListener, PielVi
     fun setData(data: List<LuckyItem>) {
         this.mLuckyItemList = data
         pielView!!.setData(data)
+        wheelSliceView?.setRadius(360f / data.size)
     }
 
     /**
