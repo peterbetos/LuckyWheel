@@ -929,6 +929,12 @@ open class PielView : View {
                     val angle = currentRotation - previousRotation
                     rotation += angle
 
+                    if (wheelSpinListener != null) {
+                        wheelSpinListener.forEach { listener ->
+                            listener.hideSliceView()
+                        }
+                    }
+
                     return true
                 }
                 MotionEvent.ACTION_UP -> {
@@ -1003,5 +1009,6 @@ open class PielView : View {
         fun onRotation(value: Float)
         fun setRectF(rect: RectF)
         fun setEdgeRectF(rect: RectF)
+        fun hideSliceView()
     }
 }

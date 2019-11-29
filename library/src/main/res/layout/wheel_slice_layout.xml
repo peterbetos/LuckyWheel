@@ -26,7 +26,7 @@
         android:textSize="@dimen/wheel_type_label_text_size"
         app:layout_constraintBottom_toBottomOf="@+id/slice_background"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.02"
+        app:layout_constraintHorizontal_bias="0.04"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="GIFT CARD" />
@@ -43,7 +43,7 @@
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@+id/slice_background"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.05"
+        app:layout_constraintHorizontal_bias="0.04"
         app:layout_constraintStart_toEndOf="@+id/slice_type"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="100" />

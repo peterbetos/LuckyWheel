@@ -76,6 +76,7 @@ open class LuckyWheelView : ConstraintLayout, PielView.PieRotateListener, PielVi
                 }
                 )
         )
+
     }
 
     override fun onSpinComplete(index: Int) {
@@ -267,5 +268,9 @@ open class LuckyWheelView : ConstraintLayout, PielView.PieRotateListener, PielVi
 
     override fun setEdgeRectF(rect: RectF) {
         wheelSliceView!!.setEdgeRectF(rect)
+    }
+
+    override fun hideSliceView() {
+        wheelSliceView!!.visibility = View.GONE
     }
 }

@@ -144,9 +144,9 @@ class WheelSliceView @JvmOverloads constructor(
             duration = ANIM_SHINE_FADEOUT_SPEED
         }
 
-        val pulseFadeOut = ObjectAnimator.ofFloat(this, "alpha", 1f, 1f, 0.8f, 0f).apply {
-            duration = ANIM_SHINE_FADEOUT_SPEED
-        }
+//        val pulseFadeOut = ObjectAnimator.ofFloat(this, "alpha", 1f, 1f, 0.8f, 0f).apply {
+//            duration = ANIM_SHINE_FADEOUT_SPEED
+//        }
 
         val animatorSet = AnimatorSet()
         val animatorEnd = AnimatorSet()
@@ -159,7 +159,7 @@ class WheelSliceView @JvmOverloads constructor(
         animatorSet.addListener(object : AnimatorListenerAdapter() {
             override fun onAnimationEnd(animation: Animator?) {
                 animatorEnd.apply {
-                    playTogether(shineMoveX, shineScaleY, shineFadeout, pulseFadeOut)
+                    playTogether(shineMoveX, shineScaleY, shineFadeout)
                     start()
                 }
             }
