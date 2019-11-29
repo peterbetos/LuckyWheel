@@ -167,7 +167,7 @@ open class PielView : View {
         wheelSpinListener.forEach { listener ->
             listener.setEdgeRectF(mEdgeRange)
         }
-        Log.d("antonhttp", "mRange: " + mEdgeRange)
+        Log.d("antonhttp", "mEdgeRange: " + mEdgeRange)
     }
 
     fun setData(luckyItemList: List<LuckyItem>) {

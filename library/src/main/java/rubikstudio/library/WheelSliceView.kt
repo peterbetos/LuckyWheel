@@ -26,8 +26,8 @@ class WheelSliceView @JvmOverloads constructor(
     private var slice_background: WheelSliceBackground
     private var slice_type: TextView
     private var slice_amount: TextView
-    private var mTopTextSize: Int = 0
-    private var mSecondaryTextSize: Int = 0
+    private var mTopTextSize: Float = 0f
+    private var mSecondaryTextSize: Float = 0f
     private var showSliceView = false
 
     companion object {
@@ -77,7 +77,7 @@ class WheelSliceView @JvmOverloads constructor(
         slice_type.apply {
             setTextColor(if (isColorDark(item.color)) -0x1 else -0x1000000)
             text = item.topText
-            textSize = mTopTextSize.toFloat()
+            textSize = mTopTextSize
             if (item.topText.contains("gift", true)) {
                 translationX = resources.getDimension(R.dimen.wheel_gift_card_label_offset)
             }
@@ -86,13 +86,13 @@ class WheelSliceView @JvmOverloads constructor(
         slice_amount.apply {
             setTextColor(if (isColorDark(item.color)) -0x1 else -0x1000000)
             text = item.secondaryText
-            textSize = mSecondaryTextSize.toFloat()
+            textSize = mSecondaryTextSize
         }
     }
 
     fun setFontSizes(topTextSize: Int, bottomTextSize: Int) {
-        mTopTextSize = topTextSize / 2
-        mSecondaryTextSize = bottomTextSize / 2
+        mTopTextSize = (topTextSize / resources.displayMetrics.scaledDensity)
+        mSecondaryTextSize = bottomTextSize / resources.displayMetrics.scaledDensity
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
@@ -169,11 +169,11 @@ class WheelSliceView @JvmOverloads constructor(
         slice_background.setRectF(rect)
     }
 
-    fun setEdgeRectF(rect:RectF){
+    fun setEdgeRectF(rect: RectF) {
         slice_background.setEdgeRectF(rect)
     }
 
-    fun setSliceAttributes(mEdgeWidth: Int, mBorderColor: Int){
+    fun setSliceAttributes(mEdgeWidth: Int, mBorderColor: Int) {
         slice_background.setSliceAttributes(mEdgeWidth, mBorderColor)
     }
 
