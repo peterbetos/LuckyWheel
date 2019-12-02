@@ -95,7 +95,7 @@ class WheelSliceView @JvmOverloads constructor(
             }
         }
 
-        slice_amount.setPadding((mTopTextPadding / resources.displayMetrics.density).toInt(), 0, 0, 0)
+        //slice_amount.setPadding((mTopTextPadding / resources.displayMetrics.density).toInt(), 0, 0, 0)
     }
 
     fun setFontSizes(topTextSize: Int, bottomTextSize: Int) {
