@@ -82,7 +82,7 @@ class WheelSliceView @JvmOverloads constructor(
             text = item.topText
             textSize = mTopTextSize
             if (item.topText.contains("gift", true)) {
-                translationX = (mTopTextPadding * -1) / resources.displayMetrics.density
+                translationX = (mTopTextPadding * -1) / resources.displayMetrics.scaledDensity
             }
         }
 
@@ -91,7 +91,7 @@ class WheelSliceView @JvmOverloads constructor(
             text = item.secondaryText
             textSize = mSecondaryTextSize
             if (item.topText.contains("gift", true)) {
-                translationX = (mTopTextPadding * -1) / resources.displayMetrics.density
+                translationX = (mTopTextPadding * -1) / resources.displayMetrics.scaledDensity
             }
         }
 
@@ -127,9 +127,9 @@ class WheelSliceView @JvmOverloads constructor(
             visibility = View.VISIBLE
         }
 
-        val pulseFadeIn = ObjectAnimator.ofFloat(this, "alpha", 0.3f, 06f, 1f, 1f).apply {
-            duration = ANIM_SHINE_FADEOUT_SPEED
-        }
+//        val pulseFadeIn = ObjectAnimator.ofFloat(this, "alpha", 0.3f, 06f, 1f, 1f).apply {
+//            duration = ANIM_SHINE_FADEOUT_SPEED
+//        }
 
         val pulseX = ObjectAnimator.ofFloat(this, "scaleX", 1f, ANIM_PULSE_SCALE_MAX, ANIM_PULSE_SCALE_MAX, 1f).apply {
             duration = ANIM_PULSE_SCALE_SPEED
@@ -158,7 +158,7 @@ class WheelSliceView @JvmOverloads constructor(
         val animatorEnd = AnimatorSet()
 
         animatorSet.apply {
-            playTogether(pulseFadeIn, pulseX, pulseY)
+            playTogether(pulseX, pulseY)
             start()
         }
 
@@ -173,7 +173,7 @@ class WheelSliceView @JvmOverloads constructor(
 
         animatorEnd.addListener(object : AnimatorListenerAdapter() {
             override fun onAnimationEnd(animation: Animator?) {
-                visibility = if (showSliceView) View.VISIBLE else View.GONE
+                visibility = View.VISIBLE
             }
         })
     }
