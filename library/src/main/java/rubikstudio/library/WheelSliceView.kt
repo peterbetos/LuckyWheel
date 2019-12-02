@@ -82,7 +82,7 @@ class WheelSliceView @JvmOverloads constructor(
             text = item.topText
             textSize = mTopTextSize
             if (item.topText.contains("gift", true)) {
-                translationX = (mTopTextPadding * -1) / resources.displayMetrics.scaledDensity
+                translationX = ((mTopTextPadding / resources.displayMetrics.density) + 5) * -1
             }
         }
 
@@ -91,11 +91,11 @@ class WheelSliceView @JvmOverloads constructor(
             text = item.secondaryText
             textSize = mSecondaryTextSize
             if (item.topText.contains("gift", true)) {
-                translationX = (mTopTextPadding * -1) / resources.displayMetrics.scaledDensity
+                translationX = ((mTopTextPadding / resources.displayMetrics.density) + 20) * -1
             }
         }
 
-        //slice_amount.setPadding((mTopTextPadding / resources.displayMetrics.density).toInt(), 0, 0, 0)
+        slice_amount.setPadding((mTopTextPadding / resources.displayMetrics.density).toInt(), 0, 0, 0)
     }
 
     fun setFontSizes(topTextSize: Int, bottomTextSize: Int) {
