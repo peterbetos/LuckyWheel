@@ -81,12 +81,18 @@ class WheelSliceView @JvmOverloads constructor(
             setTextColor(if (isColorDark(item.color)) -0x1 else -0x1000000)
             text = item.topText
             textSize = mTopTextSize
+            if (item.topText.contains("gift", true)) {
+                translationX = (mTopTextPadding * -1) / resources.displayMetrics.density
+            }
         }
 
         slice_amount.apply {
             setTextColor(if (isColorDark(item.color)) -0x1 else -0x1000000)
             text = item.secondaryText
             textSize = mSecondaryTextSize
+            if (item.topText.contains("gift", true)) {
+                translationX = (mTopTextPadding * -1) / resources.displayMetrics.density
+            }
         }
 
         //slice_amount.setPadding((mTopTextPadding / resources.displayMetrics.density).toInt(), 0, 0, 0)
