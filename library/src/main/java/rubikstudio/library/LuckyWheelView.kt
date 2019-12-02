@@ -177,6 +177,7 @@ open class LuckyWheelView : ConstraintLayout, PielView.PieRotateListener, PielVi
         (wheelSliceView?.layoutParams as LayoutParams).width = mWheelCircleDiameter / 2
         (wheelSliceView?.layoutParams as LayoutParams).circleRadius = (mWheelCircleDiameter / 2) / 2
         wheelSliceView?.setShineWidth(mWheelCircleDiameter / 2)
+        wheelSliceView?.setPadding(mTopTextPadding)
 
         addView(constraintLayout)
 
@@ -271,6 +272,6 @@ open class LuckyWheelView : ConstraintLayout, PielView.PieRotateListener, PielVi
     }
 
     override fun hideSliceView() {
-        wheelSliceView!!.visibility = View.GONE
+        //wheelSliceView!!.visibility = View.GONE
     }
 }

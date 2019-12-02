@@ -29,6 +29,7 @@ class WheelSliceView @JvmOverloads constructor(
     private var mTopTextSize: Float = 0f
     private var mSecondaryTextSize: Float = 0f
     private var showSliceView = false
+    private var mTopTextPadding: Int = 0
 
     companion object {
         private const val SLICE_HEIGHT_RATIO = 5 / 13f
@@ -90,6 +91,8 @@ class WheelSliceView @JvmOverloads constructor(
             text = item.secondaryText.replace(" ", "")
             textSize = mSecondaryTextSize
         }
+
+        slice_amount.setPadding((mTopTextPadding / resources.displayMetrics.density).toInt(), 0, 0, 0)
     }
 
     fun setFontSizes(topTextSize: Int, bottomTextSize: Int) {
@@ -196,6 +199,10 @@ class WheelSliceView @JvmOverloads constructor(
 
     fun setRadius(radius: Float) {
         slice_background.setRadius(radius)
+    }
+
+    fun setPadding(padding: Int) {
+        mTopTextPadding = padding
     }
 
 }
