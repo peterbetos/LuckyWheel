@@ -49,7 +49,7 @@ class WheelSliceView @JvmOverloads constructor(
 //        resources.getDimensionPixelSize(R.dimen.wheel_slice_width).toFloat()
 //    }
 
-    private var shineEndX : Float = 0f
+    private var shineEndX: Float = 0f
 
     private val shineStartY by lazy {
         -1f * resources.getDimensionPixelSize(R.dimen.wheel_shine_y_shift)
@@ -87,7 +87,7 @@ class WheelSliceView @JvmOverloads constructor(
 
         slice_amount.apply {
             setTextColor(if (isColorDark(item.color)) -0x1 else -0x1000000)
-            text = item.secondaryText
+            text = item.secondaryText.replace(" ", "")
             textSize = mSecondaryTextSize
         }
     }
@@ -190,11 +190,11 @@ class WheelSliceView @JvmOverloads constructor(
         slice_background.setSliceAttributes(mEdgeWidth, mBorderColor)
     }
 
-    fun setShineWidth(width:Int){
+    fun setShineWidth(width: Int) {
         shineEndX = width.toFloat()
     }
 
-    fun setRadius(radius:Float){
+    fun setRadius(radius: Float) {
         slice_background.setRadius(radius)
     }
 
