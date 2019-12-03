@@ -875,7 +875,7 @@ open class PielView : View {
 //                            mPieRotateListener!!.rotateDone(index)
 
                         isAnimate = true
-                        isRunning = false
+//                        isRunning = false
                     }
                 })
                 .rotation(targetAngle)
