@@ -835,9 +835,9 @@ open class PielView : View {
         }
 
         // Determine spin animation properties and final landing slice
-        // Added 2 rotations intentionally to avoid misdirection on first load
+        // Added spinCount rotations intentionally to avoid misdirection on first load
         var targetAngle = (((FULL_ROTATION * (spinCount)) * spinDirectionModifier) + (270f - getAngleOfIndexTarget(index)) - 360f / mLuckyItemList!!.size / 2) + luckyWheelWheelRotation
-        if (spinDirectionModifier == 1f && isFirstSpin) {
+        if (isFirstSpin) {
             targetAngle += (FULL_ROTATION * spinCount)
         }
 
@@ -887,7 +887,7 @@ open class PielView : View {
 //                            mPieRotateListener!!.rotateDone(index)
 
                         isAnimate = true
-//                        isRunning = false
+                        isRunning = false
                         isFirstSpin = false
                     }
                 })
