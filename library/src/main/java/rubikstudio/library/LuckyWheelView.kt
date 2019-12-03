@@ -27,6 +27,7 @@ open class LuckyWheelView : ConstraintLayout, PielView.PieRotateListener, PielVi
     private var mSecondaryTextSize: Int = 0
     private var mBorderColor: Int = 0
     private var mTopTextPadding: Int = 0
+    private var mWheelSliceViewPadding: Int = 0
     private var mSecondaryTextPadding: Int = 0
     private var mEdgeWidth: Int = 0
     private var mCursorImage: Drawable? = null
@@ -46,6 +47,8 @@ open class LuckyWheelView : ConstraintLayout, PielView.PieRotateListener, PielVi
     private var mLuckyItemList: List<LuckyItem>? = null
 
     private var wheelSliceView: WheelSliceView? = null
+
+    private var centerView: View? = null
 
     override fun onRotationStart() {
         if (mLuckyRoundItemSelectedListener != null) {
@@ -126,6 +129,7 @@ open class LuckyWheelView : ConstraintLayout, PielView.PieRotateListener, PielVi
             mSecondaryTextSize = typedArray.getDimensionPixelSize(R.styleable.LuckyWheelView_lkwSecondaryTextSize, LuckyWheelUtils.convertDpToPixel(10f, context).toInt())
             mTextColor = typedArray.getColor(R.styleable.LuckyWheelView_lkwTopTextColor, 0)
             mTopTextPadding = typedArray.getDimensionPixelSize(R.styleable.LuckyWheelView_lkwTopTextPadding, LuckyWheelUtils.convertDpToPixel(10f, context).toInt()) + LuckyWheelUtils.convertDpToPixel(10f, context).toInt()
+            mWheelSliceViewPadding = typedArray.getDimensionPixelSize(R.styleable.LuckyWheelView_lkwTopTextPadding, LuckyWheelUtils.convertDpToPixel(10f, context).toInt())
             mSecondaryTextPadding = typedArray.getDimensionPixelSize(R.styleable.LuckyWheelView_lkwSecondaryTextPadding, 0)
             mCursorImage = typedArray.getDrawable(R.styleable.LuckyWheelView_lkwCursor)
             mEdgeWidth = typedArray.getDimensionPixelSize(R.styleable.LuckyWheelView_lkwEdgeWidth, LuckyWheelUtils.convertDpToPixel(10f, context).toInt())
@@ -164,9 +168,9 @@ open class LuckyWheelView : ConstraintLayout, PielView.PieRotateListener, PielVi
 
         ivCursorView!!.setImageDrawable(mCursorImage)
 
-        val centerView = constraintLayout.findViewById<View>(R.id.center_point)
-        (centerView.layoutParams as ViewGroup.LayoutParams).height = mWheelCenterCircleSize
-        (centerView.layoutParams as ViewGroup.LayoutParams).width = mWheelCenterCircleSize
+        centerView = constraintLayout.findViewById<View>(R.id.center_point)
+        (centerView?.layoutParams as ViewGroup.LayoutParams).height = mWheelCenterCircleSize
+        (centerView?.layoutParams as ViewGroup.LayoutParams).width = mWheelCenterCircleSize
 
         wheelSliceView = constraintLayout.findViewById(R.id.wheel_node_1)
         wheelSliceView?.setSliceViewVisibility(showSliceView)
@@ -177,7 +181,7 @@ open class LuckyWheelView : ConstraintLayout, PielView.PieRotateListener, PielVi
         (wheelSliceView?.layoutParams as LayoutParams).width = mWheelCircleDiameter / 2
         (wheelSliceView?.layoutParams as LayoutParams).circleRadius = (mWheelCircleDiameter / 2) / 2
         wheelSliceView?.setShineWidth(mWheelCircleDiameter / 2)
-        wheelSliceView?.setPadding(mTopTextPadding)
+        wheelSliceView?.setPadding(mWheelSliceViewPadding)
 
         addView(constraintLayout)
 
@@ -232,6 +236,7 @@ open class LuckyWheelView : ConstraintLayout, PielView.PieRotateListener, PielVi
         this.mLuckyItemList = data
         pielView!!.setData(data)
         wheelSliceView?.setRadius(360f / data.size)
+        centerView?.visibility = View.VISIBLE
     }
 
     /**
@@ -272,6 +277,6 @@ open class LuckyWheelView : ConstraintLayout, PielView.PieRotateListener, PielVi
     }
 
     override fun hideSliceView() {
-        //wheelSliceView!!.visibility = View.GONE
+//        wheelSliceView!!.visibility = View.GONE
     }
 }

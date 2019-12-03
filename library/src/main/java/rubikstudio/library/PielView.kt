@@ -927,11 +927,11 @@ open class PielView : View {
                     val angle = currentRotation - previousRotation
                     rotation += angle
 
-                    if (wheelSpinListener != null) {
-                        wheelSpinListener.forEach { listener ->
-                            listener.hideSliceView()
-                        }
-                    }
+//                    if (wheelSpinListener != null) {
+//                        wheelSpinListener.forEach { listener ->
+//                            listener.hideSliceView()
+//                        }
+//                    }
 
                     return true
                 }
