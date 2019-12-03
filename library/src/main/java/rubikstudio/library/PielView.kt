@@ -48,6 +48,7 @@ open class PielView : View {
     private var wheelBlur: Boolean = false
 
     private var spinCount = 3
+    private var isFirstSpin: Boolean = true
 
     // Declare interaction state.
     private var flingGestureDetector: GestureDetector
@@ -836,7 +837,9 @@ open class PielView : View {
         // Determine spin animation properties and final landing slice
         // Added 2 rotations intentionally to avoid misdirection on first load
         var targetAngle = (((FULL_ROTATION * (spinCount)) * spinDirectionModifier) + (270f - getAngleOfIndexTarget(index)) - 360f / mLuckyItemList!!.size / 2) + luckyWheelWheelRotation
-        targetAngle += 720f
+        if (spinDirectionModifier == 1f && isFirstSpin) {
+            targetAngle += (FULL_ROTATION * spinCount)
+        }
 
         //spinCount * 1000 + 900L
         animate()
@@ -885,6 +888,7 @@ open class PielView : View {
 
                         isAnimate = true
 //                        isRunning = false
+                        isFirstSpin = false
                     }
                 })
                 .rotation(targetAngle)
