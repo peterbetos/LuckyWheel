@@ -13,6 +13,7 @@ import android.provider.Settings
 import android.text.TextPaint
 import android.text.TextUtils
 import android.util.AttributeSet
+import android.util.Log
 import android.util.TypedValue
 import android.view.GestureDetector
 import android.view.MotionEvent
@@ -779,7 +780,7 @@ open class PielView : View {
     }
 
     private fun onSwipeBottom() {
-        //Log.d("antonhttp", "=== ON SWIPE BOTTOM IS CALLED")
+//        Log.d("antonhttp", "=== ON SWIPE BOTTOM IS CALLED")
         when (hemisphere) {
             Hemisphere.LEFT -> spinTo(if (predeterminedNumber == -1) fallBackRandomIndex else predeterminedNumber, SpinDirection.COUNTERCLOCKWISE)
             Hemisphere.RIGHT -> spinTo(if (predeterminedNumber == -1) fallBackRandomIndex else predeterminedNumber, SpinDirection.CLOCKWISE)
@@ -787,10 +788,16 @@ open class PielView : View {
     }
 
     private fun onSwipeTop() {
-        //Log.d("antonhttp", "=== ON SWIPE TOP IS CALLED")
+//        Log.d("antonhttp", "=== ON SWIPE TOP IS CALLED")
         when (hemisphere) {
-            Hemisphere.LEFT -> spinTo(if (predeterminedNumber == -1) fallBackRandomIndex else predeterminedNumber, SpinDirection.COUNTERCLOCKWISE)
-            Hemisphere.RIGHT -> spinTo(if (predeterminedNumber == -1) fallBackRandomIndex else predeterminedNumber, SpinDirection.CLOCKWISE)
+            Hemisphere.LEFT -> {
+//                Log.d("antonhttp", "=== ON SWIPE TOP-LEFT IS CALLED")
+                spinTo(if (predeterminedNumber == -1) fallBackRandomIndex else predeterminedNumber, SpinDirection.COUNTERCLOCKWISE)
+            }
+            Hemisphere.RIGHT -> {
+//                Log.d("antonhttp", "=== ON SWIPE TOP-RIGHT IS CALLED")
+                spinTo(if (predeterminedNumber == -1) fallBackRandomIndex else predeterminedNumber, SpinDirection.CLOCKWISE)
+            }
         }
     }
 
@@ -816,9 +823,9 @@ open class PielView : View {
             return
         }
 
-        if (wheelBlur) {
-            //not yet implemented
-        }
+//        if (wheelBlur) {
+        //not yet implemented
+//        }
 
         //Get the direction of the spin based on sign
         val spinDirectionModifier = when (spinDirection) {
@@ -827,7 +834,9 @@ open class PielView : View {
         }
 
         // Determine spin animation properties and final landing slice
-        val targetAngle = (((FULL_ROTATION * (spinCount)) * spinDirectionModifier) + (270f - getAngleOfIndexTarget(index)) - 360f / mLuckyItemList!!.size / 2) + luckyWheelWheelRotation
+        // Added 2 rotations intentionally to avoid misdirection on first load
+        var targetAngle = (((FULL_ROTATION * (spinCount)) * spinDirectionModifier) + (270f - getAngleOfIndexTarget(index)) - 360f / mLuckyItemList!!.size / 2) + luckyWheelWheelRotation
+        targetAngle += 720f
 
         //spinCount * 1000 + 900L
         animate()
@@ -890,8 +899,8 @@ open class PielView : View {
     @SuppressLint("ClickableViewAccessibility")
     override fun onTouchEvent(event: MotionEvent): Boolean {
 
-        var xc = width / 2.0f
-        var yc = height / 2.0f
+        val xc = width / 2.0f
+        val yc = height / 2.0f
 
         if (!isRunning) {
             deltaX = event.x
@@ -908,17 +917,6 @@ open class PielView : View {
                 }
                 MotionEvent.ACTION_MOVE -> {
                     lastTouchAngle = Math.toDegrees(Math.atan2((deltaX - xc).toDouble(), (yc - deltaY).toDouble()))
-
-                    if ((touchAngle - lastTouchAngle) > 45) {
-                        //Going CCW across the boundary
-                        hemisphere = Hemisphere.LEFT
-                    } else if ((touchAngle - lastTouchAngle) < -45) {
-                        //Going CW across the boundary
-                        hemisphere = Hemisphere.RIGHT
-                    } else {
-                        //Normal rotation, rotate the difference
-                        hemisphere = if ((lastTouchAngle - touchAngle) > 0) Hemisphere.RIGHT else Hemisphere.LEFT
-                    }
 
                     // save current rotation
                     previousRotation = currentRotation
@@ -965,6 +963,21 @@ open class PielView : View {
                 velocityX: Float,
                 velocityY: Float
         ): Boolean {
+
+            if ((touchAngle - lastTouchAngle) > 45) {
+                //Going CCW across the boundary
+                hemisphere = Hemisphere.LEFT
+            } else if ((touchAngle - lastTouchAngle) < -45) {
+                //Going CW across the boundary
+                hemisphere = Hemisphere.RIGHT
+            } else {
+                //Normal rotation, rotate the difference
+                hemisphere = if ((lastTouchAngle - touchAngle) > 0) {
+                    Hemisphere.RIGHT
+                } else {
+                    Hemisphere.LEFT
+                }
+            }
 
             // Determine which side of the wheel is touched to figure out spin direction
             // Get deltas to determine swipe direction
