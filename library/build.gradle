@@ -38,4 +38,7 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 
     implementation "androidx.appcompat:appcompat:$androidxAppcompatVersion"
+
+    //RealtimeBlurView
+    implementation 'com.github.mmin18:realtimeblurview:1.2.1'
 }

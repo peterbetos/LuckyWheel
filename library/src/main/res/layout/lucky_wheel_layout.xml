@@ -46,4 +46,17 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+
+    <com.github.mmin18.widget.RealtimeBlurView
+        android:id="@+id/realtimeBlur"
+        android:layout_width="575dp"
+        android:layout_height="575dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/pieView"
+        app:layout_constraintEnd_toEndOf="@+id/pieView"
+        app:layout_constraintStart_toStartOf="@+id/pieView"
+        app:layout_constraintTop_toTopOf="@+id/pieView"
+        app:realtimeBlurRadius="5dp"
+        app:realtimeOverlayColor="#03FFFFFF" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -3,6 +3,7 @@ package rubikstudio.library
 import android.content.Context
 import android.graphics.RectF
 import android.graphics.drawable.Drawable
+import android.os.Handler
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.MotionEvent
@@ -11,6 +12,7 @@ import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import android.widget.ImageView
 import androidx.constraintlayout.widget.ConstraintLayout
+import com.github.mmin18.widget.RealtimeBlurView
 import java.util.Random
 
 import rubikstudio.library.model.LuckyItem
@@ -21,6 +23,7 @@ import rubikstudio.library.model.LuckyItem
 
 open class LuckyWheelView : ConstraintLayout, PielView.PieRotateListener, PielView.WheelSpinListener {
 
+    private lateinit var realtimeBlur: RealtimeBlurView
     private var mBackgroundColor: Int = 0
     private var mTextColor: Int = 0
     private var mTopTextSize: Int = 0
@@ -38,6 +41,8 @@ open class LuckyWheelView : ConstraintLayout, PielView.PieRotateListener, PielVi
     private var mWheelCircleDiameter: Int = 0
     private var mWheelCenterCircleSize: Int = 0
     private var showSliceView = false
+    private var showBlurView = false
+    private var mBlurViewDuration: Int = 0
 
     private var pielView: PielView? = null
     private var ivCursorView: ImageView? = null
@@ -79,6 +84,13 @@ open class LuckyWheelView : ConstraintLayout, PielView.PieRotateListener, PielVi
                 }
                 )
         )
+
+        if (showBlurView) {
+            realtimeBlur.visibility = View.VISIBLE
+            Handler().postDelayed({
+                realtimeBlur.visibility = View.GONE
+            }, mBlurViewDuration.toLong())
+        }
 
     }
 
@@ -141,6 +153,8 @@ open class LuckyWheelView : ConstraintLayout, PielView.PieRotateListener, PielVi
             mWheelCircleDiameter = typedArray.getDimensionPixelSize(R.styleable.LuckyWheelView_lkwWheelCircleDiameter, 500)
             mWheelCenterCircleSize = typedArray.getDimensionPixelSize(R.styleable.LuckyWheelView_lkwWheelCenterCircleSize, 150)
             showSliceView = typedArray.getBoolean(R.styleable.LuckyWheelView_lkwShowSliceView, false)
+            showBlurView = typedArray.getBoolean(R.styleable.LuckyWheelView_lkwShowBlurView, true)
+            mBlurViewDuration = typedArray.getInteger(R.styleable.LuckyWheelView_lkwBlurViewDuration, 2000)
             typedArray.recycle()
         }
 
@@ -182,6 +196,8 @@ open class LuckyWheelView : ConstraintLayout, PielView.PieRotateListener, PielVi
         (wheelSliceView?.layoutParams as LayoutParams).circleRadius = (mWheelCircleDiameter / 2) / 2
         wheelSliceView?.setShineWidth(mWheelCircleDiameter / 2)
         wheelSliceView?.setPadding(mWheelSliceViewPadding)
+
+        realtimeBlur = constraintLayout.findViewById(R.id.realtimeBlur)
 
         addView(constraintLayout)
 
