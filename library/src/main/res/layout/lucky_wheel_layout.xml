@@ -52,6 +52,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="gone"
+        android:layout_margin="12dp"
         app:layout_constraintBottom_toBottomOf="@+id/pieView"
         app:layout_constraintEnd_toEndOf="@+id/pieView"
         app:layout_constraintStart_toStartOf="@+id/pieView"
