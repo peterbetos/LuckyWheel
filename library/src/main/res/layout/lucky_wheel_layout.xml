@@ -49,8 +49,8 @@
 
     <com.github.mmin18.widget.RealtimeBlurView
         android:id="@+id/realtimeBlur"
-        android:layout_width="575dp"
-        android:layout_height="575dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@+id/pieView"
         app:layout_constraintEnd_toEndOf="@+id/pieView"
