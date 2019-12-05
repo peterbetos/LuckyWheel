@@ -3,7 +3,6 @@ package rubikstudio.library
 import android.content.Context
 import android.graphics.RectF
 import android.graphics.drawable.Drawable
-import android.os.Handler
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.MotionEvent
@@ -82,9 +81,22 @@ open class LuckyWheelView : ConstraintLayout, PielView.PieRotateListener, PielVi
 
         if (showBlurView) {
             realtimeBlur.visibility = View.VISIBLE
-            Handler().postDelayed({
-                realtimeBlur.visibility = View.GONE
-            }, mBlurViewDuration.toLong())
+            var duration = mBlurViewDuration
+            val durationPercent = mBlurViewDuration * 0.05
+            Thread(Runnable {
+                while (duration > 0) {
+                    duration -= durationPercent.toInt()
+                    // Update the blur value gradually
+                    handler.post {
+                        realtimeBlur.setBlurRadius((duration / durationPercent.toInt()).toFloat())
+                    }
+                    try {
+                        Thread.sleep(100)
+                    } catch (e: InterruptedException) {
+                        e.printStackTrace()
+                    }
+                }
+            }).start()
         }
 
     }
@@ -114,7 +126,7 @@ open class LuckyWheelView : ConstraintLayout, PielView.PieRotateListener, PielVi
         this.mLuckyRoundItemSelectedListener = listener
     }
 
-    fun setPostSpinListener(listener: PostSpinListener){
+    fun setPostSpinListener(listener: PostSpinListener) {
         postSpinListener = listener
     }
 
@@ -293,8 +305,9 @@ open class LuckyWheelView : ConstraintLayout, PielView.PieRotateListener, PielVi
         return luckyWheelWheelRotation
     }
 
-    interface PostSpinListener{
+    interface PostSpinListener {
         fun onPostSpinStart()
         fun onPostSpinComplete()
     }
+
 }
