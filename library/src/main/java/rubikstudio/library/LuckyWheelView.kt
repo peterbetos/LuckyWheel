@@ -14,7 +14,6 @@ import android.widget.ImageView
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.github.mmin18.widget.RealtimeBlurView
 import java.util.Random
-
 import rubikstudio.library.model.LuckyItem
 
 /**
@@ -43,16 +42,11 @@ open class LuckyWheelView : ConstraintLayout, PielView.PieRotateListener, PielVi
     private var showSliceView = false
     private var showBlurView = false
     private var mBlurViewDuration: Int = 0
-
     private var pielView: PielView? = null
     private var ivCursorView: ImageView? = null
-
     private var mLuckyRoundItemSelectedListener: LuckyRoundItemSelectedListener? = null
-
     private var mLuckyItemList: List<LuckyItem>? = null
-
     private var wheelSliceView: WheelSliceView? = null
-
     private var centerView: View? = null
 
     override fun onRotationStart() {
@@ -63,7 +57,7 @@ open class LuckyWheelView : ConstraintLayout, PielView.PieRotateListener, PielVi
 
     override fun rotateDone(index: Int) {
         if (mLuckyRoundItemSelectedListener != null) {
-            mLuckyRoundItemSelectedListener!!.LuckyRoundItemSelected(index)
+            mLuckyRoundItemSelectedListener!!.luckyRoundItemSelected(index)
         }
     }
 
@@ -107,7 +101,7 @@ open class LuckyWheelView : ConstraintLayout, PielView.PieRotateListener, PielVi
     }
 
     interface LuckyRoundItemSelectedListener {
-        fun LuckyRoundItemSelected(index: Int)
+        fun luckyRoundItemSelected(index: Int)
 
         fun onLuckyWheelRotationStart()
     }
@@ -163,9 +157,7 @@ open class LuckyWheelView : ConstraintLayout, PielView.PieRotateListener, PielVi
 
         pielView = constraintLayout.findViewById(R.id.pieView)
         ivCursorView = constraintLayout.findViewById(R.id.cursorView)
-
         pielView!!.setSpinDuration(spinDuration.toLong())
-        //pielView.setDecelarationDuration((long) decelerationDuration);
         pielView!!.setPieRotateListener(this)
         pielView!!.setPieBackgroundColor(mBackgroundColor)
         pielView!!.setTopTextPadding(mTopTextPadding)
@@ -181,11 +173,9 @@ open class LuckyWheelView : ConstraintLayout, PielView.PieRotateListener, PielVi
             pielView!!.setPieTextColor(mTextColor)
 
         ivCursorView!!.setImageDrawable(mCursorImage)
-
-        centerView = constraintLayout.findViewById<View>(R.id.center_point)
+        centerView = constraintLayout.findViewById(R.id.center_point)
         (centerView?.layoutParams as ViewGroup.LayoutParams).height = mWheelCenterCircleSize
         (centerView?.layoutParams as ViewGroup.LayoutParams).width = mWheelCenterCircleSize
-
         wheelSliceView = constraintLayout.findViewById(R.id.wheel_node_1)
         wheelSliceView?.setSliceViewVisibility(showSliceView)
         wheelSliceView?.visibility = if (showSliceView) View.VISIBLE else View.GONE
@@ -196,7 +186,6 @@ open class LuckyWheelView : ConstraintLayout, PielView.PieRotateListener, PielVi
         (wheelSliceView?.layoutParams as LayoutParams).circleRadius = (mWheelCircleDiameter / 2) / 2
         wheelSliceView?.setShineWidth(mWheelCircleDiameter / 2)
         wheelSliceView?.setPadding(mWheelSliceViewPadding)
-
         realtimeBlur = constraintLayout.findViewById(R.id.realtimeBlur)
 
         addView(constraintLayout)
@@ -292,7 +281,7 @@ open class LuckyWheelView : ConstraintLayout, PielView.PieRotateListener, PielVi
         wheelSliceView!!.setEdgeRectF(rect)
     }
 
-    override fun hideSliceView() {
-//        wheelSliceView!!.visibility = View.GONE
+    fun getLukcyWheelRotation(): Int {
+        return luckyWheelWheelRotation
     }
 }

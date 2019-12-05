@@ -22,10 +22,10 @@ class WheelSliceView @JvmOverloads constructor(
         defStyle: Int = 0
 ) : ConstraintLayout(context, attrs, defStyle) {
 
-    private var shine_fx: ImageView
-    private var slice_background: WheelSliceBackground
-    private var slice_type: TextView
-    private var slice_amount: TextView
+    private var shineFx: ImageView
+    private var sliceBackground: WheelSliceBackground
+    private var sliceType: TextView
+    private var sliceAmount: TextView
     private var mTopTextSize: Float = 0f
     private var mSecondaryTextSize: Float = 0f
     private var showSliceView = false
@@ -46,10 +46,6 @@ class WheelSliceView @JvmOverloads constructor(
         -1.05f * resources.getDimensionPixelSize(R.dimen.wheel_shine_width)
     }
 
-//    private val shineEndX by lazy {
-//        resources.getDimensionPixelSize(R.dimen.wheel_slice_width).toFloat()
-//    }
-
     private var shineEndX: Float = 0f
 
     private val shineStartY by lazy {
@@ -58,10 +54,10 @@ class WheelSliceView @JvmOverloads constructor(
 
     init {
         val rootView: View = LayoutInflater.from(context).inflate(R.layout.wheel_slice_layout, this, true)
-        shine_fx = rootView.findViewById(R.id.shine_fx)
-        slice_background = rootView.findViewById(R.id.slice_background)
-        slice_type = rootView.findViewById(R.id.slice_type)
-        slice_amount = rootView.findViewById(R.id.slice_amount)
+        shineFx = rootView.findViewById(R.id.shine_fx)
+        sliceBackground = rootView.findViewById(R.id.slice_background)
+        sliceType = rootView.findViewById(R.id.slice_type)
+        sliceAmount = rootView.findViewById(R.id.slice_amount)
     }
 
     fun setSliceViewVisibility(isShow: Boolean) {
@@ -73,11 +69,11 @@ class WheelSliceView @JvmOverloads constructor(
      */
     fun bindWheelCard(item: LuckyItem) {
 
-        slice_background.apply {
+        sliceBackground.apply {
             setColor(item.color)
         }
 
-        slice_type.apply {
+        sliceType.apply {
             setTextColor(if (isColorDark(item.color)) -0x1 else -0x1000000)
             text = item.topText
             textSize = mTopTextSize
@@ -86,7 +82,7 @@ class WheelSliceView @JvmOverloads constructor(
             }
         }
 
-        slice_amount.apply {
+        sliceAmount.apply {
             setTextColor(if (isColorDark(item.color)) -0x1 else -0x1000000)
             text = item.secondaryText
             textSize = mSecondaryTextSize
@@ -94,8 +90,6 @@ class WheelSliceView @JvmOverloads constructor(
                 translationX = ((mTopTextPadding / resources.displayMetrics.density) + 20) * -1
             }
         }
-
-        //slice_amount.setPadding((mTopTextPadding / resources.displayMetrics.density).toInt(), 0, 0, 0)
     }
 
     fun setFontSizes(topTextSize: Int, bottomTextSize: Int) {
@@ -106,7 +100,7 @@ class WheelSliceView @JvmOverloads constructor(
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         val sliceHeight = (MeasureSpec.getSize(heightMeasureSpec) * SLICE_HEIGHT_RATIO).roundToInt()
 
-        shine_fx.layoutParams.height = sliceHeight / 2 + 40
+        shineFx.layoutParams.height = sliceHeight / 2 + 40
 
         super.onMeasure(
                 widthMeasureSpec,
@@ -120,16 +114,12 @@ class WheelSliceView @JvmOverloads constructor(
 
     fun animateSlice() {
 
-        with(shine_fx) {
+        with(shineFx) {
             translationX = shineStartX
             translationY = shineStartY
             alpha = 0f
             visibility = View.VISIBLE
         }
-
-//        val pulseFadeIn = ObjectAnimator.ofFloat(this, "alpha", 0.3f, 06f, 1f, 1f).apply {
-//            duration = ANIM_SHINE_FADEOUT_SPEED
-//        }
 
         val pulseX = ObjectAnimator.ofFloat(this, "scaleX", 1f, ANIM_PULSE_SCALE_MAX, ANIM_PULSE_SCALE_MAX, 1f).apply {
             duration = ANIM_PULSE_SCALE_SPEED
@@ -138,21 +128,17 @@ class WheelSliceView @JvmOverloads constructor(
             duration = ANIM_PULSE_SCALE_SPEED
         }
 
-        val shineMoveX = ObjectAnimator.ofFloat(shine_fx, "translationX", shineEndX).apply {
+        val shineMoveX = ObjectAnimator.ofFloat(shineFx, "translationX", shineEndX).apply {
             duration = ANIM_SHINE_MOVE_SPEED
         }
 
-        val shineScaleY = ObjectAnimator.ofFloat(shine_fx, "scaleY", 1.1f, ANIM_SHINE_SCALE_MIN).apply {
+        val shineScaleY = ObjectAnimator.ofFloat(shineFx, "scaleY", 1.1f, ANIM_SHINE_SCALE_MIN).apply {
             duration = ANIM_SHINE_MOVE_SPEED
         }
 
-        val shineFadeout = ObjectAnimator.ofFloat(shine_fx, "alpha", 0.8f, 1f, 1f, 0f).apply {
+        val shineFadeout = ObjectAnimator.ofFloat(shineFx, "alpha", 0.8f, 1f, 1f, 0f).apply {
             duration = ANIM_SHINE_FADEOUT_SPEED
         }
-
-//        val pulseFadeOut = ObjectAnimator.ofFloat(this, "alpha", 1f, 1f, 0.8f, 0f).apply {
-//            duration = ANIM_SHINE_FADEOUT_SPEED
-//        }
 
         val animatorSet = AnimatorSet()
         val animatorEnd = AnimatorSet()
@@ -185,15 +171,15 @@ class WheelSliceView @JvmOverloads constructor(
     }
 
     fun setRectF(rect: RectF) {
-        slice_background.setRectF(rect)
+        sliceBackground.setRectF(rect)
     }
 
     fun setEdgeRectF(rect: RectF) {
-        slice_background.setEdgeRectF(rect)
+        sliceBackground.setEdgeRectF(rect)
     }
 
     fun setSliceAttributes(mEdgeWidth: Int, mBorderColor: Int) {
-        slice_background.setSliceAttributes(mEdgeWidth, mBorderColor)
+        sliceBackground.setSliceAttributes(mEdgeWidth, mBorderColor)
     }
 
     fun setShineWidth(width: Int) {
@@ -201,7 +187,7 @@ class WheelSliceView @JvmOverloads constructor(
     }
 
     fun setRadius(radius: Float) {
-        slice_background.setRadius(radius)
+        sliceBackground.setRadius(radius)
     }
 
     fun setPadding(padding: Int) {

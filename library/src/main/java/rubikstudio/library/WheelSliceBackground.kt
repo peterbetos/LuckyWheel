@@ -34,7 +34,6 @@ class WheelSliceBackground @JvmOverloads constructor(
 
     @SuppressLint("DrawAllocation")
     override fun onDraw(canvas: Canvas?) {
-        //paint.setColor(resources.getColor(android.R.color.transparent))
         paint.style = Paint.Style.FILL
         paint.color = colorInt
         canvas?.drawArc(mRange, startAngle, mRadius, true, paint)

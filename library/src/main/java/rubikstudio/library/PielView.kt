@@ -13,7 +13,6 @@ import android.provider.Settings
 import android.text.TextPaint
 import android.text.TextUtils
 import android.util.AttributeSet
-import android.util.Log
 import android.util.TypedValue
 import android.view.GestureDetector
 import android.view.MotionEvent
@@ -81,34 +80,17 @@ open class PielView : View {
     private val mRoundOfNumber = 1
     private var mEdgeWidth = -1
     private var isRunning = false
-
     private var borderColor = 0
     private var defaultBackgroundColor = 0
     //private var drawableCenterImage: Drawable? = null
     private var textColor = 0
-
     private var predeterminedNumber = -1
-
-    internal var viewRotation: Float = 0.toFloat()
-    internal var fingerRotation: Double = 0.toDouble()
-    internal var downPressTime: Long = 0
-    internal var upPressTime: Long = 0
     internal var newRotationStore = DoubleArray(3)
-
-
     private var mLuckyItemList: List<LuckyItem>? = null
-
     private var mPieRotateListener: PieRotateListener? = null
-
-    private val constantVelocity = 2f
-
     private var spinDuration = 0L
     private var decelarationDuration = 0L
-
     private var luckyWheelWheelRotation: Int = 0
-
-    private var isAnimate: Boolean = false
-    private var angleToAnimate: Float = 0.0F
 
     val luckyItemListSize: Int
         get() = mLuckyItemList!!.size
@@ -189,12 +171,6 @@ open class PielView : View {
         invalidate()
     }
 
-
-//    fun setPieCenterImage(drawable: Drawable) {
-//        drawableCenterImage = drawable
-//        invalidate()
-//    }
-
     fun setTopTextSize(size: Int) {
         mTopTextSize = size
         invalidate()
@@ -211,7 +187,6 @@ open class PielView : View {
         invalidate()
     }
 
-
     fun setBorderWidth(width: Int) {
         mEdgeWidth = width
         invalidate()
@@ -222,22 +197,8 @@ open class PielView : View {
         invalidate()
     }
 
-    private fun drawPieBackgroundWithBitmap(canvas: Canvas, bitmap: Bitmap) {
-        canvas.drawBitmap(bitmap, null, Rect(mPadding / 2, mPadding / 2,
-                measuredWidth - mPadding / 2,
-                measuredHeight - mPadding / 2), null)
-    }
-
     fun addListener(listener: WheelSpinListener) {
         wheelSpinListener.add(listener)
-    }
-
-    fun removeListener(listener: WheelSpinListener) {
-        wheelSpinListener.remove(listener)
-    }
-
-    fun clearListeners() {
-        wheelSpinListener.clear()
     }
 
     override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
@@ -292,7 +253,6 @@ open class PielView : View {
             tmpAngle += sweepAngle
         }
 
-        //drawCenterImage(canvas, drawableCenterImage)
     }
 
     private fun drawBackgroundColor(canvas: Canvas, color: Int) {
@@ -338,19 +298,11 @@ open class PielView : View {
         canvas.drawBitmap(bitmap, null, rect, null)
     }
 
-    private fun drawCenterImage(canvas: Canvas, drawable: Drawable?) {
-        var bitmap = LuckyWheelUtils.drawableToBitmap(drawable)
-        bitmap = Bitmap.createScaledBitmap(bitmap, drawable!!.intrinsicWidth, drawable.intrinsicHeight, false)
-        canvas.drawBitmap(bitmap, (measuredWidth / 2 - bitmap.width / 2).toFloat(),
-                (measuredHeight / 2 - bitmap.height / 2).toFloat(), null)
-    }
-
     private fun isColorDark(color: Int): Boolean {
         val colorValue = ColorUtils.calculateLuminance(color)
         val compareValue = 0.30
         return colorValue <= compareValue
     }
-
 
     /**
      * @param canvas
@@ -637,125 +589,6 @@ open class PielView : View {
         isRunning = false
     }
 
-//    override fun onTouchEvent(event: MotionEvent): Boolean {
-//        if (isRunning || !isEnabled) {
-//            return false
-//        }
-//
-//        val x = event.x
-//        val y = event.y
-//
-//        val xc = width / 2.0f
-//        val yc = height / 2.0f
-//
-//        val newFingerRotation: Double
-//
-//
-//        when (event.action) {
-//            MotionEvent.ACTION_DOWN -> {
-//                viewRotation = (rotation + 360f) % 360f
-//                fingerRotation = Math.toDegrees(Math.atan2((x - xc).toDouble(), (yc - y).toDouble()))
-//                downPressTime = event.eventTime
-//                return true
-//            }
-//            MotionEvent.ACTION_MOVE -> {
-//                newFingerRotation = Math.toDegrees(Math.atan2((x - xc).toDouble(), (yc - y).toDouble()))
-//
-//                if (isRotationConsistent(newFingerRotation)) {
-//                    rotation = newRotationValue(viewRotation, fingerRotation, newFingerRotation)
-//                }
-//                return true
-//            }
-//            MotionEvent.ACTION_UP -> {
-//                newFingerRotation = Math.toDegrees(Math.atan2((x - xc).toDouble(), (yc - y).toDouble()))
-//                var computedRotation = newRotationValue(viewRotation, fingerRotation, newFingerRotation)
-//
-//                fingerRotation = newFingerRotation
-//
-//                // This computes if you're holding the tap for too long
-//                upPressTime = event.eventTime
-//                if (upPressTime - downPressTime > 700L) {
-//                    // Disregarding the touch since the tap is too slow
-//                    return true
-//                }
-//
-//                // These operators are added so that fling difference can be evaluated
-//                // with usually numbers that are only around more or less 100 / -100.
-//                if (computedRotation <= -250f) {
-//                    computedRotation += 360f
-//                } else if (computedRotation >= 250f) {
-//                    computedRotation -= 360f
-//                }
-//
-//                var flingDiff = (computedRotation - viewRotation).toDouble()
-//                if (flingDiff >= 200 || flingDiff <= -200) {
-//                    if (viewRotation <= -50f) {
-//                        viewRotation += 360f
-//                    } else if (viewRotation >= 50f) {
-//                        viewRotation -= 360f
-//                    }
-//                }
-//
-//                flingDiff = (computedRotation - viewRotation).toDouble()
-//
-//                if (flingDiff <= -60 ||
-//                        //If you have a very fast flick / swipe, you an disregard the touch difference
-//                        flingDiff < 0 && flingDiff >= -59 && upPressTime - downPressTime <= 200L) {
-//                    if (predeterminedNumber > -1) {
-//                        rotateTo(predeterminedNumber, SpinRotation.COUNTERCLOCKWISE, false)
-//                    } else {
-//                        rotateTo(fallBackRandomIndex, SpinRotation.COUNTERCLOCKWISE, false)
-//                    }
-//                }
-//
-//                if (flingDiff >= 60 ||
-//                        //If you have a very fast flick / swipe, you an disregard the touch difference
-//                        flingDiff > 0 && flingDiff <= 59 && upPressTime - downPressTime <= 200L) {
-//                    if (predeterminedNumber > -1) {
-//                        rotateTo(predeterminedNumber, SpinRotation.CLOCKWISE, false)
-//                    } else {
-//                        rotateTo(fallBackRandomIndex, SpinRotation.CLOCKWISE, false)
-//                    }
-//                }
-//
-//                return true
-//            }
-//        }
-//        return super.onTouchEvent(event)
-//    }
-
-    private fun newRotationValue(originalWheenRotation: Float, originalFingerRotation: Double, newFingerRotation: Double): Float {
-        val computationalRotation = newFingerRotation - originalFingerRotation
-        return (originalWheenRotation + computationalRotation.toFloat() + 360f) % 360f
-    }
-
-    /**
-     * This detects if your finger movement is a result of an actual raw touch event of if it's from a view jitter.
-     * This uses 3 events of rotation temporary storage so that differentiation between swapping touch events can be determined.
-     *
-     * @param newRotValue
-     */
-    private fun isRotationConsistent(newRotValue: Double): Boolean {
-
-        if (java.lang.Double.compare(newRotationStore[2], newRotationStore[1]) != 0) {
-            newRotationStore[2] = newRotationStore[1]
-        }
-        if (java.lang.Double.compare(newRotationStore[1], newRotationStore[0]) != 0) {
-            newRotationStore[1] = newRotationStore[0]
-        }
-
-        newRotationStore[0] = newRotValue
-
-        return !(java.lang.Double.compare(newRotationStore[2], newRotationStore[0]) == 0
-                || java.lang.Double.compare(newRotationStore[1], newRotationStore[0]) == 0
-                || java.lang.Double.compare(newRotationStore[2], newRotationStore[1]) == 0
-
-                //Is the middle event the odd one out
-                || newRotationStore[0] > newRotationStore[1] && newRotationStore[1] < newRotationStore[2]
-                || newRotationStore[0] < newRotationStore[1] && newRotationStore[1] > newRotationStore[2])
-    }
-
-
     //  @IntDef(SpinRotation.CLOCKWISE, SpinRotation.COUNTERCLOCKWISE)
     @Retention(RetentionPolicy.SOURCE)
     annotation class SpinRotation {
@@ -781,7 +614,6 @@ open class PielView : View {
     }
 
     private fun onSwipeBottom() {
-//        Log.d("antonhttp", "=== ON SWIPE BOTTOM IS CALLED")
         when (hemisphere) {
             Hemisphere.LEFT -> spinTo(if (predeterminedNumber == -1) fallBackRandomIndex else predeterminedNumber, SpinDirection.COUNTERCLOCKWISE)
             Hemisphere.RIGHT -> spinTo(if (predeterminedNumber == -1) fallBackRandomIndex else predeterminedNumber, SpinDirection.CLOCKWISE)
@@ -789,26 +621,21 @@ open class PielView : View {
     }
 
     private fun onSwipeTop() {
-//        Log.d("antonhttp", "=== ON SWIPE TOP IS CALLED")
         when (hemisphere) {
             Hemisphere.LEFT -> {
-//                Log.d("antonhttp", "=== ON SWIPE TOP-LEFT IS CALLED")
                 spinTo(if (predeterminedNumber == -1) fallBackRandomIndex else predeterminedNumber, SpinDirection.COUNTERCLOCKWISE)
             }
             Hemisphere.RIGHT -> {
-//                Log.d("antonhttp", "=== ON SWIPE TOP-RIGHT IS CALLED")
                 spinTo(if (predeterminedNumber == -1) fallBackRandomIndex else predeterminedNumber, SpinDirection.CLOCKWISE)
             }
         }
     }
 
     private fun onSwipeRight() {
-        //Log.d("antonhttp", "=== ON SWIPE RIGHT IS CALLED")
         //not yet implemented
     }
 
     private fun onSwipeLeft() {
-        //Log.d("antonhttp", "=== ON SWIPE LEFT IS CALLED")
         //not yet implemented
     }
 
@@ -824,10 +651,6 @@ open class PielView : View {
             return
         }
 
-//        if (wheelBlur) {
-        //not yet implemented
-//        }
-
         //Get the direction of the spin based on sign
         val spinDirectionModifier = when (spinDirection) {
             SpinDirection.CLOCKWISE -> 1f
@@ -841,53 +664,25 @@ open class PielView : View {
             targetAngle += (FULL_ROTATION * spinCount)
         }
 
-        //spinCount * 1000 + 900L
         animate()
                 .setInterpolator(DecelerateInterpolator())
                 .setDuration(spinCount * 1000 + 900L)
                 .setListener(object : AnimatorListenerAdapter() {
                     override fun onAnimationStart(animation: Animator) {
-                        // Prevent wheel shadow from interfering with glow effects.
-//                        wheel_shadow.animate().apply {
-//                            duration = 100L
-//                            alpha(0f)
-//                        }.start()
-
-
                         wheelSpinListener.forEach { listener ->
                             listener.onSpinStart(spinDirection)
                         }
 
-                        isAnimate = false
                         isRunning = true
                     }
 
                     override fun onAnimationEnd(animation: Animator) {
-
-                        // Fade shadow back in.
-//                        wheel_shadow.animate().apply {
-//                            duration = 300L
-//                            startDelay = 450L
-//                            alpha(1f)
-//
-//                        }.start()
-
                         rotation %= FULL_ROTATION
 
                         wheelSpinListener.forEach { listener ->
                             listener.onSpinComplete(index)
                         }
 
-//                        // Add 2 to account for shadow and center children.
-//                        val selectedSlice = (wheel_layout.getChildAt(index + 2)) as WheelSliceView
-//
-//                        selectedSlice.animateSlice()
-
-//                        if (mPieRotateListener != null)
-//                            mPieRotateListener!!.rotateDone(index)
-
-                        isAnimate = true
-//                        isRunning = false
                         isFirstSpin = false
                     }
                 })
@@ -930,12 +725,6 @@ open class PielView : View {
                     // rotate view by angle difference
                     val angle = currentRotation - previousRotation
                     rotation += angle
-
-//                    if (wheelSpinListener != null) {
-//                        wheelSpinListener.forEach { listener ->
-//                            listener.hideSliceView()
-//                        }
-//                    }
 
                     return true
                 }
@@ -1026,6 +815,5 @@ open class PielView : View {
         fun onRotation(value: Float)
         fun setRectF(rect: RectF)
         fun setEdgeRectF(rect: RectF)
-        fun hideSliceView()
     }
 }
