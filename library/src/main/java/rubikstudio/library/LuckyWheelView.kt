@@ -81,7 +81,7 @@ open class LuckyWheelView : ConstraintLayout, PielView.PieRotateListener, PielVi
 
         if (showBlurView) {
             realtimeBlur.visibility = View.VISIBLE
-            var duration = mBlurViewDuration
+            var duration = if (mBlurViewDuration > 5000 || mBlurViewDuration < 0) 2000 else mBlurViewDuration
             val durationPercent = mBlurViewDuration * 0.05
             Thread(Runnable {
                 while (duration > 0) {
