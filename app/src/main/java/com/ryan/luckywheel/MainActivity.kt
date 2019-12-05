@@ -13,7 +13,8 @@ import java.util.Random
 import rubikstudio.library.LuckyWheelView
 import rubikstudio.library.model.LuckyItem
 
-class MainActivity : Activity() {
+class MainActivity : Activity(), LuckyWheelView.PostSpinListener {
+
     internal var data: MutableList<LuckyItem> = ArrayList()
 
     private val randomIndex: Int
@@ -154,6 +155,7 @@ class MainActivity : Activity() {
 
         /////////////////////
 
+        luckyWheelView.setPostSpinListener(this)
         luckyWheelView.setData(data)
 
         findViewById<View>(R.id.play).setOnClickListener {
@@ -188,6 +190,14 @@ class MainActivity : Activity() {
 
     fun getAngleOfIndexTarget(index: Int): Float {
         return (360f / data.size) * index
+    }
+
+    override fun onPostSpinComplete() {
+        Log.d("antonhttp", "SCALE IS TRIGGERED")
+    }
+
+    override fun onPostSpinStart() {
+        //to be implemented
     }
 
 }

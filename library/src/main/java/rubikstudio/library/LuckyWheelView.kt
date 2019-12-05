@@ -48,6 +48,7 @@ open class LuckyWheelView : ConstraintLayout, PielView.PieRotateListener, PielVi
     private var mLuckyItemList: List<LuckyItem>? = null
     private var wheelSliceView: WheelSliceView? = null
     private var centerView: View? = null
+    private var postSpinListener: PostSpinListener? = null
 
     override fun onRotationStart() {
         if (mLuckyRoundItemSelectedListener != null) {
@@ -89,6 +90,9 @@ open class LuckyWheelView : ConstraintLayout, PielView.PieRotateListener, PielVi
     }
 
     override fun onSpinComplete(index: Int) {
+        if (postSpinListener != null)
+            postSpinListener!!.onPostSpinComplete()
+
         wheelSliceView!!.bindWheelCard(mLuckyItemList!![index])
         wheelSliceView!!.visibility = View.VISIBLE
         wheelSliceView!!.animateSlice()
@@ -108,6 +112,10 @@ open class LuckyWheelView : ConstraintLayout, PielView.PieRotateListener, PielVi
 
     fun setLuckyRoundItemSelectedListener(listener: LuckyRoundItemSelectedListener) {
         this.mLuckyRoundItemSelectedListener = listener
+    }
+
+    fun setPostSpinListener(listener: PostSpinListener){
+        postSpinListener = listener
     }
 
     constructor(context: Context) : super(context) {
@@ -283,5 +291,10 @@ open class LuckyWheelView : ConstraintLayout, PielView.PieRotateListener, PielVi
 
     fun getLukcyWheelRotation(): Int {
         return luckyWheelWheelRotation
+    }
+
+    interface PostSpinListener{
+        fun onPostSpinStart()
+        fun onPostSpinComplete()
     }
 }
