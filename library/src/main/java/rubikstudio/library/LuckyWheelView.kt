@@ -14,6 +14,8 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import com.github.mmin18.widget.RealtimeBlurView
 import java.util.Random
 import rubikstudio.library.model.LuckyItem
+import android.os.CountDownTimer
+
 
 /**
  * Created by kiennguyen on 11/5/16.
@@ -81,22 +83,19 @@ open class LuckyWheelView : ConstraintLayout, PielView.PieRotateListener, PielVi
 
         if (showBlurView) {
             realtimeBlur.visibility = View.VISIBLE
-            var duration = if (mBlurViewDuration > 5000 || mBlurViewDuration < 0) 2000 else mBlurViewDuration
+            val duration = if (mBlurViewDuration > 5000 || mBlurViewDuration < 0) 2000 else mBlurViewDuration
             val durationPercent = mBlurViewDuration * 0.05
-            Thread(Runnable {
-                while (duration > 0) {
-                    duration -= durationPercent.toInt()
-                    // Update the blur value gradually
-                    handler.post {
-                        realtimeBlur.setBlurRadius((duration / durationPercent.toInt()).toFloat())
-                    }
-                    try {
-                        Thread.sleep(100)
-                    } catch (e: InterruptedException) {
-                        e.printStackTrace()
-                    }
+            object : CountDownTimer(duration.toLong(), durationPercent.toLong()) {
+
+                override fun onTick(millisUntilFinished: Long) {
+                    realtimeBlur.setBlurRadius((millisUntilFinished / durationPercent.toInt()).toFloat())
                 }
-            }).start()
+
+                override fun onFinish() {
+                    realtimeBlur.visibility = View.GONE
+                }
+
+            }.start()
         }
 
     }

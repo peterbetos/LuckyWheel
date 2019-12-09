@@ -46,7 +46,7 @@ open class PielView : View {
 
     private var wheelBlur: Boolean = false
 
-    private var spinCount = 3
+    private var spinCount = 5
     private var isFirstSpin: Boolean = true
 
     // Declare interaction state.

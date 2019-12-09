@@ -100,7 +100,7 @@ class WheelSliceView @JvmOverloads constructor(
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         val sliceHeight = (MeasureSpec.getSize(heightMeasureSpec) * SLICE_HEIGHT_RATIO).roundToInt()
 
-        shineFx.layoutParams.height = sliceHeight / 2 + 40
+        shineFx.layoutParams.height = sliceHeight / 3
 
         super.onMeasure(
                 widthMeasureSpec,
