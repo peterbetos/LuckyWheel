@@ -51,12 +51,10 @@
         android:id="@+id/realtimeBlur"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="@+id/pieView"
         app:layout_constraintEnd_toEndOf="@+id/pieView"
         app:layout_constraintStart_toStartOf="@+id/pieView"
         app:layout_constraintTop_toTopOf="@+id/pieView"
-        app:realtimeBlurRadius="5dp"
         app:realtimeOverlayColor="#03FFFFFF" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

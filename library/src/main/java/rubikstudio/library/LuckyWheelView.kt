@@ -82,22 +82,27 @@ open class LuckyWheelView : ConstraintLayout, PielView.PieRotateListener, PielVi
         )
 
         if (showBlurView) {
-            realtimeBlur.visibility = View.VISIBLE
-            val duration = if (mBlurViewDuration > 5000 || mBlurViewDuration < 0) 2000 else mBlurViewDuration
+            mBlurViewDuration = if (mBlurViewDuration > 5000 || mBlurViewDuration < 0) 2000 else mBlurViewDuration
             val durationPercent = mBlurViewDuration * 0.05
-            object : CountDownTimer(duration.toLong(), durationPercent.toLong()) {
-
+            object : CountDownTimer(mBlurViewDuration.toLong(), durationPercent.toLong()) {
                 override fun onTick(millisUntilFinished: Long) {
-                    realtimeBlur.setBlurRadius((millisUntilFinished / durationPercent.toInt()).toFloat())
+                    realtimeBlur.setBlurRadius(((mBlurViewDuration - millisUntilFinished) / durationPercent).toFloat())
                 }
 
                 override fun onFinish() {
-                    realtimeBlur.visibility = View.GONE
-                }
+                    val countDown = mBlurViewDuration * 0.05
+                    object : CountDownTimer(mBlurViewDuration.toLong(), countDown.toLong()) {
+                        override fun onTick(millisUntilFinished: Long) {
+                            realtimeBlur.setBlurRadius((millisUntilFinished / countDown.toInt()).toFloat())
+                        }
 
+                        override fun onFinish() {
+                            realtimeBlur.setBlurRadius(0f)
+                        }
+                    }.start()
+                }
             }.start()
         }
-
     }
 
     override fun onSpinComplete(index: Int) {
@@ -206,6 +211,7 @@ open class LuckyWheelView : ConstraintLayout, PielView.PieRotateListener, PielVi
         wheelSliceView?.setShineWidth(mWheelCircleDiameter / 2)
         wheelSliceView?.setPadding(mWheelSliceViewPadding)
         realtimeBlur = constraintLayout.findViewById(R.id.realtimeBlur)
+        realtimeBlur.setBlurRadius(0f)
 
         addView(constraintLayout)
 

@@ -24,6 +24,7 @@ class WheelSliceView @JvmOverloads constructor(
 
     private var shineFx: ImageView
     private var sliceBackground: WheelSliceBackground
+    private var sliceBackgroundBorder: WheelSliceBackgroundBorder
     private var sliceType: TextView
     private var sliceAmount: TextView
     private var mTopTextSize: Float = 0f
@@ -56,6 +57,7 @@ class WheelSliceView @JvmOverloads constructor(
         val rootView: View = LayoutInflater.from(context).inflate(R.layout.wheel_slice_layout, this, true)
         shineFx = rootView.findViewById(R.id.shine_fx)
         sliceBackground = rootView.findViewById(R.id.slice_background)
+        sliceBackgroundBorder = rootView.findViewById(R.id.slice_background_border)
         sliceType = rootView.findViewById(R.id.slice_type)
         sliceAmount = rootView.findViewById(R.id.slice_amount)
     }
@@ -70,6 +72,10 @@ class WheelSliceView @JvmOverloads constructor(
     fun bindWheelCard(item: LuckyItem) {
 
         sliceBackground.apply {
+            setColor(item.color)
+        }
+
+        sliceBackgroundBorder.apply {
             setColor(item.color)
         }
 
@@ -100,7 +106,7 @@ class WheelSliceView @JvmOverloads constructor(
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         val sliceHeight = (MeasureSpec.getSize(heightMeasureSpec) * SLICE_HEIGHT_RATIO).roundToInt()
 
-        shineFx.layoutParams.height = sliceHeight / 3
+        shineFx.layoutParams.height = sliceHeight / 2
 
         super.onMeasure(
                 widthMeasureSpec,
@@ -172,14 +178,17 @@ class WheelSliceView @JvmOverloads constructor(
 
     fun setRectF(rect: RectF) {
         sliceBackground.setRectF(rect)
+        sliceBackgroundBorder.setEdgeRectF(rect)
     }
 
     fun setEdgeRectF(rect: RectF) {
         sliceBackground.setEdgeRectF(rect)
+        sliceBackgroundBorder.setEdgeRectF(rect)
     }
 
     fun setSliceAttributes(mEdgeWidth: Int, mBorderColor: Int) {
         sliceBackground.setSliceAttributes(mEdgeWidth, mBorderColor)
+        sliceBackgroundBorder.setSliceAttributes(mEdgeWidth, mBorderColor)
     }
 
     fun setShineWidth(width: Int) {
@@ -188,6 +197,7 @@ class WheelSliceView @JvmOverloads constructor(
 
     fun setRadius(radius: Float) {
         sliceBackground.setRadius(radius)
+        sliceBackgroundBorder.setRadius(radius)
     }
 
     fun setPadding(padding: Int) {

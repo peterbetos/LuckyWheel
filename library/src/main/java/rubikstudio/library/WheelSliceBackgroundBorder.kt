@@ -8,7 +8,7 @@ import android.view.View
 import androidx.annotation.ColorInt
 import android.graphics.RectF
 
-class WheelSliceBackground @JvmOverloads constructor(
+class WheelSliceBackgroundBorder @JvmOverloads constructor(
         context: Context,
         attrs: AttributeSet? = null,
         defStyle: Int = 0
@@ -34,13 +34,13 @@ class WheelSliceBackground @JvmOverloads constructor(
 
     @SuppressLint("DrawAllocation")
     override fun onDraw(canvas: Canvas?) {
-        paint.style = Paint.Style.FILL
-        paint.color = colorInt
-        canvas?.drawArc(mRange, startAngle, mRadius, true, paint)
-//        paint.style = Paint.Style.STROKE
-//        paint.color = mBorderColor
-//        paint.strokeWidth = mEdgeWidth.toFloat()
-//        canvas?.drawArc(mEdgeRange, startAngle, mRadius, true, paint)
+//        paint.style = Paint.Style.FILL
+//        paint.color = colorInt
+//        canvas?.drawArc(mRange, startAngle, mRadius, true, paint)
+        paint.style = Paint.Style.STROKE
+        paint.color = mBorderColor
+        paint.strokeWidth = mEdgeWidth.toFloat()
+        canvas?.drawArc(mEdgeRange, startAngle, mRadius, true, paint)
     }
 
     fun setRectF(rect: RectF) {
