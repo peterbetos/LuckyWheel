@@ -84,14 +84,14 @@ open class LuckyWheelView : ConstraintLayout, PielView.PieRotateListener, PielVi
         if (showBlurView) {
             mBlurViewDuration = if (mBlurViewDuration > 5000 || mBlurViewDuration < 0) 2000 else mBlurViewDuration
             val durationPercent = mBlurViewDuration * 0.05
-            object : CountDownTimer(mBlurViewDuration.toLong(), durationPercent.toLong()) {
+            object : CountDownTimer(mBlurViewDuration.toLong()/2, durationPercent.toLong()) {
                 override fun onTick(millisUntilFinished: Long) {
                     realtimeBlur.setBlurRadius(((mBlurViewDuration - millisUntilFinished) / durationPercent).toFloat())
                 }
 
                 override fun onFinish() {
                     val countDown = mBlurViewDuration * 0.05
-                    object : CountDownTimer(mBlurViewDuration.toLong(), countDown.toLong()) {
+                    object : CountDownTimer(mBlurViewDuration.toLong()/2, countDown.toLong()) {
                         override fun onTick(millisUntilFinished: Long) {
                             realtimeBlur.setBlurRadius((millisUntilFinished / countDown.toInt()).toFloat())
                         }
