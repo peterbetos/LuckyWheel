@@ -128,7 +128,7 @@ open class LuckyWheelView : ConstraintLayout, PielView.PieRotateListener, PielVi
         if (!vibrator.hasVibrator()) return
 
         if (Build.VERSION.SDK_INT >= 26) {
-            vibrator.vibrate(VibrationEffect.createOneShot(100, 30))
+            vibrator.vibrate(VibrationEffect.createOneShot(100, 20))
         } else {
             vibrator.vibrate(100)
         }

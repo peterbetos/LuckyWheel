@@ -523,8 +523,8 @@ open class PielView : View {
         val segmentAssess: Float = 360f / wheelSizeAssess
         val segmentAssessHalved: Float = segmentAssess / 2f
 
-
-        if ((fullwheelRotationAssess % segmentAssess).roundToInt() == segmentAssessHalved.roundToInt()
+        if (((fullwheelRotationAssess % segmentAssess) <= (segmentAssessHalved - 0.25f) ||
+                        (fullwheelRotationAssess % segmentAssess) >= (segmentAssessHalved + 0.25f))
                 && ((fullwheelRotationAssess / segmentAssess).toInt() != lastTap)
         ) {
             lastTap = (fullwheelRotationAssess / segmentAssess).toInt()
