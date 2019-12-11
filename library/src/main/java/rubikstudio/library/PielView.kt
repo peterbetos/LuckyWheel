@@ -10,6 +10,7 @@ import android.os.Build
 import android.text.TextPaint
 import android.text.TextUtils
 import android.util.AttributeSet
+import android.util.Log
 import android.util.TypedValue
 import android.view.GestureDetector
 import android.view.MotionEvent
@@ -82,6 +83,7 @@ open class PielView : View {
     private var mLuckyItemList: List<LuckyItem>? = null
     private var mPieRotateListener: PieRotateListener? = null
     private var luckyWheelWheelRotation: Int = 0
+    private var lastTap: Int = -1
 
     private val fallBackRandomIndex: Int
         get() {
@@ -496,6 +498,8 @@ open class PielView : View {
                     val angle = currentRotation - previousRotation
                     rotation += angle
 
+                    triggerSegmentTap()
+
                     return true
                 }
                 MotionEvent.ACTION_UP -> {
@@ -512,6 +516,26 @@ open class PielView : View {
 
         return true
     }
+
+    private fun triggerSegmentTap() {
+        val fullwheelRotationAssess: Float = rotation % 360f
+        val wheelSizeAssess: Float = mLuckyItemList!!.size.toFloat()
+        val segmentAssess: Float = 360f / wheelSizeAssess
+        val segmentAssessHalved: Float = segmentAssess / 2f
+
+
+        if ((fullwheelRotationAssess % segmentAssess).roundToInt() == segmentAssessHalved.roundToInt()
+                && ((fullwheelRotationAssess / segmentAssess).toInt() != lastTap)
+        ) {
+            lastTap = (fullwheelRotationAssess / segmentAssess).toInt()
+            wheelSpinListener.forEach { listener ->
+                listener.onSegmentHit()
+            }
+        }
+
+
+    }
+
 
     /**
      * This method is called in the @OnTouchevent to allow rotation to continue from last touch point
@@ -600,9 +624,11 @@ open class PielView : View {
     interface WheelSpinListener {
         fun onSpinStart(spinDirection: SpinDirection)
         fun onSpinComplete(index: Int)
+        fun onSegmentHit()
         fun onRotation(value: Float)
         fun setRectF(rect: RectF)
         fun setEdgeRectF(rect: RectF)
+
     }
 
     fun setCenterView(centerPoint: View) {

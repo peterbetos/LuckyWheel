@@ -3,6 +3,7 @@ package rubikstudio.library
 import android.content.Context
 import android.graphics.RectF
 import android.graphics.drawable.Drawable
+import android.os.Build
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.MotionEvent
@@ -13,6 +14,9 @@ import android.widget.ImageView
 import androidx.constraintlayout.widget.ConstraintLayout
 import rubikstudio.library.model.LuckyItem
 import android.os.CountDownTimer
+import android.os.VibrationEffect
+import android.os.Vibrator
+import android.util.Log
 import eightbitlab.com.blurview.BlurView
 import eightbitlab.com.blurview.RenderScriptBlur
 
@@ -116,6 +120,18 @@ open class LuckyWheelView : ConstraintLayout, PielView.PieRotateListener, PielVi
         wheelSliceView!!.bindWheelCard(mLuckyItemList!![index])
         wheelSliceView!!.visibility = View.VISIBLE
         wheelSliceView!!.animateSlice()
+    }
+
+    override fun onSegmentHit() {
+        val vibrator = context?.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+
+        if (!vibrator.hasVibrator()) return
+
+        if (Build.VERSION.SDK_INT >= 26) {
+            vibrator.vibrate(VibrationEffect.createOneShot(100, 30))
+        } else {
+            vibrator.vibrate(100)
+        }
     }
 
     override fun onRotation(value: Float) {
