@@ -37,10 +37,6 @@ class WheelSliceBackground @JvmOverloads constructor(
         paint.style = Paint.Style.FILL
         paint.color = colorInt
         canvas?.drawArc(mRange, startAngle, mRadius, true, paint)
-//        paint.style = Paint.Style.STROKE
-//        paint.color = mBorderColor
-//        paint.strokeWidth = mEdgeWidth.toFloat()
-//        canvas?.drawArc(mEdgeRange, startAngle, mRadius, true, paint)
     }
 
     fun setRectF(rect: RectF) {

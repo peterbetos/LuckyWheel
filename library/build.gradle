@@ -14,7 +14,8 @@ android {
         versionCode 1
         versionName version
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-
+        renderscriptTargetApi 29
+        renderscriptSupportModeEnabled true
     }
     buildTypes {
         release {
@@ -39,6 +40,7 @@ dependencies {
 
     implementation "androidx.appcompat:appcompat:$androidxAppcompatVersion"
 
-    //RealtimeBlurView
-    implementation 'com.github.mmin18:realtimeblurview:1.2.1'
+    //BlurView
+    implementation 'com.eightbitlab:blurview:1.6.3'
+    implementation 'com.eightbitlab:supportrenderscriptblur:1.0.2'
 }

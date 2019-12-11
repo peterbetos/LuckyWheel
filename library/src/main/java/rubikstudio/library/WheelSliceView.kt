@@ -43,10 +43,6 @@ class WheelSliceView @JvmOverloads constructor(
         private const val ANIM_SHINE_FADEOUT_SPEED = 1500L
     }
 
-    private val shineStartX by lazy {
-        -1.05f * resources.getDimensionPixelSize(R.dimen.wheel_shine_width)
-    }
-
     private var shineEndX: Float = 0f
 
     private val shineStartY by lazy {
@@ -94,6 +90,8 @@ class WheelSliceView @JvmOverloads constructor(
             textSize = mSecondaryTextSize
             if (item.topText.contains("gift", true)) {
                 translationX = ((mTopTextPadding / resources.displayMetrics.density) + 20) * -1
+            } else {
+                translationX = (mTopTextPadding / resources.displayMetrics.density) + 10
             }
         }
     }
@@ -121,7 +119,7 @@ class WheelSliceView @JvmOverloads constructor(
     fun animateSlice() {
 
         with(shineFx) {
-            translationX = shineStartX
+            translationX = 0.02f
             translationY = shineStartY
             alpha = 0f
             visibility = View.VISIBLE

@@ -2,11 +2,9 @@ package com.ryan.luckywheel
 
 import android.app.Activity
 import android.os.Bundle
-import android.os.Handler
 import android.util.Log
 import android.view.View
 import android.widget.Toast
-
 import java.util.ArrayList
 import java.util.Random
 
@@ -157,10 +155,11 @@ class MainActivity : Activity(), LuckyWheelView.PostSpinListener {
 
         luckyWheelView.setPostSpinListener(this)
         luckyWheelView.setData(data)
+        luckyWheelView.setPredeterminedNumber(7)
 
         findViewById<View>(R.id.play).setOnClickListener {
             val index = randomIndex
-            //luckyWheelView.startLuckyWheelWithTargetIndex(index);
+//            luckyWheelView.startLuckyWheelWithTargetIndex(index);
         }
 
         luckyWheelView.setLuckyRoundItemSelectedListener(object : LuckyWheelView.LuckyRoundItemSelectedListener {
@@ -177,7 +176,6 @@ class MainActivity : Activity(), LuckyWheelView.PostSpinListener {
 
         val targetAngle: Float = (((360f * 3) + 270f - getAngleOfIndexTarget(getInitialSelectedIndex()) - (360f / data.size) / 2)) + -90
         luckyWheelView.setInitialAngle(targetAngle)
-
     }
 
     fun getInitialSelectedIndex(): Int {

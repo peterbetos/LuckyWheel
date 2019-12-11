@@ -34,9 +34,6 @@ class WheelSliceBackgroundBorder @JvmOverloads constructor(
 
     @SuppressLint("DrawAllocation")
     override fun onDraw(canvas: Canvas?) {
-//        paint.style = Paint.Style.FILL
-//        paint.color = colorInt
-//        canvas?.drawArc(mRange, startAngle, mRadius, true, paint)
         paint.style = Paint.Style.STROKE
         paint.color = mBorderColor
         paint.strokeWidth = mEdgeWidth.toFloat()

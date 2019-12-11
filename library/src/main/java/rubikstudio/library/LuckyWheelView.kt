@@ -11,11 +11,10 @@ import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import android.widget.ImageView
 import androidx.constraintlayout.widget.ConstraintLayout
-import com.github.mmin18.widget.RealtimeBlurView
-import java.util.Random
 import rubikstudio.library.model.LuckyItem
 import android.os.CountDownTimer
-
+import com.eightbitlab.supportrenderscriptblur.SupportRenderScriptBlur
+import eightbitlab.com.blurview.BlurView
 
 /**
  * Created by kiennguyen on 11/5/16.
@@ -23,7 +22,7 @@ import android.os.CountDownTimer
 
 open class LuckyWheelView : ConstraintLayout, PielView.PieRotateListener, PielView.WheelSpinListener {
 
-    private lateinit var realtimeBlur: RealtimeBlurView
+    private lateinit var realtimeBlur: BlurView
     private var mBackgroundColor: Int = 0
     private var mTextColor: Int = 0
     private var mTopTextSize: Int = 0
@@ -82,22 +81,27 @@ open class LuckyWheelView : ConstraintLayout, PielView.PieRotateListener, PielVi
         )
 
         if (showBlurView) {
+            realtimeBlur.visibility = View.VISIBLE
             mBlurViewDuration = if (mBlurViewDuration > 5000 || mBlurViewDuration < 0) 2000 else mBlurViewDuration
             val durationPercent = mBlurViewDuration * 0.05
-            object : CountDownTimer(mBlurViewDuration.toLong()/2, durationPercent.toLong()) {
+            object : CountDownTimer(mBlurViewDuration.toLong() / 2, durationPercent.toLong()) {
                 override fun onTick(millisUntilFinished: Long) {
-                    realtimeBlur.setBlurRadius(((mBlurViewDuration - millisUntilFinished) / durationPercent).toFloat())
+                    val blur = ((mBlurViewDuration - millisUntilFinished) / durationPercent).toFloat()
+                    realtimeBlur.setBlurRadius(blur / 5)
                 }
 
                 override fun onFinish() {
                     val countDown = mBlurViewDuration * 0.05
-                    object : CountDownTimer(mBlurViewDuration.toLong()/2, countDown.toLong()) {
+                    object : CountDownTimer(mBlurViewDuration.toLong() / 2, countDown.toLong()) {
                         override fun onTick(millisUntilFinished: Long) {
-                            realtimeBlur.setBlurRadius((millisUntilFinished / countDown.toInt()).toFloat())
+                            var blur = (millisUntilFinished / countDown.toInt()).toFloat()
+                            blur = if (blur == 0f) 0.25f else blur
+                            realtimeBlur.setBlurRadius(blur / 5)
                         }
 
                         override fun onFinish() {
-                            realtimeBlur.setBlurRadius(0f)
+                            realtimeBlur.setBlurRadius(0.25f)
+                            realtimeBlur.visibility = View.GONE
                         }
                     }.start()
                 }
@@ -181,7 +185,6 @@ open class LuckyWheelView : ConstraintLayout, PielView.PieRotateListener, PielVi
 
         pielView = constraintLayout.findViewById(R.id.pieView)
         ivCursorView = constraintLayout.findViewById(R.id.cursorView)
-        pielView!!.setSpinDuration(spinDuration.toLong())
         pielView!!.setPieRotateListener(this)
         pielView!!.setPieBackgroundColor(mBackgroundColor)
         pielView!!.setTopTextPadding(mTopTextPadding)
@@ -210,12 +213,19 @@ open class LuckyWheelView : ConstraintLayout, PielView.PieRotateListener, PielVi
         (wheelSliceView?.layoutParams as LayoutParams).circleRadius = (mWheelCircleDiameter / 2) / 2
         wheelSliceView?.setShineWidth(mWheelCircleDiameter / 2)
         wheelSliceView?.setPadding(mWheelSliceViewPadding)
-        realtimeBlur = constraintLayout.findViewById(R.id.realtimeBlur)
-        realtimeBlur.setBlurRadius(0f)
 
         addView(constraintLayout)
 
+        pielView!!.setCenterView(centerView!!)
         pielView!!.addListener(this)
+
+        val mainLayout = constraintLayout.findViewById<ViewGroup>(R.id.root)
+        realtimeBlur = constraintLayout.findViewById(R.id.realtimeBlur)
+        realtimeBlur.setupWith(mainLayout)
+                .setBlurAlgorithm(SupportRenderScriptBlur(ctx))
+                .setBlurRadius(1f)
+                .setHasFixedTransformationMatrix(true)
+
     }
 
     fun setInitialAngle(initialAngle: Float) {
@@ -277,25 +287,8 @@ open class LuckyWheelView : ConstraintLayout, PielView.PieRotateListener, PielVi
         wheelSliceView!!.bindWheelCard(mLuckyItemList!![fixNumber])
     }
 
-    fun startLuckyWheelWithTargetIndex(index: Int) {
-        pielView!!.rotateTo(index);
-    }
-
-    fun startLuckyWheelWithRandomTarget() {
-        val rand = Random()
-        pielView!!.rotateTo(rand.nextInt(pielView!!.luckyItemListSize - 1));
-    }
-
     fun stopRotation() {
         pielView!!.stopRotation();
-    }
-
-    fun setRouletteSpinDuration(spinDurationParam: Long) {
-        pielView!!.setSpinDuration(spinDurationParam)
-    }
-
-    fun setRouletteDecelarationDuration(decelarationDurationParam: Long) {
-        pielView!!.setDecelarationDuration(decelarationDurationParam)
     }
 
     override fun setRectF(rect: RectF) {

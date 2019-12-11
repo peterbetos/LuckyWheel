@@ -2,14 +2,11 @@ package rubikstudio.library
 
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
-import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.annotation.TargetApi
 import android.content.Context
 import android.graphics.*
-import android.graphics.drawable.Drawable
 import android.os.Build
-import android.provider.Settings
 import android.text.TextPaint
 import android.text.TextUtils
 import android.util.AttributeSet
@@ -17,17 +14,12 @@ import android.util.TypedValue
 import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.View
-import android.view.animation.AccelerateInterpolator
 import android.view.animation.DecelerateInterpolator
-import android.view.animation.Interpolator
-import android.view.animation.LinearInterpolator
 import androidx.core.graphics.ColorUtils
-import androidx.core.view.animation.PathInterpolatorCompat
 import rubikstudio.library.model.LuckyItem
-import java.lang.annotation.Retention
-import java.lang.annotation.RetentionPolicy
 import java.util.*
 import kotlin.math.*
+
 
 /**
  * Created by kiennguyen on 11/5/16.
@@ -41,6 +33,11 @@ open class PielView : View {
         private const val FULL_ROTATION = 360f
     }
 
+    private val centerX: Float
+        get() = centerView.let { it.left + (it.width / 2f) }
+    private val centerY: Float
+        get() = centerView.let { it.top + (it.height / 2f) }
+    private lateinit var centerView: View
     private var lastTouchAngle: Double = 0.0
     private var touchAngle: Double = 0.0
 
@@ -58,7 +55,6 @@ open class PielView : View {
     private var hemisphere = Hemisphere.LEFT // may not be needed if wheel is always half way off the screen
     private var previousRotation = 0f
     private var currentRotation = 0f
-    private var offsetRotation = 0f
     private var deltaX = 0f
     private var deltaY = 0f
 
@@ -77,23 +73,15 @@ open class PielView : View {
     private var mSecondaryTextPadding: Int = 0
     private var mTopTextSize: Int = 0
     private var mSecondaryTextSize: Int = 0
-    private val mRoundOfNumber = 1
     private var mEdgeWidth = -1
     private var isRunning = false
     private var borderColor = 0
     private var defaultBackgroundColor = 0
-    //private var drawableCenterImage: Drawable? = null
     private var textColor = 0
     private var predeterminedNumber = -1
-    internal var newRotationStore = DoubleArray(3)
     private var mLuckyItemList: List<LuckyItem>? = null
     private var mPieRotateListener: PieRotateListener? = null
-    private var spinDuration = 0L
-    private var decelarationDuration = 0L
     private var luckyWheelWheelRotation: Int = 0
-
-    val luckyItemListSize: Int
-        get() = mLuckyItemList!!.size
 
     private val fallBackRandomIndex: Int
         get() {
@@ -222,7 +210,7 @@ open class PielView : View {
         setupMeasurements()
 
         var tmpAngle = mStartAngle
-        var sweepAngle = 360f / mLuckyItemList!!.size
+        val sweepAngle = 360f / mLuckyItemList!!.size
 
         for (i in mLuckyItemList!!.indices) {
 
@@ -270,7 +258,7 @@ open class PielView : View {
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
 
-        val width = Math.min(measuredWidth, measuredHeight)
+        val width = min(measuredWidth, measuredHeight)
 
         mPadding = if (paddingLeft == 0) 10 else paddingLeft
         mRadius = width - mPadding * 2
@@ -290,8 +278,8 @@ open class PielView : View {
 
         val angle = ((tmpAngle + 360f / mLuckyItemList!!.size.toFloat() / 2f) * Math.PI / 180).toFloat()
 
-        val x = (mCenter + mRadius / 2 / 2 * Math.cos(angle.toDouble())).toInt()
-        val y = (mCenter + mRadius / 2 / 2 * Math.sin(angle.toDouble())).toInt()
+        val x = (mCenter + mRadius / 2 / 2 * cos(angle.toDouble())).toInt()
+        val y = (mCenter + mRadius / 2 / 2 * sin(angle.toDouble())).toInt()
 
         val rect = Rect(x - imgWidth / 2, y - imgWidth / 2,
                 x + imgWidth / 2, y + imgWidth / 2)
@@ -379,176 +367,6 @@ open class PielView : View {
         this.predeterminedNumber = predeterminedNumber
     }
 
-    fun rotateTo(index: Int) {
-        val rand = Random()
-        rotateTo(index, rand.nextInt() * 3 % 2, true)
-    }
-
-    /**
-     * @param targetIndex
-     * @param rotation,  spin orientation of the wheel if clockwise or counterclockwise
-     * @param startSlow, either animates a slow start or an immediate turn based on the trigger
-     */
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP_MR1)
-    fun rotateTo(targetIndex: Int, @SpinRotation rotation: Int, startSlow: Boolean) {
-        isRunning = true
-
-        val rotationAssess = if (rotation <= 0) 1 else 0
-
-        //If the staring position is already off 0 degrees, make an illusion that the rotation has smoothly been triggered.
-        // But this inital animation will just reset the position of the circle to 0 degreees.
-        if (getRotation() % 360f != 0.0f) {
-            setRotation((getRotation() + 36000f) % 360f)
-
-            val animationStart = if (startSlow) AccelerateInterpolator() else LinearInterpolator()
-            //The multiplier is to do a big rotation again if the position is already near 360.
-            val multiplier = 1f
-
-            //This value wil be used for the duration,
-            // this uses modulo of 360
-            // or a difference from 360 degree
-            // depending on the rotation value
-            // so that angle value can be controlled to be until 360 degreees.
-            val duration = if (rotationAssess > 0)
-                (360L - abs((getRotation() % 360f).toLong())) * 1000L / 360L
-            else
-                abs((getRotation() % 360f).toLong()) * 1000L / 360L
-
-            animate()
-                    .setDuration(duration)
-                    .setInterpolator(animationStart)
-                    .setListener(object : Animator.AnimatorListener {
-                        override fun onAnimationStart(animation: Animator) {
-
-                            isRunning = true
-                            if (mPieRotateListener != null)
-                                mPieRotateListener!!.onRotationStart()
-                        }
-
-                        override fun onAnimationEnd(animation: Animator) {
-                            isRunning = true
-
-                            if (spinDuration > 0L) {
-                                constantSpin(rotation, targetIndex)
-                            } else {
-                                val decelerateRotationAssess = if (rotation <= 0) 1 else -1
-                                prepareDecelerate(decelerateRotationAssess, targetIndex)
-                            }
-                        }
-
-                        override fun onAnimationCancel(animation: Animator) {}
-
-                        override fun onAnimationRepeat(animation: Animator) {}
-                    })
-                    .rotation(360f * multiplier * rotationAssess.toFloat())
-                    .start()
-        } else {
-            if (spinDuration > 0L) {
-                constantSpin(rotation, targetIndex)
-            } else {
-                val decelerateRotationAssess = if (rotation <= 0) 1 else -1
-                prepareDecelerate(decelerateRotationAssess, targetIndex)
-            }
-        }
-    }
-
-    private fun prepareDecelerate(assessRotate: Int, targetIndex: Int) {
-        var numberOfRotations = mRoundOfNumber
-
-        // This addition of another round count for counterclockwise is to simulate the perception of the same number of spin
-        // if you still need to reach the same outcome of a positive degrees rotation with the number of rounds reversed.
-        if (assessRotate < 0) numberOfRotations++
-
-        var targetAngle = 360f * numberOfRotations.toFloat() * assessRotate.toFloat() + (270f - getAngleOfIndexTarget(targetIndex)) - 360f / mLuckyItemList!!.size / 2
-
-        if (this.spinDuration <= 0L) {
-            val multiplierTurn = (if (this.decelarationDuration / 1000f * 0.25f < 1f) 1f else this.decelarationDuration / 1000f * 0.25f).toInt()
-
-            if (targetAngle > 0f && targetAngle <= 600f) {
-                targetAngle += 360f * multiplierTurn
-            }
-            if (targetAngle < 0f && targetAngle >= -600f) {
-                targetAngle -= 360f * multiplierTurn
-            }
-
-        }
-
-        decelerateSpin(targetAngle, targetIndex)
-    }
-
-
-    private fun constantSpin(@SpinRotation rotation: Int, targetIndex: Int) {
-        val rotationAssess = if (rotation <= 0) 1 else -1
-
-        val multiplier = this.spinDuration / 1000f * mRoundOfNumber.toFloat()
-        val rotationValue = (360f * multiplier * rotationAssess.toFloat()) + if (rotationAssess < 0) 0f else 360f
-        animate()
-                .setDuration(this.spinDuration)
-                .setInterpolator(LinearInterpolator())
-                .setListener(object : Animator.AnimatorListener {
-                    override fun onAnimationStart(animation: Animator) {
-                        isRunning = true
-                    }
-
-                    override fun onAnimationEnd(animation: Animator) {
-                        prepareDecelerate(rotationAssess, targetIndex)
-                    }
-
-                    override fun onAnimationCancel(animation: Animator) {
-                        isRunning = false
-                    }
-
-                    override fun onAnimationRepeat(animation: Animator) {}
-                })
-                .rotation(rotationValue)
-                .start()
-    }
-
-
-    private fun decelerateSpin(endAngle: Float, targetIndex: Int) {
-        rotation = 0f
-
-        val customInterpolator: Interpolator
-        if (spinDuration == 0L && decelarationDuration != 0L) {
-            customInterpolator = PathInterpolatorCompat.create(0.000f, 0.000f, 0.580f, 1.000f)
-        } else {
-            customInterpolator = DecelerateInterpolator()
-        }
-
-        animate()
-                .setInterpolator(customInterpolator)
-                .setDuration(this.decelarationDuration)
-                .setListener(object : Animator.AnimatorListener {
-                    override fun onAnimationStart(animation: Animator) {
-                        isRunning = true
-                    }
-
-                    override fun onAnimationEnd(animation: Animator) {
-                        val finalizedAngle = (endAngle + 36000f) % 360f
-                        rotation = finalizedAngle
-                        if (mPieRotateListener != null)
-                            mPieRotateListener!!.rotateDone(targetIndex)
-
-                        isRunning = false
-                    }
-
-                    override fun onAnimationCancel(animation: Animator) {
-                        isRunning = false
-                    }
-
-                    override fun onAnimationRepeat(animation: Animator) {}
-                })
-                .rotation(endAngle)
-                .start()
-    }
-
-    fun setSpinDuration(spinDuration: Long) {
-        if (spinDuration >= 0L) {
-            this.spinDuration = spinDuration
-            makeAnimationDurationConsistent(this.context)
-        }
-    }
-
     fun setWheelRotation(wheelRotation: Int) {
         luckyWheelWheelRotation = wheelRotation
     }
@@ -557,60 +375,8 @@ open class PielView : View {
         this.wheelBlur = wheelBlurValue
     }
 
-    fun setDecelarationDuration(decelarationDuration: Long) {
-        if (decelarationDuration >= 0L) {
-            this.decelarationDuration = decelarationDuration
-            makeAnimationDurationConsistent(this.context)
-        }
-    }
-
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
-    private fun makeAnimationDurationConsistent(context: Context) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            // Get duration scale from the global settings.
-            var durationScale = Settings.Global.getFloat(context.contentResolver,
-                    Settings.Global.ANIMATOR_DURATION_SCALE, 0f)
-            // If global duration scale is not 1 (default), try to override it
-            // for the current application.
-            if (durationScale != 1f) {
-                try {
-                    ValueAnimator::class.java.getMethod("setDurationScale", Float::class.javaPrimitiveType).invoke(null, 1f)
-                    durationScale = 1f
-                } catch (t: Throwable) {
-                    // It means something bad happened, and animations are still
-                    // altered by the global settings.
-                }
-
-            }
-        }
-    }
-
     fun stopRotation() {
         isRunning = false
-    }
-
-    //  @IntDef(SpinRotation.CLOCKWISE, SpinRotation.COUNTERCLOCKWISE)
-    @Retention(RetentionPolicy.SOURCE)
-    annotation class SpinRotation {
-        companion object {
-            val CLOCKWISE = 0
-            val COUNTERCLOCKWISE = 1
-        }
-    }
-
-    /**
-     * This method is called in the @OnTouchevent to allow rotation to continue from last touch point
-     */
-
-    fun updateCurrentRotation() {
-        offsetRotation = (rotation % FULL_ROTATION).absoluteValue
-        currentRotation = rotation +
-                Math.toDegrees(
-                        atan2(
-                                deltaX.toDouble() - trueCenter,
-                                trueCenter - deltaY.toDouble()
-                        )
-                ).toFloat()
     }
 
     private fun onSwipeBottom() {
@@ -711,6 +477,10 @@ open class PielView : View {
             // Handle wheel preview
             when (event.actionMasked) {
                 MotionEvent.ACTION_DOWN -> {
+                    if (!isInCircle(event.x, event.y)) {
+                        return false;
+                    }
+
                     touchAngle = Math.toDegrees(Math.atan2((deltaX - xc).toDouble(), (yc - deltaY).toDouble()))
                     return true
                 }
@@ -729,6 +499,10 @@ open class PielView : View {
                     return true
                 }
                 MotionEvent.ACTION_UP -> {
+                    if (!isInCircle(event.x, event.y)) {
+                        return false;
+                    }
+
                     lastTouchAngle = Math.toDegrees(Math.atan2((deltaX - xc).toDouble(), (yc - deltaY).toDouble()))
                     touchAngle = lastTouchAngle
                     return true
@@ -737,6 +511,20 @@ open class PielView : View {
         }
 
         return true
+    }
+
+    /**
+     * This method is called in the @OnTouchevent to allow rotation to continue from last touch point
+     */
+
+    fun updateCurrentRotation() {
+        currentRotation = rotation +
+                Math.toDegrees(
+                        atan2(
+                                deltaX.toDouble() - centerX,
+                                centerY - deltaY.toDouble()
+                        )
+                ).toFloat()
     }
 
     // Custom Gesture listener to gain fling velocity properties
@@ -815,5 +603,17 @@ open class PielView : View {
         fun onRotation(value: Float)
         fun setRectF(rect: RectF)
         fun setEdgeRectF(rect: RectF)
+    }
+
+    fun setCenterView(centerPoint: View) {
+        centerView = centerPoint
+    }
+
+    private fun isInCircle(x: Float, y: Float): Boolean {
+        // find the distance between center of the view and x,y point
+        val distance = Math.sqrt(
+                Math.pow((mRange.centerX() - x).toDouble(), 2.0) + Math.pow((mRange.centerY() - y).toDouble(), 2.0)
+        )
+        return distance <= mRange.width() / 2
     }
 }

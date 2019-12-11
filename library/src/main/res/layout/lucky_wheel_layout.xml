@@ -2,6 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -38,23 +39,24 @@
         android:id="@+id/center_point"
         android:layout_width="150dp"
         android:layout_height="150dp"
+        android:background="@drawable/roulette_circle_white"
         android:clickable="false"
         android:visibility="gone"
-        android:background="@drawable/roulette_circle_white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-
-    <com.github.mmin18.widget.RealtimeBlurView
+    <eightbitlab.com.blurview.BlurView
         android:id="@+id/realtimeBlur"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_constraintBottom_toBottomOf="@+id/pieView"
-        app:layout_constraintEnd_toEndOf="@+id/pieView"
-        app:layout_constraintStart_toStartOf="@+id/pieView"
-        app:layout_constraintTop_toTopOf="@+id/pieView"
-        app:realtimeOverlayColor="#03FFFFFF" />
+        android:layout_width="575dp"
+        android:layout_height="575dp"
+        android:outlineProvider="bounds"
+        android:visibility="invisible"
+        app:blurOverlayColor="#03FFFFFF"
+        app:layout_constraintBottom_toBottomOf="@+id/root"
+        app:layout_constraintEnd_toEndOf="@+id/root"
+        app:layout_constraintStart_toStartOf="@+id/root"
+        app:layout_constraintTop_toTopOf="@+id/root" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
