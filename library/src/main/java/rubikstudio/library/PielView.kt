@@ -196,6 +196,8 @@ open class PielView : View {
         trueCenter = left + measuredWidth / 2
     }
 
+
+
     /**
      * @param canvas
      */
@@ -269,6 +271,7 @@ open class PielView : View {
 
         setMeasuredDimension(width, width)
     }
+
 
     /**
      * @param canvas
@@ -407,6 +410,7 @@ open class PielView : View {
         //not yet implemented
     }
 
+
     /**
      * @param index Index of wheel for spin to land on
      * @param spinDirection Spin orientation of the wheel if clockwise or counterclockwise
@@ -456,6 +460,7 @@ open class PielView : View {
                 })
                 .rotation(targetAngle)
                 .setUpdateListener {
+                    triggerSegmentTap(spinDirection)
                     wheelSpinListener.forEach { listener ->
                         listener.onRotation(it.animatedValue as Float)
                     }
@@ -480,10 +485,11 @@ open class PielView : View {
             when (event.actionMasked) {
                 MotionEvent.ACTION_DOWN -> {
                     if (!isInCircle(event.x, event.y)) {
-                        return false;
+                        return false
                     }
 
                     touchAngle = Math.toDegrees(Math.atan2((deltaX - xc).toDouble(), (yc - deltaY).toDouble()))
+
                     return true
                 }
                 MotionEvent.ACTION_MOVE -> {
@@ -498,7 +504,7 @@ open class PielView : View {
                     val angle = currentRotation - previousRotation
                     rotation += angle
 
-                    triggerSegmentTap()
+                    triggerSegmentTap(SpinDirection.CLOCKWISE)
 
                     return true
                 }
@@ -517,7 +523,7 @@ open class PielView : View {
         return true
     }
 
-    private fun triggerSegmentTap() {
+    private fun triggerSegmentTap(spinDirection: SpinDirection) {
         val fullwheelRotationAssess: Float = rotation % 360f
         val wheelSizeAssess: Float = mLuckyItemList!!.size.toFloat()
         val segmentAssess: Float = 360f / wheelSizeAssess
@@ -529,7 +535,7 @@ open class PielView : View {
         ) {
             lastTap = (fullwheelRotationAssess / segmentAssess).toInt()
             wheelSpinListener.forEach { listener ->
-                listener.onSegmentHit()
+                listener.onSegmentHit(spinDirection)
             }
         }
 
@@ -624,7 +630,7 @@ open class PielView : View {
     interface WheelSpinListener {
         fun onSpinStart(spinDirection: SpinDirection)
         fun onSpinComplete(index: Int)
-        fun onSegmentHit()
+        fun onSegmentHit(spinDirection: SpinDirection)
         fun onRotation(value: Float)
         fun setRectF(rect: RectF)
         fun setEdgeRectF(rect: RectF)

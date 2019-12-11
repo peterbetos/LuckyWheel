@@ -74,16 +74,6 @@ open class LuckyWheelView : ConstraintLayout, PielView.PieRotateListener, PielVi
     }
 
     override fun onSpinStart(spinDirection: PielView.SpinDirection) {
-
-        ivCursorView!!.startAnimation(
-                AnimationUtils.loadAnimation(
-                        context, when (spinDirection) {
-                    PielView.SpinDirection.CLOCKWISE -> R.anim.spin_indicator_cw
-                    else -> R.anim.spin_indicator_ccw
-                }
-                )
-        )
-
         if (showBlurView) {
             realtimeBlur.visibility = View.VISIBLE
             mBlurViewDuration = if (mBlurViewDuration > 5000 || mBlurViewDuration < 0) 2000 else mBlurViewDuration
@@ -122,16 +112,23 @@ open class LuckyWheelView : ConstraintLayout, PielView.PieRotateListener, PielVi
         wheelSliceView!!.animateSlice()
     }
 
-    override fun onSegmentHit() {
+    override fun onSegmentHit(spinDirection: PielView.SpinDirection) {
         val vibrator = context?.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
-
         if (!vibrator.hasVibrator()) return
-
         if (Build.VERSION.SDK_INT >= 26) {
-            vibrator.vibrate(VibrationEffect.createOneShot(100, 20))
+            vibrator.vibrate(VibrationEffect.createOneShot(75, 20))
         } else {
-            vibrator.vibrate(100)
+            vibrator.vibrate(75)
         }
+
+        ivCursorView!!.startAnimation(
+                AnimationUtils.loadAnimation(
+                        context, when (spinDirection) {
+                    PielView.SpinDirection.CLOCKWISE -> R.anim.spin_indicator_cw
+                    else -> R.anim.spin_indicator_ccw
+                }
+                )
+        )
     }
 
     override fun onRotation(value: Float) {
