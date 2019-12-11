@@ -14,6 +14,7 @@ android {
         renderscriptTargetApi 29
         renderscriptSupportModeEnabled true
     }
+
     buildTypes {
         release {
             minifyEnabled false
