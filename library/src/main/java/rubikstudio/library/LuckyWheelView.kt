@@ -13,8 +13,8 @@ import android.widget.ImageView
 import androidx.constraintlayout.widget.ConstraintLayout
 import rubikstudio.library.model.LuckyItem
 import android.os.CountDownTimer
-import com.eightbitlab.supportrenderscriptblur.SupportRenderScriptBlur
 import eightbitlab.com.blurview.BlurView
+import eightbitlab.com.blurview.RenderScriptBlur
 
 /**
  * Created by kiennguyen on 11/5/16.
@@ -222,7 +222,7 @@ open class LuckyWheelView : ConstraintLayout, PielView.PieRotateListener, PielVi
         val mainLayout = constraintLayout.findViewById<ViewGroup>(R.id.root)
         realtimeBlur = constraintLayout.findViewById(R.id.realtimeBlur)
         realtimeBlur.setupWith(mainLayout)
-                .setBlurAlgorithm(SupportRenderScriptBlur(ctx))
+                .setBlurAlgorithm(RenderScriptBlur(ctx))
                 .setBlurRadius(1f)
                 .setHasFixedTransformationMatrix(true)
 

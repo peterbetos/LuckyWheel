@@ -14,9 +14,8 @@ android {
         versionCode 1
         versionName version
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        renderscriptTargetApi 29
-        renderscriptSupportModeEnabled true
     }
+
     buildTypes {
         release {
             minifyEnabled true
@@ -29,16 +28,16 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
 
-    packagingOptions {
-        exclude 'lib/armeabi-v7a/libRSSupport.so'
-        exclude 'lib/arm64-v8a/librsjni.so'
-        exclude 'lib/x86/librsjni.so'
-        exclude 'lib/arm64-v8a/libRSSupport.so'
-        exclude 'lib/armeabi-v7a/librsjni.so'
-        exclude 'lib/x86_64/librsjni.so'
-        exclude 'lib/x86_64/libRSSupport.so'
-        exclude 'lib/x86/libRSSupport.so'
-    }
+//    packagingOptions {
+//        exclude 'lib/armeabi-v7a/libRSSupport.so'
+//        exclude 'lib/arm64-v8a/librsjni.so'
+//        exclude 'lib/x86/librsjni.so'
+//        exclude 'lib/arm64-v8a/libRSSupport.so'
+//        exclude 'lib/armeabi-v7a/librsjni.so'
+//        exclude 'lib/x86_64/librsjni.so'
+//        exclude 'lib/x86_64/libRSSupport.so'
+//        exclude 'lib/x86/libRSSupport.so'
+//    }
 
 }
 
@@ -54,5 +53,4 @@ dependencies {
 
     //BlurView
     implementation 'com.eightbitlab:blurview:1.6.3'
-    implementation 'com.eightbitlab:supportrenderscriptblur:1.0.2'
 }
