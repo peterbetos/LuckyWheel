@@ -90,6 +90,8 @@ class WheelSliceView @JvmOverloads constructor(
             textSize = mSecondaryTextSize
             if (item.topText.contains("gift", true)) {
                 translationX = ((mTopTextPadding / resources.displayMetrics.density) + 20) * -1
+            } else {
+                translationX = (mTopTextPadding / resources.displayMetrics.density) + 5
             }
         }
     }
