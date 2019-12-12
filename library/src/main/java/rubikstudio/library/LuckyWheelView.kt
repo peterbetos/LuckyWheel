@@ -132,8 +132,6 @@ open class LuckyWheelView : ConstraintLayout, PielView.PieRotateListener, PielVi
                 }
                 )
         )
-
-        mLuckyRoundItemSelectedListener!!.onSegmentHit(spinDirection)
     }
 
     override fun onRotation(value: Float) {
@@ -146,8 +144,6 @@ open class LuckyWheelView : ConstraintLayout, PielView.PieRotateListener, PielVi
         fun luckyRoundItemSelected(index: Int)
 
         fun onLuckyWheelRotationStart()
-
-        fun onSegmentHit(spinDirection: PielView.SpinDirection)
     }
 
     fun setLuckyRoundItemSelectedListener(listener: LuckyRoundItemSelectedListener) {
