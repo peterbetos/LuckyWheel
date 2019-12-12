@@ -10,7 +10,6 @@ import android.os.Build
 import android.text.TextPaint
 import android.text.TextUtils
 import android.util.AttributeSet
-import android.util.Log
 import android.util.TypedValue
 import android.view.GestureDetector
 import android.view.MotionEvent
@@ -427,10 +426,12 @@ open class PielView : View {
             SpinDirection.COUNTERCLOCKWISE -> -1f
         }
 
-        // Determine spin animation properties and final landing slice
-        // Added spinCount rotations intentionally to avoid misdirection on first load
-        var targetAngle = (((FULL_ROTATION * (spinCount)) * spinDirectionModifier) + (270f - getAngleOfIndexTarget(index)) - 360f / mLuckyItemList!!.size / 2) + luckyWheelWheelRotation
-        if (isFirstSpin) {
+        if (rotation == 0.0f)
+            rotation %= 360f
+
+        var targetAngle = (FULL_ROTATION * spinCount * spinDirectionModifier) + ((270f - getAngleOfIndexTarget(index)) - (360f / mLuckyItemList!!.size) / 2) + luckyWheelWheelRotation
+
+        if (spinDirection == SpinDirection.CLOCKWISE) {
             targetAngle += (FULL_ROTATION * spinCount)
         }
 
