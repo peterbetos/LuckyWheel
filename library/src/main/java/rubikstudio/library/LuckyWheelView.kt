@@ -43,6 +43,7 @@ open class LuckyWheelView : ConstraintLayout, PielView.PieRotateListener, PielVi
     private var enableWheelBlur: Boolean = false
     private var mWheelCircleDiameter: Int = 0
     private var mWheelCenterCircleSize: Int = 0
+    private var enableVibration = false
     private var showSliceView = false
     private var showBlurView = false
     private var mBlurViewDuration: Int = 0
@@ -113,12 +114,14 @@ open class LuckyWheelView : ConstraintLayout, PielView.PieRotateListener, PielVi
     }
 
     override fun onSegmentHit(spinDirection: PielView.SpinDirection) {
-        val vibrator = context?.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
-        if (!vibrator.hasVibrator()) return
-        if (Build.VERSION.SDK_INT >= 26) {
-            vibrator.vibrate(VibrationEffect.createOneShot(75, 20))
-        } else {
-            vibrator.vibrate(75)
+        if(enableVibration){
+            val vibrator = context?.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+            if (!vibrator.hasVibrator()) return
+            if (Build.VERSION.SDK_INT >= 26) {
+                vibrator.vibrate(VibrationEffect.createOneShot(75, 20))
+            } else {
+                vibrator.vibrate(75)
+            }
         }
 
         ivCursorView!!.startAnimation(
@@ -129,6 +132,8 @@ open class LuckyWheelView : ConstraintLayout, PielView.PieRotateListener, PielVi
                 }
                 )
         )
+
+        mLuckyRoundItemSelectedListener!!.onSegmentHit(spinDirection)
     }
 
     override fun onRotation(value: Float) {
@@ -141,6 +146,8 @@ open class LuckyWheelView : ConstraintLayout, PielView.PieRotateListener, PielVi
         fun luckyRoundItemSelected(index: Int)
 
         fun onLuckyWheelRotationStart()
+
+        fun onSegmentHit(spinDirection: PielView.SpinDirection)
     }
 
     fun setLuckyRoundItemSelectedListener(listener: LuckyRoundItemSelectedListener) {
@@ -190,6 +197,7 @@ open class LuckyWheelView : ConstraintLayout, PielView.PieRotateListener, PielVi
             showSliceView = typedArray.getBoolean(R.styleable.LuckyWheelView_lkwShowSliceView, false)
             showBlurView = typedArray.getBoolean(R.styleable.LuckyWheelView_lkwShowBlurView, true)
             mBlurViewDuration = typedArray.getInteger(R.styleable.LuckyWheelView_lkwBlurViewDuration, 2000)
+            enableVibration = typedArray.getBoolean(R.styleable.LuckyWheelView_lkwEnableVibration, true)
             typedArray.recycle()
         }
 

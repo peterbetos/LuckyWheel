@@ -24,6 +24,7 @@
         <attr name="lkwShowSliceView" format="boolean"/>
         <attr name="lkwShowBlurView" format="boolean"/>
         <attr name="lkwBlurViewDuration" format="integer"/>
+        <attr name="lkwEnableVibration" format="boolean"/>
     </declare-styleable>
 
 </resources>
