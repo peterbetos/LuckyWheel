@@ -113,7 +113,7 @@ open class LuckyWheelView : ConstraintLayout, PielView.PieRotateListener, PielVi
     }
 
     override fun onSegmentHit(spinDirection: PielView.SpinDirection) {
-        if(enableVibration){
+        if (enableVibration) {
             val vibrator = context?.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
             if (!vibrator.hasVibrator()) return
             if (Build.VERSION.SDK_INT >= 26) {
@@ -123,14 +123,16 @@ open class LuckyWheelView : ConstraintLayout, PielView.PieRotateListener, PielVi
             }
         }
 
-        ivCursorView!!.startAnimation(
-                AnimationUtils.loadAnimation(
-                        context, when (spinDirection) {
-                    PielView.SpinDirection.CLOCKWISE -> R.anim.spin_indicator_cw
-                    else -> R.anim.spin_indicator_ccw
-                }
-                )
-        )
+        if (mCursorImage != null) {
+            ivCursorView!!.startAnimation(
+                    AnimationUtils.loadAnimation(
+                            context, when (spinDirection) {
+                        PielView.SpinDirection.CLOCKWISE -> R.anim.spin_indicator_cw
+                        else -> R.anim.spin_indicator_ccw
+                    }
+                    )
+            )
+        }
     }
 
     override fun onRotation(value: Float) {
