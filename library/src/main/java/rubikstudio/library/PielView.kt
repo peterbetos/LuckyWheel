@@ -429,10 +429,10 @@ open class PielView : View {
         if (rotation == 0.0f)
             rotation %= 360f
 
-        var targetAngle = (FULL_ROTATION * spinCount * spinDirectionModifier) + ((270f - getAngleOfIndexTarget(index)) - (360f / mLuckyItemList!!.size) / 2) + luckyWheelWheelRotation
+        var targetAngle = (FULL_ROTATION * 3 * spinDirectionModifier) + ((270f - getAngleOfIndexTarget(index)) - (360f / mLuckyItemList!!.size) / 2) + luckyWheelWheelRotation
 
         if (spinDirection == SpinDirection.CLOCKWISE) {
-            targetAngle += (FULL_ROTATION * spinCount)
+            targetAngle += (FULL_ROTATION * 3)
         }
 
         animate()
