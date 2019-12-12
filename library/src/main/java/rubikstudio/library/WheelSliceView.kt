@@ -90,8 +90,6 @@ class WheelSliceView @JvmOverloads constructor(
             textSize = mSecondaryTextSize
             if (item.topText.contains("gift", true)) {
                 translationX = ((mTopTextPadding / resources.displayMetrics.density) + 20) * -1
-            } else {
-                translationX = (mTopTextPadding / resources.displayMetrics.density) + 10
             }
         }
     }
@@ -104,7 +102,7 @@ class WheelSliceView @JvmOverloads constructor(
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         val sliceHeight = (MeasureSpec.getSize(heightMeasureSpec) * SLICE_HEIGHT_RATIO).roundToInt()
 
-        shineFx.layoutParams.height = (sliceHeight / 2) - 50
+        shineFx.layoutParams.height = (sliceHeight / 3)
 
         super.onMeasure(
                 widthMeasureSpec,
@@ -119,7 +117,7 @@ class WheelSliceView @JvmOverloads constructor(
     fun animateSlice() {
 
         with(shineFx) {
-            translationX = 0.02f
+            translationX = 0.04f
             translationY = shineStartY
             alpha = 0f
             visibility = View.VISIBLE
