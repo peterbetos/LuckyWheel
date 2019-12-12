@@ -196,8 +196,6 @@ open class PielView : View {
         trueCenter = left + measuredWidth / 2
     }
 
-
-
     /**
      * @param canvas
      */
@@ -504,7 +502,22 @@ open class PielView : View {
                     val angle = currentRotation - previousRotation
                     rotation += angle
 
-                    triggerSegmentTap(SpinDirection.CLOCKWISE)
+                    if ((touchAngle - lastTouchAngle) > 45) {
+                        //Going CCW across the boundary
+                        hemisphere = Hemisphere.LEFT
+                    } else if ((touchAngle - lastTouchAngle) < -45) {
+                        //Going CW across the boundary
+                        hemisphere = Hemisphere.RIGHT
+                    } else {
+                        //Normal rotation, rotate the difference
+                        hemisphere = if ((lastTouchAngle - touchAngle) > 0) {
+                            Hemisphere.RIGHT
+                        } else {
+                            Hemisphere.LEFT
+                        }
+                    }
+
+                    triggerSegmentTap(if (hemisphere == Hemisphere.LEFT) SpinDirection.COUNTERCLOCKWISE else SpinDirection.CLOCKWISE)
 
                     return true
                 }
@@ -574,21 +587,6 @@ open class PielView : View {
                 velocityX: Float,
                 velocityY: Float
         ): Boolean {
-
-            if ((touchAngle - lastTouchAngle) > 45) {
-                //Going CCW across the boundary
-                hemisphere = Hemisphere.LEFT
-            } else if ((touchAngle - lastTouchAngle) < -45) {
-                //Going CW across the boundary
-                hemisphere = Hemisphere.RIGHT
-            } else {
-                //Normal rotation, rotate the difference
-                hemisphere = if ((lastTouchAngle - touchAngle) > 0) {
-                    Hemisphere.RIGHT
-                } else {
-                    Hemisphere.LEFT
-                }
-            }
 
             // Determine which side of the wheel is touched to figure out spin direction
             // Get deltas to determine swipe direction
