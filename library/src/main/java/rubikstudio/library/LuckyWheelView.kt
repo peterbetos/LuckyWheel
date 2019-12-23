@@ -124,14 +124,14 @@ open class LuckyWheelView : ConstraintLayout, PielView.PieRotateListener, PielVi
         }
 
         if (mCursorImage != null) {
-            ivCursorView!!.startAnimation(
-                    AnimationUtils.loadAnimation(
-                            context, when (spinDirection) {
-                        PielView.SpinDirection.CLOCKWISE -> R.anim.spin_indicator_cw
-                        else -> R.anim.spin_indicator_ccw
-                    }
-                    )
-            )
+            if (ivCursorView!!.animation == null ||
+                    !ivCursorView!!.animation.hasStarted() || ivCursorView!!.animation.hasEnded()) {
+                ivCursorView!!.startAnimation(AnimationUtils.loadAnimation(
+                        context, when (spinDirection) {
+                    PielView.SpinDirection.CLOCKWISE -> R.anim.spin_indicator_cw
+                    else -> R.anim.spin_indicator_ccw
+                }))
+            }
         }
     }
 

@@ -50,15 +50,15 @@
         android:id="@+id/shine_fx"
         android:layout_width="@dimen/wheel_shine_width"
         android:layout_height="match_parent"
-        android:rotation="-10"
         android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.04"
+        android:scaleType="fitXY"
         app:layout_constraintStart_toStartOf="@+id/slice_background"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.51"
-        app:srcCompat="@drawable/wheel_slice_fx"
+        app:srcCompat="@drawable/slice_image"
         tools:visibility="visible" />
 
     <rubikstudio.library.WheelSliceBackgroundBorder

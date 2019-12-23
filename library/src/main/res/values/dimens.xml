@@ -9,7 +9,7 @@
     <dimen name="wheel_slice_width">300dp</dimen>
     <dimen name="wheel_view_radius">120dp</dimen>
     <dimen name="wheel_gift_card_label_offset">-12dp</dimen>
-    <dimen name="wheel_shine_width">40dp</dimen>
+    <dimen name="wheel_shine_width">80dp</dimen>
     <dimen name="wheel_shine_y_shift">7dp</dimen>
     <dimen name="wheel_border_diameter">456</dimen>
 

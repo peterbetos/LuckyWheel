@@ -33,7 +33,7 @@ class WheelSliceView @JvmOverloads constructor(
     private var mTopTextPadding: Int = 0
 
     companion object {
-        private const val SLICE_HEIGHT_RATIO = 5 / 13f
+        private const val SLICE_HEIGHT_RATIO = 5 / 11f
 
         private const val ANIM_PULSE_SCALE_MAX = 1.03f
         private const val ANIM_PULSE_SCALE_SPEED = 500L
