@@ -647,4 +647,18 @@ open class PielView : View {
         )
         return distance <= mRange.width() / 2
     }
+
+    override fun onDetachedFromWindow() {
+        this.mPieRotateListener = null
+        this.wheelSpinListener = mutableListOf()
+        if (this.animation != null) {
+            this.animation.setAnimationListener(null)
+            this.animation.reset()
+        }
+        this.animate().setListener(null)
+        this.stopRotation()
+        this.clearAnimation()
+        this.clearFocus()
+        super.onDetachedFromWindow()
+    }
 }
