@@ -84,7 +84,7 @@ open class PielView : View {
     private var luckyWheelWheelRotation: Int = 0
     private var lastTap: Int = -1
 
-    private val fallBackRandomIndex: Int
+    val fallBackRandomIndex: Int
         get() {
             val rand = Random()
             return rand.nextInt(mLuckyItemList!!.size - 1) + 0
@@ -311,6 +311,13 @@ open class PielView : View {
         mTextPaint!!.typeface = typeface
         mTextPaint!!.textAlign = Paint.Align.LEFT
         mTextPaint!!.textSize = mTopTextSize.toFloat()
+
+        if (mStr.length > 9) {
+            mTextPaint!!.textScaleX = 0.62f
+        } else {
+            mTextPaint!!.textScaleX = 1f
+        }
+
         val textWidth = mTextPaint!!.measureText(mStr)
         val hOffset = (mRadius * Math.PI / mLuckyItemList!!.size.toDouble() / 2.0 - textWidth / 2).toInt()
 
@@ -337,6 +344,8 @@ open class PielView : View {
         mTextPaint!!.typeface = typeface
         mTextPaint!!.textSize = mSecondaryTextSize.toFloat()
         mTextPaint!!.textAlign = Paint.Align.LEFT
+
+        mTextPaint!!.textScaleX = 1f
 
         val textWidth = mTextPaint!!.measureText(mStr)
 
@@ -413,7 +422,7 @@ open class PielView : View {
      * @param spinDirection Spin orientation of the wheel if clockwise or counterclockwise
      */
     @TargetApi(Build.VERSION_CODES.KITKAT)
-    private fun spinTo(index: Int, spinDirection: SpinDirection) {
+    fun spinTo(index: Int, spinDirection: SpinDirection) {
 
         // Do nothing if wheel is currently animating
         if (isRunning) {
@@ -660,5 +669,9 @@ open class PielView : View {
         this.clearAnimation()
         this.clearFocus()
         super.onDetachedFromWindow()
+    }
+
+    fun getLuckyItemListSize(): Int {
+        return mLuckyItemList!!.size
     }
 }

@@ -4,6 +4,9 @@ import android.content.Context
 import android.graphics.RectF
 import android.graphics.drawable.Drawable
 import android.os.Build
+import android.os.CountDownTimer
+import android.os.VibrationEffect
+import android.os.Vibrator
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.MotionEvent
@@ -12,12 +15,9 @@ import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import android.widget.ImageView
 import androidx.constraintlayout.widget.ConstraintLayout
-import rubikstudio.library.model.LuckyItem
-import android.os.CountDownTimer
-import android.os.VibrationEffect
-import android.os.Vibrator
 import eightbitlab.com.blurview.BlurView
 import eightbitlab.com.blurview.RenderScriptBlur
+import rubikstudio.library.model.LuckyItem
 
 /**
  * Created by kiennguyen on 11/5/16.
@@ -319,6 +319,14 @@ open class LuckyWheelView : ConstraintLayout, PielView.PieRotateListener, PielVi
 
     fun getLukcyWheelRotation(): Int {
         return luckyWheelWheelRotation
+    }
+
+    fun startLuckyWheelWithRandomTarget() {
+        pielView!!.spinTo(pielView!!.fallBackRandomIndex, PielView.SpinDirection.COUNTERCLOCKWISE)
+    }
+
+    fun startLuckyWheelWithTargetIndex(index: Int) {
+        pielView!!.spinTo(index, PielView.SpinDirection.COUNTERCLOCKWISE)
     }
 
     interface PostSpinListener {
