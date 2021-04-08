@@ -83,6 +83,7 @@ open class PielView : View {
     private var mPieRotateListener: PieRotateListener? = null
     private var luckyWheelWheelRotation: Int = 0
     private var lastTap: Int = -1
+    private var scaledDensity: Double = 0.0
 
     val fallBackRandomIndex: Int
         get() {
@@ -138,6 +139,8 @@ open class PielView : View {
         wheelSpinListener.forEach { listener ->
             listener.setEdgeRectF(mEdgeRange)
         }
+
+        scaledDensity = Math.round(resources.displayMetrics.scaledDensity * 100.0) / 100.0
     }
 
     fun setData(luckyItemList: List<LuckyItem>) {
@@ -312,10 +315,9 @@ open class PielView : View {
         mTextPaint!!.textAlign = Paint.Align.LEFT
         mTextPaint!!.textSize = mTopTextSize.toFloat()
 
-        if (mStr.length > 9) {
-            mTextPaint!!.textScaleX = 0.62f
-        } else {
-            mTextPaint!!.textScaleX = 1f
+        mTextPaint!!.textScaleX = when (mStr.length > 8 && scaledDensity > 3.3) {
+            true -> (1f / mStr.length * 0.5f) * 10f
+            false -> 0.9f
         }
 
         val textWidth = mTextPaint!!.measureText(mStr)
@@ -345,8 +347,10 @@ open class PielView : View {
         mTextPaint!!.textSize = mSecondaryTextSize.toFloat()
         mTextPaint!!.textAlign = Paint.Align.LEFT
 
-        mTextPaint!!.textScaleX = 1f
-
+        mTextPaint!!.textScaleX = when (mStr.length > 2 && scaledDensity > 3.3) {
+            true -> 0.55f
+            false -> 0.9f
+        }
         val textWidth = mTextPaint!!.measureText(mStr)
 
         val initFloat = tmpAngle + 360f / arraySize.toFloat() / 2f
