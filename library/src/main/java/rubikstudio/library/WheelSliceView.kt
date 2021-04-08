@@ -79,6 +79,14 @@ class WheelSliceView @JvmOverloads constructor(
             setTextColor(if (isColorDark(item.color)) -0x1 else -0x1000000)
             text = item.topText
             textSize = mTopTextSize
+
+            val scaledDensity = Math.round(resources.displayMetrics.scaledDensity * 100.0) / 100.0
+
+            textScaleX = when (scaledDensity > 3.3) {
+                true -> (1f / text.length * 0.5f) * 10f
+                false -> 0.9f
+            }
+
             if (item.topText.contains("gift", true)) {
                 translationX = ((mTopTextPadding / resources.displayMetrics.density) + 5) * -1
             }
