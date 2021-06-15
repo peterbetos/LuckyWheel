@@ -31,6 +31,7 @@ class WheelSliceView @JvmOverloads constructor(
     private var mSecondaryTextSize: Float = 0f
     private var showSliceView = false
     private var mTopTextPadding: Int = 0
+    private var scaledDensity: Double = 0.0
 
     companion object {
         private const val SLICE_HEIGHT_RATIO = 5 / 11f
@@ -75,14 +76,14 @@ class WheelSliceView @JvmOverloads constructor(
             setColor(item.color)
         }
 
+        scaledDensity = Math.round(resources.displayMetrics.scaledDensity * 100.0) / 100.0
+
         sliceType.apply {
             setTextColor(if (isColorDark(item.color)) -0x1 else -0x1000000)
             text = item.topText
             textSize = mTopTextSize
 
-            val scaledDensity = Math.round(resources.displayMetrics.scaledDensity * 100.0) / 100.0
-
-            textScaleX = when (scaledDensity > 3.3) {
+            textScaleX = when (text.length > 8 && scaledDensity > 3.3) {
                 true -> (1f / text.length * 0.5f) * 10f
                 false -> 0.9f
             }
@@ -96,6 +97,12 @@ class WheelSliceView @JvmOverloads constructor(
             setTextColor(if (isColorDark(item.color)) -0x1 else -0x1000000)
             text = item.secondaryText
             textSize = mSecondaryTextSize
+
+           textScaleX = when (text.length > 2 && scaledDensity > 3.3) {
+                true -> 0.55f
+                false -> 0.9f
+            }
+
             if (item.topText.contains("gift", true)) {
                 translationX = ((mTopTextPadding / resources.displayMetrics.density) + 20) * -1
             } else {
