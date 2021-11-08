@@ -89,7 +89,7 @@ class WheelSliceView @JvmOverloads constructor(
             }
 
             if (item.topText.contains("gift", true)) {
-                translationX = ((mTopTextPadding / resources.displayMetrics.density) + 5) * -1
+                translationX = ((mTopTextPadding / resources.displayMetrics.density) + 5)
             }
         }
 
@@ -104,7 +104,7 @@ class WheelSliceView @JvmOverloads constructor(
             }
 
             if (item.topText.contains("gift", true)) {
-                translationX = ((mTopTextPadding / resources.displayMetrics.density) + 20) * -1
+                translationX = ((mTopTextPadding / resources.displayMetrics.density) + 20)
             } else {
                 translationX = (mTopTextPadding / resources.displayMetrics.density) + 5
             }
