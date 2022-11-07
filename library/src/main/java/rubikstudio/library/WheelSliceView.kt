@@ -83,12 +83,22 @@ class WheelSliceView @JvmOverloads constructor(
             text = item.topText
             textSize = mTopTextSize
 
-            textScaleX = when (text.length > 8 && scaledDensity > 3.3) {
-                true -> (1f / text.length * 0.5f) * 10f
-                false -> 0.9f
+            textScaleX = if (text.length > 8 && scaledDensity > 6) {
+                (1f / text.length * 0.5f) * 12f
+            } else if (text.length > 9 && scaledDensity > 5) {
+                (1f / text.length * 0.5f) * 14f
+            } else if (text.length > 10 && scaledDensity > 4) {
+                (1f / text.length * 0.5f) * 16f
+            } else if (text.length > 10 && scaledDensity > 3) {
+                (1f / text.length * 0.5f) * 20f
+            } else if (text.length > 10 && scaledDensity > 2) {
+                (1f / text.length * 0.5f) * 20f
+            } else {
+                0.9f
             }
 
-            if (item.topText.contains("gift", true)) {
+            if (item.topText.contains("gift", true)
+                || item.topText.contains("cadeau", true)) {
                 translationX = ((mTopTextPadding / resources.displayMetrics.density) + 5) * -1
             }
         }
@@ -103,7 +113,8 @@ class WheelSliceView @JvmOverloads constructor(
                 false -> 0.9f
             }
 
-            if (item.topText.contains("gift", true)) {
+            if (item.topText.contains("gift", true)
+                || item.topText.contains("cadeau", true)) {
                 translationX = ((mTopTextPadding / resources.displayMetrics.density) + 20) * -1
             } else {
                 translationX = (mTopTextPadding / resources.displayMetrics.density) + 5
