@@ -90,7 +90,7 @@ class WheelSliceView @JvmOverloads constructor(
             } else if (text.length > 10 && scaledDensity > 4) {
                 (1f / text.length * 0.5f) * 16f
             } else if (text.length > 10 && scaledDensity > 3) {
-                (1f / text.length * 0.5f) * 20f
+                (1f / text.length * 0.5f) * 16f
             } else if (text.length > 10 && scaledDensity > 2) {
                 (1f / text.length * 0.5f) * 20f
             } else {

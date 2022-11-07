@@ -322,7 +322,7 @@ open class PielView : View {
         } else if (mStr.length > 10 && scaledDensity > 4) {
             (1f / mStr.length * 0.5f) * 16f
         } else if (mStr.length > 10 && scaledDensity > 3) {
-            (1f / mStr.length * 0.5f) * 20f
+            (1f / mStr.length * 0.5f) * 16f
         } else if (mStr.length > 10 && scaledDensity > 2) {
             (1f / mStr.length * 0.5f) * 20f
         } else {
