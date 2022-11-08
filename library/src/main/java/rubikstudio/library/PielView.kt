@@ -319,12 +319,8 @@ open class PielView : View {
             (1f / mStr.length * 0.5f) * 12f
         } else if (mStr.length > 9 && scaledDensity > 5) {
             (1f / mStr.length * 0.5f) * 14f
-        } else if (mStr.length > 10 && scaledDensity > 4) {
+        } else if (mStr.length > 10 && scaledDensity <= 5 && scaledDensity > 2) {
             (1f / mStr.length * 0.5f) * 16f
-        } else if (mStr.length > 10 && scaledDensity > 3) {
-            (1f / mStr.length * 0.5f) * 16f
-        } else if (mStr.length > 10 && scaledDensity > 2) {
-            (1f / mStr.length * 0.5f) * 20f
         } else {
             0.9f
         }
