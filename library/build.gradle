@@ -52,5 +52,5 @@ dependencies {
     implementation "androidx.appcompat:appcompat:$androidxAppcompatVersion"
 
     //BlurView
-    implementation 'com.eightbitlab:blurview:1.6.3'
+    implementation 'com.github.Dimezis:BlurView:version-1.6.3'
 }
